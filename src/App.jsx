@@ -29,7 +29,7 @@ function App() {
       {/* Hero Section */}
       <main className="hero-section">
         <h1 className="hero-title">Get Referred. Not Ignored.</h1>
-        
+
         {/* Call to Actions */}
         <div className="buttons-container">
           <button className="btn-neobrutalist">give referral</button>
