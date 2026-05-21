@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 // Typewriter hook — rAF-based for smooth, jitter-free animation
 function useTypewriter(phrases, typingSpeed = 45, deletingSpeed = 25, pauseMs = 1600) {
@@ -102,122 +103,126 @@ function App() {
 
       <div className="relative z-10 min-h-screen flex flex-col items-center w-full max-w-[1400px] mx-auto px-16 max-md:px-6">
 
-      {/* Navbar — fixed, same top-4 + h-12 as logo so they share the same horizontal band */}
-      <nav className="fixed top-4 left-0 right-0 h-12 z-20 flex justify-center items-center max-md:hidden">
-        <div className="flex gap-20">
-          <a
-            href="#dashboard"
-            className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
-          >
-            Dashboard
-          </a>
-          <a
-            href="#job-openings"
-            className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
-          >
-            Job openings
-          </a>
-          <a
-            href="#pricing"
-            className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
-          >
-            Pricing
-          </a>
-          <a
-            href="#about"
-            className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
-          >
-            About
-          </a>
-        </div>
-      </nav>
+        {/* Navbar — fixed, same top-4 + h-12 as logo so they share the same horizontal band */}
+        <nav className="fixed top-4 left-0 right-0 h-12 z-20 flex justify-center items-center max-md:hidden">
+          <div className="flex gap-20">
+            <a
+              href="#dashboard"
+              className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
+            >
+              Dashboard
+            </a>
+            <a
+              href="#job-openings"
+              className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
+            >
+              Job openings
+            </a>
+            <a
+              href="#pricing"
+              className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
+            >
+              Pricing
+            </a>
+            <a
+              href="#about"
+              className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-60"
+            >
+              About
+            </a>
+          </div>
+        </nav>
 
-      {/* Hero Section */}
-      <main className="flex-1 flex flex-col justify-center items-center text-center w-full pt-16 pb-16">
+        {/* Hero Section */}
+        <main className="flex-1 flex flex-col justify-center items-center text-center w-full pt-16 pb-16">
 
-        {/* Heading */}
-        <h1 className="text-[96px] tracking-[-6px] font-normal leading-[1.05] text-black mb-[-4px] max-lg:text-[64px] max-md:text-[48px] max-md:tracking-[-3px] min-h-[2.2em] flex items-center justify-center">
-          <span>{headline}</span>
-          <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]"></span>
-        </h1>
+          {/* Heading */}
+          <h1 className="text-[96px] tracking-[-6px] font-normal leading-[1.05] text-black mb-[-4px] max-lg:text-[64px] max-md:text-[48px] max-md:tracking-[-3px] min-h-[2.2em] flex items-center justify-center">
+            <span>{headline}</span>
+            <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]"></span>
+          </h1>
 
-        {/* CTA Buttons */}
-        <div className="flex gap-8 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[280px]">
-
-          <button className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000]">
-            give referral
-          </button>
-
-          <button className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000]">
-            get referred
-          </button>
-        </div>
-
-        {/* Subtext */}
-        <div className="text-[28px] mt-2  font-normal cursor-pointer mb-14 transition-opacity duration-200 hover:opacity-80 tracking-[-1px]">
-          Over 400+ working professionals from prestigious companies
-        </div>
-
-        {/* Brand Logos */}
-        <section className="h-20 mt-[-10] flex justify-between items-center w-full max-w-[900px] mx-auto flex-wrap gap-y-8 max-md:justify-center max-md:gap-6">
-
-          <div className="flex items-center justify-center max-md:h-10">
-            <img
-              src={googleImg}
-              alt="Google"
-              className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
-            />
+          {/* CTA Buttons */}
+          <div className="flex gap-8 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[280px]">
+            <Link
+              to="/signup"
+              className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline"
+            >
+              give referral
+            </Link>
+            <Link
+              to="/signup"
+              className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline"
+            >
+              get referred
+            </Link>
           </div>
 
-          <div className="h-16 flex items-center justify-center max-md:h-10">
-            <img
-              src={microsoftImg}
-              alt="Microsoft"
-              className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
-            />
+          {/* Subtext */}
+          <div className="text-[28px] mt-2  font-normal cursor-pointer mb-14 transition-opacity duration-200 hover:opacity-80 tracking-[-1px]">
+            Over 400+ working professionals from esteemed companies
           </div>
 
-          <div className="h-16 flex items-center justify-center max-md:h-10">
-            <img
-              src={appleImg}
-              alt="Apple"
-              className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
-            />
-          </div>
+          {/* Brand Logos */}
+          <section className="h-20 mt-[-10] flex justify-between items-center w-full max-w-[900px] mx-auto flex-wrap gap-y-8 max-md:justify-center max-md:gap-6">
 
-          <div className="h-16 flex items-center justify-center max-md:h-10">
-            <img
-              src={nvidiaImg}
-              alt="Nvidia"
-              className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
-            />
-          </div>
+            <div className="flex items-center justify-center max-md:h-10">
+              <img
+                src={googleImg}
+                alt="Google"
+                className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
+              />
+            </div>
 
-          <div className="h-16 flex items-center justify-center max-md:h-10">
-            <img
-              src={netflixImg}
-              alt="Netflix"
-              className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
-            />
-          </div>
+            <div className="h-16 flex items-center justify-center max-md:h-10">
+              <img
+                src={microsoftImg}
+                alt="Microsoft"
+                className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
+              />
+            </div>
 
-          <div className="h-16 flex items-center justify-center max-md:h-10">
-            <img
-              src={spotifyImg}
-              alt="Spotify"
-              className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
-            />
-          </div>
+            <div className="h-16 flex items-center justify-center max-md:h-10">
+              <img
+                src={appleImg}
+                alt="Apple"
+                className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
+              />
+            </div>
 
-          <div className="h-16 flex items-center justify-center max-md:h-10">
-            <img
-              src={amazonImg}
-              alt="Amazon"
-              className="h-full w-auto max-h-[70px] object-contain max-md:max-h-10 mb-14"
-            />
-          </div>
-        </section>
-      </main>
+            <div className="h-16 flex items-center justify-center max-md:h-10">
+              <img
+                src={nvidiaImg}
+                alt="Nvidia"
+                className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
+              />
+            </div>
+
+            <div className="h-16 flex items-center justify-center max-md:h-10">
+              <img
+                src={netflixImg}
+                alt="Netflix"
+                className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
+              />
+            </div>
+
+            <div className="h-16 flex items-center justify-center max-md:h-10">
+              <img
+                src={spotifyImg}
+                alt="Spotify"
+                className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14"
+              />
+            </div>
+
+            <div className="h-16 flex items-center justify-center max-md:h-10">
+              <img
+                src={amazonImg}
+                alt="Amazon"
+                className="h-full w-auto max-h-[70px] object-contain max-md:max-h-10 mb-14"
+              />
+            </div>
+          </section>
+        </main>
       </div>
     </>
   );
