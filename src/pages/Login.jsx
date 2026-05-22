@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import MedusaeBackground from '../MedusaeBackground';
 import logoImg from '../assets/logo.png';
 
 export default function Login() {
@@ -35,8 +34,7 @@ export default function Login() {
   };
 
   return (
-    <>
-      <MedusaeBackground />
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
 
       {/* Logo */}
       <div className="fixed top-4 left-4 z-20 cursor-pointer">
@@ -121,6 +119,6 @@ export default function Login() {
           </p>
         </form>
       </div>
-    </>
+    </div>
   );
 }
