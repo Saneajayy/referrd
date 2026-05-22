@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
+import { COMPANIES } from '../data/companies.js';
 
 // ── OTP Input sub-component ───────────────────────────────────────────────────
 function OTPInput({ value, onChange, disabled }) {
@@ -26,7 +27,9 @@ function OTPInput({ value, onChange, disabled }) {
     const next = digits.slice();
     next[idx] = val;
     onChange(next.join(''));
-    if (val && idx < 5) inputs.current[idx + 1]?.focus();
+    if (val && idx < 5) {
+      inputs.current[idx + 1]?.focus();
+    }
   };
 
   const handlePaste = (e) => {
@@ -61,19 +64,40 @@ function OTPInput({ value, onChange, disabled }) {
 // ── Main Component ────────────────────────────────────────────────────────────
 const STEPS = { FORM: 'form', OTP: 'otp', DONE: 'done' };
 
-export default function Signup() {
+export default function EmployeeSignup() {
   const [step, setStep] = useState(STEPS.FORM);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [companyOpen, setCompanyOpen] = useState(false);
+  const [companySearch, setCompanySearch] = useState('');
+  const dropdownRef = useRef(null);
+
+  const [form, setForm] = useState({
+    company: null,
+    email: '',
+    name: '',
+    designation: '',
+    linkedin: '',
+    password: '',
+  });
+
   const [otp, setOtp] = useState('');
   const [otpTimer, setOtpTimer] = useState(0);
   const timerRef = useRef(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleChange = (e) =>
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setCompanyOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   function startTimer() {
     setOtpTimer(60);
@@ -86,16 +110,40 @@ export default function Signup() {
     }, 1000);
   }
 
+  const filteredCompanies = COMPANIES.filter((c) =>
+    c.name.toLowerCase().includes(companySearch.toLowerCase())
+  );
+
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const selectCompany = (company) => {
+    setForm((prev) => ({ ...prev, company, email: '' }));
+    setCompanyOpen(false);
+    setCompanySearch('');
+  };
+
   // ── Step 1: Send OTP ────────────────────────────────────────────────────────
   const handleSendOTP = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!form.company) { setError('Please select your company.'); return; }
+    if (!form.email) { setError('Please enter your work email.'); return; }
+    if (!form.name || !form.password) { setError('Please fill in all required fields.'); return; }
+
+    const emailDomain = form.email.split('@')[1]?.toLowerCase();
+    if (emailDomain !== form.company.domain.toLowerCase()) {
+      setError(`Your email must end with @${form.company.domain} for ${form.company.name}.`);
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/send-otp', {
+      const res = await fetch('/api/employee-auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email }),
+        body: JSON.stringify({ email: form.email, company: form.company.name, domain: form.company.domain }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to send OTP.');
@@ -114,16 +162,16 @@ export default function Signup() {
     if (otpTimer > 0) return;
     setError(''); setSuccess(''); setLoading(true);
     try {
-      const res = await fetch('/api/auth/send-otp', {
+      const res = await fetch('/api/employee-auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email }),
+        body: JSON.stringify({ email: form.email, company: form.company.name, domain: form.company.domain }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to resend OTP.');
       startTimer(); setOtp('');
       if (data.devOtp) setSuccess(`[DEV] New OTP: ${data.devOtp}`);
-      else setSuccess('A new OTP has been sent to your email.');
+      else setSuccess('A new OTP has been sent to your work email.');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -138,8 +186,7 @@ export default function Signup() {
     if (otp.length < 6) { setError('Please enter the complete 6-digit OTP.'); return; }
     setLoading(true);
     try {
-      // 1. Verify OTP
-      const verifyRes = await fetch('/api/auth/verify-otp', {
+      const verifyRes = await fetch('/api/employee-auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: form.email, otp }),
@@ -147,18 +194,22 @@ export default function Signup() {
       const verifyData = await verifyRes.json();
       if (!verifyRes.ok) throw new Error(verifyData.message || 'OTP verification failed.');
 
-      // 2. Signup
-      const signupRes = await fetch('/api/auth/signup', {
+      const signupRes = await fetch('/api/employee-auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name, email: form.email, password: form.password,
+          company: form.company.name, domain: form.company.domain,
+          designation: form.designation, linkedin: form.linkedin,
+        }),
       });
       const signupData = await signupRes.json();
       if (!signupRes.ok) throw new Error(signupData.message || 'Signup failed.');
 
       localStorage.setItem('token', signupData.token);
+      localStorage.setItem('userRole', 'referrer');
       setStep(STEPS.DONE);
-      setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+      setTimeout(() => { window.location.href = '/employee-dashboard'; }, 1500);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -170,6 +221,68 @@ export default function Signup() {
   const renderForm = () => (
     <form onSubmit={handleSendOTP} className="w-full max-w-[440px] flex flex-col gap-3">
 
+      {/* Company selector */}
+      <div className="relative" ref={dropdownRef}>
+        <button
+          type="button"
+          onClick={() => setCompanyOpen((v) => !v)}
+          className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-left flex items-center justify-between outline-none focus:border-black transition-colors"
+        >
+          <span className={form.company ? 'text-black' : 'text-gray-400'}>
+            {form.company ? form.company.name : 'Choose your company'}
+          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            className={`text-gray-400 transition-transform duration-200 ${companyOpen ? 'rotate-180' : ''}`}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        {companyOpen && (
+          <div className="absolute top-[calc(100%+6px)] left-0 right-0 bg-white border border-gray-200 rounded-2xl shadow-xl z-30 overflow-hidden">
+            <div className="p-2 border-b border-gray-100">
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search company…"
+                value={companySearch}
+                onChange={(e) => setCompanySearch(e.target.value)}
+                className="w-full px-3 py-2 text-[14px] outline-none bg-gray-50 rounded-lg text-black placeholder-gray-400"
+              />
+            </div>
+            <div className="max-h-52 overflow-y-auto">
+              {filteredCompanies.length === 0 ? (
+                <p className="text-center text-gray-400 text-[14px] py-4">No companies found</p>
+              ) : filteredCompanies.map((c) => (
+                <button key={c.name} type="button" onClick={() => selectCompany(c)}
+                  className="w-full px-4 py-2.5 text-left text-[14px] flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <span className="text-black font-medium">{c.name}</span>
+                  <span className="text-gray-400 text-[12px]">@{c.domain}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Work email with domain hint */}
+      <div className="relative">
+        <input
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="Enter your work email"
+          required
+          disabled={!form.company}
+          className="w-full px-5 py-3.5 pr-36 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        />
+        {form.company && (
+          <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[13px] text-gray-400 pointer-events-none">
+            @{form.company.domain}
+          </span>
+        )}
+      </div>
+
       {/* Full name */}
       <input
         type="text" name="name" value={form.name} onChange={handleChange}
@@ -177,12 +290,27 @@ export default function Signup() {
         className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
       />
 
-      {/* Email */}
+      {/* Designation */}
       <input
-        type="email" name="email" value={form.email} onChange={handleChange}
-        placeholder="Enter your email" required
+        type="text" name="designation" value={form.designation} onChange={handleChange}
+        placeholder="Enter your designation"
         className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
       />
+
+      {/* LinkedIn */}
+      <div className="relative">
+        <input
+          type="url" name="linkedin" value={form.linkedin} onChange={handleChange}
+          placeholder="Enter your LinkedIn URL"
+          className="w-full px-5 py-3.5 pr-12 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
+        />
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+          </svg>
+        </span>
+      </div>
 
       {/* Password */}
       <div className="relative">
@@ -204,14 +332,16 @@ export default function Signup() {
 
       {error && <p className="text-red-500 text-sm text-center px-2">{error}</p>}
 
-      <button type="submit" disabled={loading}
-        className="mt-4 w-full bg-white text-black border-2 border-black py-3 text-[22px] font-normal rounded-full cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] disabled:opacity-50 disabled:cursor-not-allowed">
+      <button
+        type="submit" disabled={loading}
+        className="mt-4 w-full bg-white text-black border-2 border-black py-3 text-[22px] font-normal rounded-full cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         {loading ? 'Sending OTP…' : 'Signup'}
       </button>
 
       <p className="text-center text-[15px] text-gray-700 mt-1">
         Already have an account?{' '}
-        <Link to="/login" className="text-blue-500 hover:underline">Login</Link>{' '}here
+        <Link to="/employee-login" className="text-blue-500 hover:underline">Login</Link>{' '}here
       </p>
     </form>
   );
@@ -220,7 +350,7 @@ export default function Signup() {
   const renderOTP = () => (
     <form onSubmit={handleVerifyAndSignup} className="w-full max-w-[440px] flex flex-col items-center gap-6">
       <p className="text-[15px] text-gray-600 text-center leading-relaxed">
-        Please enter the 6 digit code sent to your email.
+        Please enter the 6 digit code sent to your work email.
       </p>
 
       <div className="flex items-center gap-3 text-[14px]">
@@ -232,7 +362,7 @@ export default function Signup() {
         <button type="button"
           onClick={() => { setStep(STEPS.FORM); setError(''); setSuccess(''); setOtp(''); }}
           className="text-gray-500 hover:text-black transition-colors">
-          Edit your email ?
+          Edit your work email ?
         </button>
       </div>
 
@@ -244,8 +374,10 @@ export default function Signup() {
 
       {error && <p className="text-red-500 text-sm text-center px-2">{error}</p>}
 
-      <button type="submit" disabled={loading || otp.length < 6}
-        className="w-full bg-white text-black border-2 border-black py-3 text-[22px] font-normal rounded-full cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] disabled:opacity-50 disabled:cursor-not-allowed">
+      <button
+        type="submit" disabled={loading || otp.length < 6}
+        className="w-full bg-white text-black border-2 border-black py-3 text-[22px] font-normal rounded-full cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         {loading ? 'Verifying…' : 'Verify'}
       </button>
     </form>

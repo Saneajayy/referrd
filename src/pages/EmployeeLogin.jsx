@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
 
-export default function Login() {
+export default function EmployeeLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
@@ -16,16 +16,16 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/employee-auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login failed');
-      // TODO: store token & redirect to dashboard
       localStorage.setItem('token', data.token);
-      window.location.href = '/dashboard';
+      localStorage.setItem('userRole', 'referrer');
+      window.location.href = '/employee-dashboard';
     } catch (err) {
       setError(err.message);
     } finally {
@@ -49,13 +49,13 @@ export default function Login() {
           onSubmit={handleSubmit}
           className="w-full max-w-[440px] flex flex-col gap-3"
         >
-          {/* Email */}
+          {/* Work Email */}
           <input
             type="email"
             name="email"
             value={form.email}
             onChange={handleChange}
-            placeholder="Enter your email"
+            placeholder="Enter your work email"
             required
             className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
           />
@@ -112,7 +112,7 @@ export default function Login() {
           {/* Switch to signup */}
           <p className="text-center text-[15px] text-gray-700 mt-1">
             Don&apos;t have an account?{' '}
-            <Link to="/signup" className="text-blue-500 hover:underline">
+            <Link to="/employee-signup" className="text-blue-500 hover:underline">
               Signup
             </Link>{' '}
             here
@@ -121,15 +121,15 @@ export default function Login() {
           {/* Divider */}
           <div className="flex items-center gap-3 mt-2">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-[13px] text-gray-400">An employee?</span>
+            <span className="text-[13px] text-gray-400">Looking to get referred?</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
           <Link
-            to="/employee-login"
+            to="/login"
             className="text-center text-[15px] text-gray-600 hover:text-black transition-colors"
           >
-            Sign in to give referrals →
+            Sign in as a candidate →
           </Link>
         </form>
       </div>

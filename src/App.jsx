@@ -145,7 +145,7 @@ function App() {
           {/* CTA Buttons */}
           <div className="flex gap-8 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[280px]">
             <Link
-              to="/signup"
+              to="/employee-signup"
               className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline"
             >
               give referral
