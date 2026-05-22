@@ -273,8 +273,7 @@ export default function EmployeeSignup() {
           onChange={handleChange}
           placeholder="Enter your work email"
           required
-          disabled={!form.company}
-          className="w-full px-5 py-3.5 pr-36 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-5 py-3.5 pr-36 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
         />
         {form.company && (
           <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[13px] text-gray-400 pointer-events-none">
