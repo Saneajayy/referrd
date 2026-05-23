@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Import assets
 import logoImg from './assets/logo.png';
@@ -10,6 +10,7 @@ import nvidiaImg from './assets/NVDA.png';
 import netflixImg from './assets/NFLX.png';
 import spotifyImg from './assets/SPOT.png';
 import amazonImg from './assets/AMZN-e9f942e4.png';
+import { Bold } from 'lucide-react';
 
 // ── Typewriter hook ───────────────────────────────────────────────────────────
 function useTypewriter(phrases, typingSpeed = 45, deletingSpeed = 25, pauseMs = 1600) {
@@ -80,30 +81,37 @@ const TYPEWRITER_PHRASES = [
 
 const STATS = [
   { value: '400+', label: 'Working professionals' },
-  { value: '50+',  label: 'Top MNCs covered' },
-  { value: '3×',   label: 'Higher callback rate' },
+  { value: '50+', label: 'Top MNCs covered' },
+  { value: '3×', label: 'Higher callback rate' },
   { value: '<48h', label: 'Avg. response time' },
 ];
 
 const STEPS = [
-  { num: '01', title: 'You apply',       desc: 'Sign up, share your resume and pick the role you want. No fluff.' },
-  { num: '02', title: 'We match you',    desc: 'We connect you with a verified employee at your target company.' },
-  { num: '03', title: 'They refer you',  desc: 'The employee submits an internal referral. Your profile jumps the queue.' },
-  { num: '04', title: 'You get called',  desc: 'Referred candidates are 3× more likely to get a callback. Go crush it.' },
+  { num: '01', title: 'You apply', desc: 'Sign up, share your resume and pick the role you want. No fluff.' },
+  { num: '02', title: 'We match you', desc: 'We connect you with a verified employee at your target company.' },
+  { num: '03', title: 'They refer you', desc: 'The employee submits an internal referral. Your profile jumps the queue.' },
+  { num: '04', title: 'You get called', desc: 'Referred candidates are 3× more likely to get a callback. Go crush it.' },
 ];
 
 export default function App() {
   const headline = useTypewriter(TYPEWRITER_PHRASES);
+  const navigate = useNavigate();
 
-  const aboutCard  = useSlideUp(0);
-  const statsRow   = useSlideUp(0.1);
-  const howHeader  = useSlideUp(0.05);
+  const aboutCard = useSlideUp(0);
+  const statsRow = useSlideUp(0.1);
+  const howHeader = useSlideUp(0.05);
   const step0 = useSlideUp(0);
   const step1 = useSlideUp(0.07);
   const step2 = useSlideUp(0.14);
   const step3 = useSlideUp(0.21);
   const stepRefs = [step0, step1, step2, step3];
-  const ctaSlide  = useSlideUp(0.1);
+  const ctaSlide = useSlideUp(0.1);
+
+  const handleDashboard = (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    navigate(token ? '/dashboard' : '/login');
+  };
 
   return (
     <div style={{ background: '#ffffff' }}>
@@ -122,29 +130,47 @@ export default function App() {
 
         {/* Navbar */}
         <nav className="absolute top-4 left-0 right-0 h-12 flex justify-center items-center max-md:hidden">
-          <div className="flex gap-20">
-            {['About', 'How it works', 'Pricing'].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase().replace(' ', '-')}`}
-                className="text-[20px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
-              >
-                {item}
-              </a>
-            ))}
+          <div className="flex gap-16 items-center">
+            {/* Dashboard — auth-gated */}
+            <a
+              href="#"
+              onClick={handleDashboard}
+              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
+            >
+              Dashboard
+            </a>
+            {/* Scroll-to-section links */}
+            <a
+              href="#jobs"
+              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
+            >
+              Job Openings
+            </a>
+            <a
+              href="#pricing"
+              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
+            >
+              Pricing
+            </a>
+            <a
+              href="#about"
+              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
+            >
+              About
+            </a>
           </div>
         </nav>
 
         {/* Hero content */}
         <div className="flex-1 flex flex-col justify-center items-center text-center px-6">
 
-          <h1 className="text-[96px] tracking-[-6px] font-normal leading-[1.05] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-3px] min-h-[2.2em] flex items-center justify-center">
+          <h1 className="-mb-7 text-[96px] tracking-[-6px] font-normal leading-[1.05] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-3px] min-h-[2.2em] flex items-center justify-center">
             <span>{headline}</span>
             <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]" />
           </h1>
 
           {/* CTAs */}
-          <div className="flex gap-8 mb-10 mt-4 max-md:flex-col max-md:w-full max-md:max-w-[280px]">
+          <div className="mb-15 flex gap-14 mb-10 mt-4 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
             <Link to="/employee-signup" className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
               give referral
             </Link>
@@ -153,9 +179,8 @@ export default function App() {
             </Link>
           </div>
 
-          {/* Subtext */}
-          <p className="text-[26px] font-normal tracking-[-1px] text-black mb-14 opacity-80">
-            Over 400+ working professionals from esteemed companies
+          <p className="text-[26px] font-normal tracking-[-1px] text-black mb-14 opacity-80 max-w-[1000px] leading-[1.2]">
+            Great candidates shouldn’t be ignored just because they don’t know the right person. Employees shouldn’t be buried under endless referral requests. Referrd brings both sides together in a way that actually works.
           </p>
 
           {/* Brand logos */}

@@ -7,6 +7,7 @@ import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import EmployeeLogin from './pages/EmployeeLogin.jsx'
 import EmployeeSignup from './pages/EmployeeSignup.jsx'
+import Dashboard from './pages/Dashboard.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,6 +20,8 @@ createRoot(document.getElementById('root')).render(
         {/* Employee (referrer) routes */}
         <Route path="/employee-login" element={<EmployeeLogin />} />
         <Route path="/employee-signup" element={<EmployeeSignup />} />
+        {/* Protected dashboard */}
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
