@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Navbar from './components/Navbar.jsx';
 
 // Import assets
 import logoImg from './assets/logo.png';
@@ -10,7 +11,6 @@ import nvidiaImg from './assets/NVDA.png';
 import netflixImg from './assets/NFLX.png';
 import spotifyImg from './assets/SPOT.png';
 import amazonImg from './assets/AMZN-e9f942e4.png';
-import { Bold } from 'lucide-react';
 
 // ── Typewriter hook ───────────────────────────────────────────────────────────
 function useTypewriter(phrases, typingSpeed = 45, deletingSpeed = 25, pauseMs = 1600) {
@@ -95,118 +95,75 @@ const STEPS = [
 
 export default function App() {
   const headline = useTypewriter(TYPEWRITER_PHRASES);
-  const navigate = useNavigate();
 
   const aboutCard = useSlideUp(0);
-  const statsRow = useSlideUp(0.1);
-  const howHeader = useSlideUp(0.05);
-  const step0 = useSlideUp(0);
-  const step1 = useSlideUp(0.07);
-  const step2 = useSlideUp(0.14);
-  const step3 = useSlideUp(0.21);
-  const stepRefs = [step0, step1, step2, step3];
-  const ctaSlide = useSlideUp(0.1);
-
-  const handleDashboard = (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    navigate(token ? '/dashboard' : '/login');
-  };
+  const statsRow   = useSlideUp(0.1);
+  const howHeader  = useSlideUp(0.05);
+  const step0      = useSlideUp(0);
+  const step1      = useSlideUp(0.07);
+  const step2      = useSlideUp(0.14);
+  const step3      = useSlideUp(0.21);
+  const stepRefs   = [step0, step1, step2, step3];
+  const ctaSlide   = useSlideUp(0.1);
 
   return (
     <div style={{ background: '#ffffff' }}>
+
+      {/* Shared navbar — same on every page */}
+      <Navbar />
 
       {/* ── HERO — sticky, stays behind the about panel ── */}
       <section
         style={{ position: 'sticky', top: 0, height: '100vh', zIndex: 1 }}
         className="flex flex-col"
       >
-        {/* Logo */}
-        <div className="absolute top-4 left-4 z-10 cursor-pointer">
-          <Link to="/">
-            <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
-          </Link>
-        </div>
-
-        {/* Navbar */}
-        <nav className="absolute top-4 left-0 right-0 h-12 flex justify-center items-center max-md:hidden">
-          <div className="flex gap-16 items-center">
-            {/* Dashboard — auth-gated */}
-            <a
-              href="#"
-              onClick={handleDashboard}
-              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
-            >
-              Dashboard
-            </a>
-            {/* Scroll-to-section links */}
-            <a
-              href="#jobs"
-              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
-            >
-              Job Openings
-            </a>
-            <a
-              href="#pricing"
-              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
-            >
-              Pricing
-            </a>
-            <a
-              href="#about"
-              className="text-[20px] tracking-[-1px] no-underline text-black font-normal transition-opacity duration-200 hover:opacity-50"
-            >
-              About
-            </a>
-          </div>
-        </nav>
 
         {/* Hero content */}
         <div className="flex-1 flex flex-col justify-center items-center text-center px-6">
 
-          <h1 className="-mb-7 text-[96px] tracking-[-6px] font-normal leading-[1.05] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-3px] min-h-[2.2em] flex items-center justify-center">
+          <h1 className="-mb-7 text-[96px] tracking-[-8px] font-normal leading-[1.05] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-3px] min-h-[2.2em] flex items-center justify-center">
             <span>{headline}</span>
             <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]" />
           </h1>
 
+          {/* Tagline — Inter Italic */}
+          <p
+            className="text-[32px] tracking-[-1px] text-black mb-9  max-w-[850px] leading-[1] text-center italic font-thin"
+            style={{ fontFamily: "'Inter', sans-serif" }}
+          >
+            Candidates hate being ignored. Employees hate being spammed.
+            Referrd makes referrals easier for both.
+          </p>
+
           {/* CTAs */}
-          <div className="mb-15 flex gap-14 mb-10 mt-4 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
-            <Link to="/employee-signup" className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
+          <div className="flex gap-14 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
+            <Link to="/employee-signup" className="tracking-[-1px] bg-white text-black border-2 border-black py-1 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
               give referral
             </Link>
-            <Link to="/signup" className="tracking-[-2px] bg-white text-black border-2 border-black py-2 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
+            <Link to="/signup" className="tracking-[-1px] bg-white text-black border-2 border-black py-1 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
               get referred
             </Link>
           </div>
 
-          <p className="text-[26px] font-normal tracking-[-1px] text-black mb-14 opacity-80 max-w-[1000px] leading-[1.2]">
-            Great candidates shouldn’t be ignored just because they don’t know the right person. Employees shouldn’t be buried under endless referral requests. Referrd brings both sides together in a way that actually works.
-          </p>
-
-          {/* Brand logos */}
-          <section className="h-20 mt-[-10] flex justify-between items-center w-full max-w-[900px] mx-auto flex-wrap gap-y-8 max-md:justify-center max-md:gap-6">
-            <div className="flex items-center justify-center max-md:h-10">
-              <img src={googleImg} alt="Google" className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14" />
+          {/* Brand logos — infinite marquee */}
+          <div className="w-full mb-4">
+            <div className="flex items-center gap-5 max-w-[900px] mx-auto mb-10">
+              <div className="flex-1 h-px bg-black opacity-15" />
+              <p className="text-center text-[20px] font-normal text-black tracking-[-0.5px] whitespace-nowrap opacity-60">
+                Trusted by people from leading companies
+              </p>
+              <div className="flex-1 h-px bg-black opacity-15" />
             </div>
-            <div className="h-16 flex items-center justify-center max-md:h-10">
-              <img src={microsoftImg} alt="Microsoft" className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14" />
+            <div className="flex items-center justify-center gap-16 max-w-[1000px] mx-auto flex-wrap">
+              <img src={googleImg} alt="Google" style={{ height: '65px', width: 'auto', objectFit: 'contain', opacity: 0.85 }} />
+              <img src={microsoftImg} alt="Microsoft" style={{ height: '65px', width: 'auto', objectFit: 'contain', opacity: 0.85 }} />
+              <img src={appleImg} alt="Apple" style={{ height: '65px', width: 'auto', objectFit: 'contain', opacity: 0.85 }} />
+              <img src={nvidiaImg} alt="Nvidia" style={{ height: '65px', width: 'auto', objectFit: 'contain', opacity: 0.85 }} />
+              <img src={netflixImg} alt="Netflix" style={{ height: '65px', width: 'auto', objectFit: 'contain', opacity: 0.85 }} />
+              <img src={spotifyImg} alt="Spotify" style={{ height: '65px', width: 'auto', objectFit: 'contain', opacity: 0.85 }} />
+              <img src={amazonImg} alt="Amazon" style={{ height: '65px', width: 'auto', objectFit: 'contain', opacity: 0.85 }} />
             </div>
-            <div className="h-16 flex items-center justify-center max-md:h-10">
-              <img src={appleImg} alt="Apple" className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14" />
-            </div>
-            <div className="h-16 flex items-center justify-center max-md:h-10">
-              <img src={nvidiaImg} alt="Nvidia" className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14" />
-            </div>
-            <div className="h-16 flex items-center justify-center max-md:h-10">
-              <img src={netflixImg} alt="Netflix" className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14" />
-            </div>
-            <div className="h-16 flex items-center justify-center max-md:h-10">
-              <img src={spotifyImg} alt="Spotify" className="h-full w-auto max-h-[65px] object-contain max-md:max-h-10 mb-14" />
-            </div>
-            <div className="h-16 flex items-center justify-center max-md:h-10">
-              <img src={amazonImg} alt="Amazon" className="h-full w-auto max-h-[70px] object-contain max-md:max-h-10 mb-14" />
-            </div>
-          </section>
+          </div>
         </div>
 
         {/* Scroll hint */}
