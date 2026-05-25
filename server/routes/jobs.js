@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { createRequire } from 'module';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { JOBS } from '../src/data/jobs.js';
+import { JOBS } from '../../src/data/jobs.js';
 
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
