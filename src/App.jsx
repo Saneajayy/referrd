@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'; // useRef kept for typewriter RAF
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 
 // Import assets
@@ -57,6 +57,12 @@ const TYPEWRITER_PHRASES = [
 
 export default function App() {
   const headline = useTypewriter(TYPEWRITER_PHRASES);
+  const navigate = useNavigate();
+
+  const handleGetReferred = () => {
+    const token = localStorage.getItem('token');
+    navigate(token ? '/jobs' : '/login');
+  };
 
   return (
     <div style={{ background: '#ffffff', overflow: 'hidden' }}>
@@ -92,9 +98,9 @@ export default function App() {
             <Link to="/employee-signup" className="tracking-[-1px] bg-white text-black border-2 border-black py-3 px-10 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
               give referral
             </Link>
-            <Link to="/signup" className="tracking-[-1px] bg-white text-black border-2 border-black py-1 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
+            <button onClick={handleGetReferred} className="tracking-[-1px] bg-white text-black border-2 border-black py-1 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000]">
               get referred
-            </Link>
+            </button>
           </div>
 
           {/* Brand logos — infinite marquee */}

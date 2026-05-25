@@ -191,4 +191,63 @@ router.get('/me', async (req, res) => {
   }
 });
 
+// ── Auth middleware helper ────────────────────────────────────────────────────
+function requireAuth(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith('Bearer '))
+    return res.status(401).json({ message: 'No token provided.' });
+  try {
+    req.user = jwt.verify(auth.slice(7), JWT_SECRET);
+    next();
+  } catch {
+    return res.status(401).json({ message: 'Invalid or expired token.' });
+  }
+}
+
+// ── PATCH /api/auth/change-password ──────────────────────────────────────────
+router.patch('/change-password', requireAuth, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword)
+    return res.status(400).json({ message: 'currentPassword and newPassword are required.' });
+  if (newPassword.length < 8)
+    return res.status(400).json({ message: 'New password must be at least 8 characters.' });
+
+  try {
+    const { rows } = await pool.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    if (!rows.length) return res.status(404).json({ message: 'User not found.' });
+
+    const match = await bcrypt.compare(currentPassword, rows[0].password);
+    if (!match) return res.status(401).json({ message: 'Current password is incorrect.' });
+
+    const hashed = await bcrypt.hash(newPassword, 12);
+    await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashed, req.user.id]);
+    return res.json({ message: 'Password updated successfully.' });
+  } catch (err) {
+    console.error('[change-password]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── DELETE /api/auth/delete-account ──────────────────────────────────────────
+router.delete('/delete-account', requireAuth, async (req, res) => {
+  const { password } = req.body;
+  if (!password)
+    return res.status(400).json({ message: 'password is required to delete your account.' });
+
+  try {
+    const { rows } = await pool.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    if (!rows.length) return res.status(404).json({ message: 'User not found.' });
+
+    const match = await bcrypt.compare(password, rows[0].password);
+    if (!match) return res.status(401).json({ message: 'Incorrect password.' });
+
+    await pool.query('DELETE FROM users WHERE id = $1', [req.user.id]);
+    return res.json({ message: 'Account deleted successfully.' });
+  } catch (err) {
+    console.error('[delete-account]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
 export default router;
+

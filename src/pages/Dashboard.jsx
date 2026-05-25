@@ -359,7 +359,6 @@ export default function Dashboard() {
 
         {requests.length === 0 ? (
           <div style={{ background: '#fff', border: '2px solid #000', borderRadius: 20, padding: '48px 32px', boxShadow: '4px 5px 0 #000', textAlign: 'center' }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
             <p style={{ fontSize: 17, fontWeight: 400, color: '#000', letterSpacing: '-0.5px', marginBottom: 6 }}>No referral requests yet</p>
             <p style={{ fontSize: 14, color: '#9ca3af', marginBottom: 24 }}>Browse open roles and request a referral from an employee.</p>
             <Link to="/jobs" style={{ display: 'inline-block', background: '#000', color: '#fff', border: '2px solid #000', borderRadius: 40, padding: '10px 28px', fontSize: 15, textDecoration: 'none', boxShadow: '3px 4px 0 #000', transition: 'transform .15s' }}>
