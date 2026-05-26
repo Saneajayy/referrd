@@ -40,6 +40,7 @@ export default function ResumeMatch() {
   const [errorMsg, setErrorMsg] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const [fileName, setFileName] = useState('');
+  const [requesting, setRequesting] = useState(false);
   const fileRef = useRef(null);
 
   if (!job) {
@@ -90,6 +91,35 @@ export default function ResumeMatch() {
     setResult(null);
     setFileName('');
     setErrorMsg('');
+  };
+
+  const handleRequestReferral = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    setRequesting(true);
+    try {
+      const res = await fetch('/api/referrals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          job_title: job.title,
+          company: job.company,
+          ai_score: result.score
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to submit request.');
+      navigate('/dashboard');
+    } catch (err) {
+      alert(err.message);
+      setRequesting(false);
+    }
   };
 
   return (
@@ -190,12 +220,13 @@ export default function ResumeMatch() {
               </div>
             )}
 
-            <Link
-              to={`/jobs/${job.id}/referrers`}
-              className="w-full bg-black text-white border-2 border-black py-3 text-[18px] font-normal rounded-xl cursor-pointer shadow-[4px_5px_0px_0px_#555] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_7px_0px_0px_#555] no-underline tracking-[-0.5px] mb-3"
+            <button
+              onClick={handleRequestReferral}
+              disabled={requesting}
+              className={`w-full bg-black text-white border-2 border-black py-3 text-[18px] font-normal rounded-xl cursor-pointer shadow-[4px_5px_0px_0px_#555] transition-all duration-200 inline-flex justify-center items-center ${requesting ? 'opacity-70' : 'hover:-translate-y-0.5 hover:shadow-[6px_7px_0px_0px_#555]'} no-underline tracking-[-0.5px] mb-3`}
             >
-              View available referrers →
-            </Link>
+              {requesting ? 'Submitting request...' : 'Request Referral →'}
+            </button>
             <button onClick={reset}
               className="w-full text-[14px] text-gray-400 hover:text-black transition-colors py-2">
               Try a different resume

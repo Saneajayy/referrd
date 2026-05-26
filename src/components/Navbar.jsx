@@ -36,8 +36,8 @@ export default function Navbar() {
 
   const handleDashboard = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
-    navigate(token ? '/dashboard' : '/login');
+    if (!user) { navigate('/login'); return; }
+    navigate(user.role === 'referrer' ? '/employee-dashboard' : '/dashboard');
   };
 
   const handleLogout = () => {
@@ -70,7 +70,7 @@ export default function Navbar() {
         </a>
         {[
           { label: 'Job Openings', href: '/jobs' },
-          { label: 'Pricing',      href: '/pricing' },
+          { label: 'Pricing', href: '/pricing' },
         ].map(({ label, href }) => (
           <Link
             key={label}
@@ -114,19 +114,11 @@ export default function Navbar() {
               }}>
                 <style>{`@keyframes ddFade { from { opacity:0; transform:translateY(-6px);} to { opacity:1; transform:translateY(0); } }`}</style>
 
-                {/* User info header */}
-                <div style={{ padding: '14px 16px 10px', borderBottom: '1px solid #f0f0f0' }}>
-                  <p style={{ fontSize: 14, fontWeight: 500, color: '#000', letterSpacing: '-0.3px', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {user.name || user.email?.split('@')[0]}
-                  </p>
-                  <p style={{ fontSize: 12, color: '#9ca3af', margin: 0, marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {user.email}
-                  </p>
-                </div>
+
 
                 {/* Menu items */}
                 {[
-                  { label: 'My Profile', to: '/dashboard' },
+                  { label: 'My Profile', to: user?.role === 'referrer' ? '/employee-dashboard' : '/dashboard' },
                   { label: 'Manage Account', to: '/manage-account' },
                 ].map(item => (
                   <Link

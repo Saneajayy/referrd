@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import pool from '../db.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'change_me_in_env';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ── Auth middleware ───────────────────────────────────────────────────────────
 function requireAuth(req, res, next) {
@@ -17,6 +17,26 @@ function requireAuth(req, res, next) {
     return res.status(401).json({ message: 'Invalid or expired token.' });
   }
 }
+
+// ── POST /api/referrals  ──────────────────────────────────────────────────────
+// Creates a new referral request (Candidate side)
+router.post('/', requireAuth, async (req, res) => {
+  const { job_title, company, ai_score } = req.body;
+  if (!job_title || !company) return res.status(400).json({ message: 'job_title and company are required.' });
+
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO referral_requests (seeker_id, job_title, company, ai_score)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [req.user.id, job_title, company, ai_score || null]
+    );
+    return res.status(201).json({ request: rows[0] });
+  } catch (err) {
+    console.error('[referrals/create]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
 
 // ── GET /api/referrals/my  ────────────────────────────────────────────────────
 // Returns all referral requests for the logged-in seeker
@@ -83,6 +103,86 @@ router.patch('/:id/withdraw', requireAuth, async (req, res) => {
   }
 });
 
+// ── GET /api/referrals/company  ───────────────────────────────────────────────
+// Returns all pending referral requests for the logged-in employee's company
+router.get('/company', requireAuth, async (req, res) => {
+  if (req.user.role !== 'referrer') return res.status(403).json({ message: 'Forbidden' });
+
+  // Make sure we have the company from the DB, not just the token, just in case
+  try {
+    const userRes = await pool.query('SELECT company FROM users WHERE id = $1', [req.user.id]);
+    if (!userRes.rows.length || !userRes.rows[0].company) {
+      return res.status(400).json({ message: 'Employee has no company assigned.' });
+    }
+    const company = userRes.rows[0].company;
+
+    const { rows } = await pool.query(
+      `SELECT
+         rr.id,
+         rr.job_title,
+         rr.company,
+         rr.status,
+         rr.created_at,
+         rr.updated_at,
+         rr.ai_score,
+         rr.referrer_id,
+         u.name      AS seeker_name,
+         u.email     AS seeker_email,
+         u.college   AS seeker_college
+       FROM referral_requests rr
+       JOIN users u ON rr.seeker_id = u.id
+       WHERE rr.company = $1 AND (rr.status = 'pending' OR rr.referrer_id = $2)
+       ORDER BY rr.ai_score DESC NULLS LAST, rr.created_at DESC`,
+      [company, req.user.id]
+    );
+
+    // Auto-expire
+    const now = Date.now();
+    const toExpire = rows
+      .filter(r => r.status === 'pending' && now - new Date(r.created_at).getTime() > 3 * 24 * 60 * 60 * 1000)
+      .map(r => r.id);
+
+    if (toExpire.length) {
+      await pool.query(`UPDATE referral_requests SET status = 'expired', updated_at = NOW() WHERE id = ANY($1)`, [toExpire]);
+    }
+    
+    // For the UI, we just mark them as expired so they move out of pending
+    const validRequests = rows.map(r => toExpire.includes(r.id) ? { ...r, status: 'expired' } : r);
+    return res.json({ requests: validRequests });
+  } catch (err) {
+    console.error('[referrals/company]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── PATCH /api/referrals/:id/action  ─────────────────────────────────────────
+// Accept or decline a referral request (Employee side)
+router.patch('/:id/action', requireAuth, async (req, res) => {
+  if (req.user.role !== 'referrer') return res.status(403).json({ message: 'Forbidden' });
+  const { action, note } = req.body;
+  if (!['referred', 'declined'].includes(action)) return res.status(400).json({ message: 'Invalid action.' });
+
+  try {
+    // Verify the request exists and is pending, and matches the employee's company
+    const userRes = await pool.query('SELECT company FROM users WHERE id = $1', [req.user.id]);
+    const company = userRes.rows[0]?.company;
+
+    const { rows } = await pool.query(
+      `UPDATE referral_requests
+       SET status = $1, referrer_id = $2, note = $3, updated_at = NOW()
+       WHERE id = $4 AND status = 'pending' AND company = $5
+       RETURNING *`,
+      [action, req.user.id, note || null, req.params.id, company]
+    );
+
+    if (!rows.length) return res.status(404).json({ message: 'Request not found, already processed, or not for your company.' });
+    return res.json({ request: rows[0] });
+  } catch (err) {
+    console.error('[referrals/action]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
 // ── GET /api/referrals/referrer/:id  ─────────────────────────────────────────
 // Public-ish profile of a referrer (only name, company, role — no email)
 router.get('/referrer/:id', requireAuth, async (req, res) => {
@@ -105,15 +205,15 @@ router.get('/referrer/:id', requireAuth, async (req, res) => {
 router.post('/seed-demo', requireAuth, async (req, res) => {
   try {
     const demoData = [
-      { job_title: 'Senior Frontend Engineer', company: 'Google', status: 'pending',  note: 'Resume looks strong — will submit this week.' },
-      { job_title: 'Software Engineer II',      company: 'Microsoft', status: 'referred', note: 'Referral submitted via internal portal.' },
-      { job_title: 'Product Designer',          company: 'Spotify', status: 'declined', note: 'Role was paused by HR.' },
+      { job_title: 'Senior Frontend Engineer', company: 'Google', status: 'pending',  note: 'Resume looks strong — will submit this week.', ai_score: 92 },
+      { job_title: 'Software Engineer II',      company: 'Microsoft', status: 'referred', note: 'Referral submitted via internal portal.', ai_score: 85 },
+      { job_title: 'Product Designer',          company: 'Spotify', status: 'declined', note: 'Role was paused by HR.', ai_score: 45 },
     ];
     for (const d of demoData) {
       await pool.query(
-        `INSERT INTO referral_requests (seeker_id, job_title, company, status, note)
-         VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,
-        [req.user.id, d.job_title, d.company, d.status, d.note]
+        `INSERT INTO referral_requests (seeker_id, job_title, company, status, note, ai_score)
+         VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING`,
+        [req.user.id, d.job_title, d.company, d.status, d.note, d.ai_score]
       );
     }
     return res.json({ message: 'Demo data seeded.' });

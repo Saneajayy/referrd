@@ -3,6 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+}
+
 import authRouter from './routes/auth.js';
 import employeeAuthRouter from './routes/employeeAuth.js';
 import jobsRouter from './routes/jobs.js';

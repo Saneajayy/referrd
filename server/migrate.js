@@ -10,17 +10,26 @@ const sql = `
     password   TEXT        NOT NULL,
     role       TEXT        NOT NULL DEFAULT 'seeker',
     company    TEXT,
+    college    TEXT,
+    designation TEXT,
+    linkedin   TEXT,
     points     INTEGER     NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
-  -- Add company column if it doesn't exist (idempotent)
+  -- Add columns if they don't exist (idempotent)
   DO $$ BEGIN
-    IF NOT EXISTS (
-      SELECT 1 FROM information_schema.columns
-      WHERE table_name='users' AND column_name='company'
-    ) THEN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='company') THEN
       ALTER TABLE users ADD COLUMN company TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='college') THEN
+      ALTER TABLE users ADD COLUMN college TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='designation') THEN
+      ALTER TABLE users ADD COLUMN designation TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='linkedin') THEN
+      ALTER TABLE users ADD COLUMN linkedin TEXT;
     END IF;
   END $$;
 
@@ -31,11 +40,18 @@ const sql = `
     referrer_id INTEGER     REFERENCES users(id) ON DELETE SET NULL,
     job_title   TEXT        NOT NULL,
     company     TEXT        NOT NULL,
+    ai_score    INTEGER,
     status      TEXT        NOT NULL DEFAULT 'pending',
     note        TEXT,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
+
+  DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='referral_requests' AND column_name='ai_score') THEN
+      ALTER TABLE referral_requests ADD COLUMN ai_score INTEGER;
+    END IF;
+  END $$;
 `;
 
 try {

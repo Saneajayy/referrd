@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { JOBS } from '../../src/data/jobs.js';
 
 const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
+const pdfParse = require('pdf-parse-new');
 
 const router = express.Router();
 
@@ -32,7 +32,8 @@ router.post('/match-resume', upload.single('resume'), async (req, res) => {
     try {
       const parsed = await pdfParse(file.buffer);
       resumeText = parsed.text?.trim();
-    } catch {
+    } catch (err) {
+      console.error('[jobs.js] pdf-parse error:', err);
       return res.status(422).json({ message: 'Could not parse the PDF. Please upload a valid resume.' });
     }
 
@@ -41,7 +42,7 @@ router.post('/match-resume', upload.single('resume'), async (req, res) => {
     }
 
     // ── Score with Gemini ────────────────────────────────────────────────────
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `You are a strict but fair recruiter evaluating how well a candidate's resume matches a job description.
 

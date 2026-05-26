@@ -5,7 +5,7 @@ import nodemailer from 'nodemailer';
 import pool from '../db.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'change_me_in_env';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // In-memory OTP store for regular users
 const otpStore = new Map();

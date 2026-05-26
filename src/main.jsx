@@ -7,7 +7,7 @@ import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import EmployeeLogin from './pages/EmployeeLogin.jsx'
 import EmployeeSignup from './pages/EmployeeSignup.jsx'
-import Dashboard from './pages/Dashboard.jsx'
+import Dashboard, { EmployeeDashboardPage } from './pages/Dashboard.jsx'
 import Pricing from './pages/Pricing.jsx'
 import JobOpenings from './pages/JobOpenings.jsx'
 import JobDetail from './pages/JobDetail.jsx'
@@ -27,9 +27,9 @@ createRoot(document.getElementById('root')).render(
         <Route path="/employee-signup" element={<EmployeeSignup />} />
         {/* Protected dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/employee-dashboard" element={<EmployeeDashboardPage />} />
         {/* Pricing */}
         <Route path="/pricing" element={<Pricing />} />
-        {/* Job openings */}
         <Route path="/jobs" element={<JobOpenings />} />
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/jobs/:id/apply" element={<ResumeMatch />} />
