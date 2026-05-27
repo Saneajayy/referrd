@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'; // useRef kept for typewriter RAF
+import { useState, useEffect, useRef } from 'react'; // useRef kept if needed
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 
@@ -11,6 +11,7 @@ import nvidiaImg from './assets/NVDA.png';
 import netflixImg from './assets/NFLX.png';
 import spotifyImg from './assets/SPOT.png';
 import amazonImg from './assets/AMZN-e9f942e4.png';
+import heroImage from './assets/heroimage.png';
 
 // ── Typewriter hook ───────────────────────────────────────────────────────────
 function useTypewriter(phrases, typingSpeed = 45, deletingSpeed = 25, pauseMs = 1600) {
@@ -50,9 +51,8 @@ function useTypewriter(phrases, typingSpeed = 45, deletingSpeed = 25, pauseMs = 
 
 const TYPEWRITER_PHRASES = [
   'Get Referred. Not Ignored.',
-  'Land the Job. Skip the Queue.',
   'Your Network. Your Edge.',
-  'Referrals That Actually Work.',
+  'Less Noise. More Referrals.',
 ];
 
 export default function App() {
@@ -65,54 +65,87 @@ export default function App() {
   };
 
   return (
-    <div style={{ background: '#ffffff', overflow: 'hidden' }}>
+    <div style={{ background: '#ffffff', overflow: 'auto' }}>
 
       {/* Shared navbar — same on every page */}
       <Navbar />
 
-      {/* ── HERO — full viewport, no scroll ── */}
+      {/* ── HERO ── */}
       <section
-        style={{ height: '100vh' }}
-        className="flex flex-col"
+        className="flex flex-col min-h-screen pt-16 "
       >
-
         {/* Hero content */}
-        <div className="flex-1 flex flex-col justify-center items-center text-center px-6">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
 
-          <h1 className="-mb-7 text-[96px] tracking-[-8px] font-normal leading-[1.05] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-3px] min-h-[2.2em] flex items-center justify-center">
-            <span>{headline}</span>
-            <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]" />
-          </h1>
+          {/* Wrapper to sync image width with title width */}
+          <div className="flex flex-col w-max max-w-full items-center">
+
+            {/* Hero Image */}
+            <div className="relative w-full h-[220px] mb-10 overflow-hidden rounded-[20px]">
+              <style>{`
+                @keyframes panImage {
+                  0% { object-position: center 0%; }
+                  50% { object-position: center 100%; }
+                  100% { object-position: center 0%; }
+                }
+              `}</style>
+              <img
+                src={heroImage}
+                alt="Hero"
+                className="w-full h-full object-cover saturate-140 scale-[1.2]"
+                style={{ animation: 'panImage 30s ease-in-out infinite' }}
+              />
+              <div className="absolute inset-0 shadow-[inset_0_0_24px_rgba(0,0,0,0.4)] rounded-[20px] pointer-events-none"></div>
+            </div>
+
+            {/* Title Container */}
+            <div className="relative w-full flex justify-center mb-4">
+
+              {/* Invisible grid anchor to determine the exact max width and height of all phrases */}
+              <div className="invisible pointer-events-none grid text-[96px] tracking-[-4px] font-normal leading-[1] max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center" aria-hidden="true">
+                {TYPEWRITER_PHRASES.map(phrase => (
+                  <h1 key={phrase} className="col-start-1 row-start-1 m-0">
+                    {phrase}
+                  </h1>
+                ))}
+              </div>
+
+              {/* Visible typewriter text */}
+              <h1 className="absolute inset-0 flex items-center justify-center text-[92px] tracking-[-6px] font-normal leading-[1] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center m-0">
+                <span>{headline}</span>
+                <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]" />
+              </h1>
+            </div>
+          </div>
 
           {/* Tagline — Inter Italic */}
           <p
-            className="text-[32px] tracking-[-1px] text-black mb-9  max-w-[850px] leading-[1] text-center italic font-thin"
+            className="text-[28px] tracking-[-1px] text-black mb-8 max-w-[800px] leading-[1.1] text-center italic font-thin"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Candidates hate being ignored. Employees hate being spammed.
-            Referrd makes referrals easier for both.
+            Candidates hate being ignored. Employees hate being spammed. Referrd makes referrals easier for both.
           </p>
 
           {/* CTAs */}
-          <div className="flex gap-14 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
-            <Link to="/employee-signup" className="tracking-[-1px] bg-white text-black border-2 border-black py-3 px-10 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline">
+          <div className="flex gap-11 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
+            <Link to="/employee-signup" className="tracking-[-2px] bg-[#00ff00] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-thin rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline">
               give referral
             </Link>
-            <button onClick={handleGetReferred} className="tracking-[-1px] bg-white text-black border-2 border-black py-1 px-8 font-sans text-[26px] font-normal rounded-lg cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000]">
+            <button onClick={handleGetReferred} className="tracking-[-2px] bg-[#00ff00] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-thin rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000]">
               get referred
             </button>
           </div>
 
-          {/* Brand logos — infinite marquee */}
-          <div className="w-full mb-4">
+          {/* Brand logos */}
+          <div className="w-full mb-12">
             <div className="flex items-center gap-5 max-w-[900px] mx-auto mb-10">
-              <div className="flex-1 h-px bg-black opacity-15" />
-              <p className="text-center text-[20px] font-normal text-black tracking-[-0.5px] whitespace-nowrap opacity-60">
+              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '20px 2px', backgroundRepeat: 'repeat-x' }} />
+              <p className="text-center text-[20px] font-normal text-black tracking-[-0.5px] whitespace-nowrap opacity-100">
                 Trusted by people from leading companies
               </p>
-              <div className="flex-1 h-px bg-black opacity-15" />
+              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '20px 2px', backgroundRepeat: 'repeat-x' }} />
             </div>
-            <div className="flex items-center justify-center gap-16 max-w-[1000px] mx-auto flex-wrap">
+            <div className="flex items-center justify-center gap-12 max-w-[1000px] mx-auto flex-wrap">
               <img src={googleImg} alt="Google" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
               <img src={microsoftImg} alt="Microsoft" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
               <img src={appleImg} alt="Apple" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />

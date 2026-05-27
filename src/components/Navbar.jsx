@@ -69,8 +69,9 @@ export default function Navbar() {
           Dashboard
         </a>
         {[
-          { label: 'Job Openings', href: '/jobs' },
+          { label: 'Job openings', href: '/jobs' },
           { label: 'Pricing', href: '/pricing' },
+          { label: 'About', href: '/about' },
         ].map(({ label, href }) => (
           <Link
             key={label}
