@@ -52,15 +52,15 @@ export default function Navbar() {
     : user?.email?.[0]?.toUpperCase() ?? '?';
 
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 z-50 bg-white/95 backdrop-blur-sm border-b border-black/5 flex items-center px-6 max-md:px-4">
+    <nav className="fixed top-0 left-0 right-0 h-16 z-50 bg-white/95 backdrop-blur-sm border-b border-black/5 flex items-center justify-between px-6 max-md:px-4">
 
       {/* Logo */}
-      <Link to="/" className="flex items-center shrink-0">
+      <Link to="/" className="flex items-center shrink-0 relative z-10">
         <img src={logoImg} alt="Referr'd" className="w-11 h-11 object-contain" />
       </Link>
 
-      {/* Nav links — centered */}
-      <div className="flex-1 flex justify-center gap-14 items-center max-md:hidden">
+      {/* Nav links — absolutely centered */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center gap-14 items-center max-md:hidden w-max">
         <a
           href="#"
           onClick={handleDashboard}
@@ -71,20 +71,30 @@ export default function Navbar() {
         {[
           { label: 'Job openings', href: '/jobs' },
           { label: 'Pricing', href: '/pricing' },
-          { label: 'About', href: '/about' },
+          { label: 'About', href: '/#about' },
         ].map(({ label, href }) => (
-          <Link
-            key={label}
-            to={href}
-            className="text-[18px] tracking-[-0.5px] no-underline text-black font-normal transition-opacity hover:opacity-50"
-          >
-            {label}
-          </Link>
+          href.startsWith('/#') ? (
+            <a
+              key={label}
+              href={href}
+              className="text-[18px] tracking-[-0.5px] no-underline text-black font-normal transition-opacity hover:opacity-50"
+            >
+              {label}
+            </a>
+          ) : (
+            <Link
+              key={label}
+              to={href}
+              className="text-[18px] tracking-[-0.5px] no-underline text-black font-normal transition-opacity hover:opacity-50"
+            >
+              {label}
+            </Link>
+          )
         ))}
       </div>
 
       {/* Right side — profile avatar or login */}
-      <div className="shrink-0 flex items-center">
+      <div className="shrink-0 flex items-center relative z-10">
         {user ? (
           <div ref={dropRef} style={{ position: 'relative' }}>
             {/* Avatar button */}
@@ -157,19 +167,34 @@ export default function Navbar() {
             )}
           </div>
         ) : (
-          <Link
-            to="/login"
-            style={{
-              fontSize: 14, color: '#000', textDecoration: 'none',
-              border: '1.5px solid #000', borderRadius: 20,
-              padding: '6px 16px', letterSpacing: '-0.3px',
-              transition: 'background .15s, color .15s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#000'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#000'; }}
-          >
-            Log in
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              style={{
+                fontSize: 14, color: '#000', textDecoration: 'none',
+                border: '1.5px solid #000', borderRadius: 20,
+                padding: '6px 16px', letterSpacing: '-0.3px',
+                transition: 'background .15s, color .15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#000'; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#000'; }}
+            >
+              Log in
+            </Link>
+            <Link
+              to="/signup"
+              style={{
+                fontSize: 14, color: '#fff', background: '#000', textDecoration: 'none',
+                border: '1.5px solid #000', borderRadius: 20,
+                padding: '6px 16px', letterSpacing: '-0.3px',
+                transition: 'background .15s, color .15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#000'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#000'; e.currentTarget.style.color = '#fff'; }}
+            >
+              Sign up
+            </Link>
+          </div>
         )}
       </div>
     </nav>

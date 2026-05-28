@@ -13,6 +13,14 @@ import spotifyImg from './assets/SPOT.png';
 import amazonImg from './assets/AMZN-e9f942e4.png';
 import heroImage from './assets/heroimage.png';
 
+import Lottie from 'lottie-react';
+import whyAnimation from './assets/why.json';
+import employeeAnimation from './assets/employe.json';
+import studentAnimation from './assets/student.json';
+import aiAnimation from './assets/ai.json';
+
+const LottieComponent = Lottie.default || Lottie;
+
 // ── Typewriter hook ───────────────────────────────────────────────────────────
 function useTypewriter(phrases, typingSpeed = 45, deletingSpeed = 25, pauseMs = 1600) {
   const [displayed, setDisplayed] = useState('');
@@ -65,7 +73,7 @@ export default function App() {
   };
 
   return (
-    <div style={{ background: '#ffffff', overflow: 'auto' }}>
+    <div className="bg-white" style={{ minHeight: '100vh', overflow: 'auto' }}>
 
       {/* Shared navbar — same on every page */}
       <Navbar />
@@ -102,7 +110,7 @@ export default function App() {
             <div className="relative w-full flex justify-center mb-4">
 
               {/* Invisible grid anchor to determine the exact max width and height of all phrases */}
-              <div className="invisible pointer-events-none grid text-[96px] tracking-[-4px] font-normal leading-[1] max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center" aria-hidden="true">
+              <div className="invisible pointer-events-none grid font-snippet text-[96px] tracking-[-4px] font-normal leading-[1] max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center" aria-hidden="true">
                 {TYPEWRITER_PHRASES.map(phrase => (
                   <h1 key={phrase} className="col-start-1 row-start-1 m-0">
                     {phrase}
@@ -111,28 +119,27 @@ export default function App() {
               </div>
 
               {/* Visible typewriter text */}
-              <h1 className="absolute inset-0 flex items-center justify-center text-[92px] tracking-[-6px] font-normal leading-[1] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center m-0">
+              <h1 className="absolute inset-0 flex items-center justify-center font-intern text-[92px] tracking-[-6px] font-normal leading-[1] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center m-0">
                 <span>{headline}</span>
                 <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]" />
               </h1>
             </div>
           </div>
 
-          {/* Tagline — Inter Italic */}
+          {/* Tagline */}
           <p
-            className="text-[28px] tracking-[-1px] text-black mb-8 max-w-[800px] leading-[1.1] text-center italic font-thin"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="text-[28px] tracking-[-1px] text-black mb-8 max-w-[800px] leading-[1.1] text-center font-sans font-light"
           >
             Candidates hate being ignored. Employees hate being spammed. Referrd makes referrals easier for both.
           </p>
 
           {/* CTAs */}
           <div className="flex gap-11 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
-            <Link to="/employee-signup" className="tracking-[-2px] bg-[#00ff00] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-thin rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline">
-              give referral
+            <Link to="/employee-signup" className="tracking-[-2px] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline">
+              Give referral
             </Link>
-            <button onClick={handleGetReferred} className="tracking-[-2px] bg-[#00ff00] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-thin rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000]">
-              get referred
+            <button onClick={handleGetReferred} className="tracking-[-2px] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000]">
+              Get referred
             </button>
           </div>
 
@@ -158,6 +165,119 @@ export default function App() {
         </div>
 
       </section>
+
+      {/* ── ABOUT SECTION ── */}
+      <section id="about" className="w-full flex justify-center mb-24 px-6 md:px-12 lg:px-16 pt-20">
+        <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2">
+
+          {/* Card 1 */}
+          <div className="aspect-square bg-[#113824] border border-black flex items-center justify-center">
+            <div className="w-[70%] h-[70%]">
+              <LottieComponent animationData={whyAnimation} loop={true} />
+            </div>
+          </div>
+          <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20">
+            <div className="w-[90%] mx-auto">
+              <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">Why Referrd exists</h3>
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
+                Getting a referral should not depend on who you already know. We built Referrd because the current process is broken, candidates send requests into the void, employees get spammed, and good people get overlooked. There had to be a better way.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2 */}
+          <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20 max-md:order-4">
+            <div className="w-[90%] mx-auto">
+              <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">Active referrers only</h3>
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
+                Every employee on Referrd is here by choice. They signed up because they want to refer good candidates,not because someone asked them to. So when you send a request, you're not shouting into the void. Someone is actually waiting on the other side.
+
+              </p>
+            </div>
+          </div>
+          <div className="aspect-square bg-[#113824] border border-black flex items-center justify-center max-md:order-3">
+            <div className="w-[70%] h-[70%]">
+              <LottieComponent animationData={employeeAnimation} loop={true} />
+            </div>
+          </div>
+
+          {/* Card 3 */}
+          <div className="aspect-square bg-[#113824] border border-black flex items-center justify-center max-md:order-5">
+            <div className="w-[70%] h-[70%]">
+              <LottieComponent animationData={aiAnimation} loop={true} />
+            </div>
+          </div>
+          <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20 max-md:order-6">
+            <div className="w-[90%] mx-auto">
+              <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">AI filters the noise</h3>
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
+                Before any request reaches an employee, our AI matches your resume against the job description. Only candidates who genuinely fit the role get through, saving employees time and giving serious candidates a real shot.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 4 */}
+          <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20 max-md:order-8">
+            <div className="w-[90%] mx-auto">
+              <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">Built for early careers</h3>
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
+                Landing your first or second job is the hardest part. Referrd is designed specifically for students and early career professionals who have the skills but not the network, and deserve a fair shot anyway.
+              </p>
+            </div>
+          </div>
+          <div className="aspect-square bg-[#113824] border border-black flex items-center justify-center max-md:order-7">
+            <div className="w-[70%] h-[70%]">
+              <LottieComponent animationData={studentAnimation} loop={true} />
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <footer className="w-full flex flex-col pt-16 mt-20">
+        <div className="w-full px-6 md:px-12 lg:px-16 mb-12">
+          {/* Top border line */}
+          <div className="w-full border-t border-black/30 pt-10 flex justify-between items-start max-md:flex-col max-md:gap-10">
+
+            {/* Left side Logo text */}
+            <div>
+              <h2 className="text-[18vw] xl:text-[250px] leading-[0.8] tracking-[min(-0.5vw,-4px)] mt-5 font-medium text-black m-0">
+                Referrd.
+              </h2>
+            </div>
+
+            {/* Right side Links */}
+            <div className="flex gap-16 max-md:flex-wrap max-md:gap-10 mt-7 lg:mr-40 xl:mr-24">
+              {/* Product Column */}
+              <div className="flex flex-col gap-3">
+                <h4 className="text-[18px] font-medium tracking-[-0.5px] text-black mb-1 m-0">Product</h4>
+                <Link to="/jobs" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Job openings</Link>
+                <Link to="/pricing" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Pricing</Link>
+                <a href="/#about" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">About</a>
+              </div>
+
+              {/* Account Column */}
+              <div className="flex flex-col gap-3">
+                <h4 className="text-[18px] font-medium tracking-[-0.5px] text-black mb-1 m-0">Account</h4>
+                <Link to="/signup" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Signup</Link>
+                <Link to="/login" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Login</Link>
+                <Link to="/employee-signup" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Employee Signup</Link>
+              </div>
+
+              {/* Legal Column */}
+              <div className="flex flex-col gap-3">
+                <h4 className="text-[18px] font-medium tracking-[-0.5px] text-black mb-1 m-0">Legal</h4>
+                <Link to="#" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Privacy policy</Link>
+                <Link to="#" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Terms of service</Link>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Bottom Dark Bar */}
+        <div className="w-full h-12 bg-[#1a1a1a]"></div>
+      </footer>
     </div>
   );
 }
