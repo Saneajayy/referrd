@@ -18,6 +18,7 @@ import whyAnimation from './assets/why.json';
 import employeeAnimation from './assets/employe.json';
 import studentAnimation from './assets/student.json';
 import aiAnimation from './assets/ai.json';
+import heroAnimation from './assets/heroimage1.json';
 
 const LottieComponent = Lottie.default || Lottie;
 
@@ -88,22 +89,15 @@ export default function App() {
           {/* Wrapper to sync image width with title width */}
           <div className="flex flex-col w-max max-w-full items-center">
 
-            {/* Hero Image */}
-            <div className="relative w-full h-[220px] mb-10 overflow-hidden rounded-[20px]">
-              <style>{`
-                @keyframes panImage {
-                  0% { object-position: center 0%; }
-                  50% { object-position: center 100%; }
-                  100% { object-position: center 0%; }
-                }
-              `}</style>
-              <img
-                src={heroImage}
-                alt="Hero"
-                className="w-full h-full object-cover saturate-140 scale-[1.2]"
-                style={{ animation: 'panImage 30s ease-in-out infinite' }}
+            <div
+              className="relative w-full h-[220px] bg-[#113824] mb-10 overflow-hidden flex items-center justify-center rounded-[20px]"
+            >
+              <LottieComponent
+                animationData={heroAnimation}
+                loop={true}
+                className="lottie w-full h-full"
+                style={{ transform: 'scale(5) translateX(9px) translateY(30px)' }}
               />
-              <div className="absolute inset-0 shadow-[inset_0_0_24px_rgba(0,0,0,0.4)] rounded-[20px] pointer-events-none"></div>
             </div>
 
             {/* Title Container */}
@@ -146,11 +140,11 @@ export default function App() {
           {/* Brand logos */}
           <div className="w-full mb-12">
             <div className="flex items-center gap-5 max-w-[900px] mx-auto mb-10">
-              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '20px 2px', backgroundRepeat: 'repeat-x' }} />
+              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '10px 1px', backgroundRepeat: 'repeat-x' }} />
               <p className="text-center text-[20px] font-normal text-black tracking-[-0.5px] whitespace-nowrap opacity-100">
                 Trusted by people from leading companies
               </p>
-              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '20px 2px', backgroundRepeat: 'repeat-x' }} />
+              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '10px 1px', backgroundRepeat: 'repeat-x' }} />
             </div>
             <div className="flex items-center justify-center gap-12 max-w-[1000px] mx-auto flex-wrap">
               <img src={googleImg} alt="Google" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
@@ -179,7 +173,7 @@ export default function App() {
           <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20">
             <div className="w-[90%] mx-auto">
               <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">Why Referrd exists</h3>
-              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify max-w-[450px]">
                 Getting a referral should not depend on who you already know. We built Referrd because the current process is broken, candidates send requests into the void, employees get spammed, and good people get overlooked. There had to be a better way.
               </p>
             </div>
@@ -189,8 +183,8 @@ export default function App() {
           <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20 max-md:order-4">
             <div className="w-[90%] mx-auto">
               <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">Active referrers only</h3>
-              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
-                Every employee on Referrd is here by choice. They signed up because they want to refer good candidates,not because someone asked them to. So when you send a request, you're not shouting into the void. Someone is actually waiting on the other side.
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify max-w-[450px]">
+                Every employee on Referrd is here by choice. They signed up because they want to refer good candidates. So when you send a request, you're not shouting into the void. Someone is actually waiting on the other side.
 
               </p>
             </div>
@@ -210,8 +204,8 @@ export default function App() {
           <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20 max-md:order-6">
             <div className="w-[90%] mx-auto">
               <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">AI filters the noise</h3>
-              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
-                Before any request reaches an employee, our AI matches your resume against the job description. Only candidates who genuinely fit the role get through, saving employees time and giving serious candidates a real shot.
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify max-w-[450px]">
+                Every referral request on Referrd goes through an AI filter first. Your resume gets scored against the job description, and only strong matches get through. Less noise for employees, better odds for candidates who are actually ready.
               </p>
             </div>
           </div>
@@ -220,7 +214,7 @@ export default function App() {
           <div className="aspect-square bg-white border border-black flex flex-col justify-center px-12 md:px-20 max-md:order-8">
             <div className="w-[90%] mx-auto">
               <h3 className="text-[32px] tracking-[-1px] font-medium text-black mb-4 m-0 leading-none">Built for early careers</h3>
-              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify">
+              <p className="text-[17px] tracking-[-0.5px] font-normal text-black leading-[1.2] m-0 text-justify max-w-[450px]">
                 Landing your first or second job is the hardest part. Referrd is designed specifically for students and early career professionals who have the skills but not the network, and deserve a fair shot anyway.
               </p>
             </div>
@@ -234,6 +228,30 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── GET STARTED SECTION ── */}
+      <section className="w-full flex flex-col items-center justify-center py-28 px-6 bg-black/90">
+        <h2 className="text-[10vw] sm:text-[7vw] mb-5 max-w-none md:text-[5vw] xl:text-[64px] font-medium text-white leading-[1.1] tracking-[-2px] text-center mb-6 max-w-4xl">
+          Your referral is one click away.
+        </h2>
+        <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#b3b3b3] text-center mb-10 max-w-[630px] tracking-[-0.3px]">
+          Join thousands of candidates and employees already using Referrd. Free to start, no credit card needed.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <Link
+            to="/signup"
+            className="flex items-center gap-2 bg-[#f9f9f9] text-black px-8 py-3.5 rounded-full text-[16px] font-medium hover:scale-105 transition-all duration-300"
+          >
+            Get referred <span className="font-normal text-[18px] leading-none mb-[2px]">→</span>
+          </Link>
+          <Link
+            to="/employee-signup"
+            className="flex items-center gap-2 bg-transparent text-white px-8 py-3.5 rounded-full text-[16px] border border-[#444] font-medium hover:bg-[#333] transition-all duration-300"
+          >
+            Give referrals <span className="font-normal text-[18px] leading-none mb-[2px]">→</span>
+          </Link>
+        </div>
+      </section>
+
       <footer className="w-full flex flex-col pt-16 mt-20">
         <div className="w-full px-6 md:px-12 lg:px-16 mb-12">
           {/* Top border line */}
@@ -244,6 +262,10 @@ export default function App() {
               <h2 className="text-[18vw] xl:text-[250px] leading-[0.8] tracking-[min(-0.5vw,-4px)] mt-5 font-medium text-black m-0">
                 Referrd.
               </h2>
+
+              <p className="text-[14px] mt-4 text-black tracking-[-0.3px]">
+                &copy; 2026 Referrd. All rights reserved. Made by Ajay Kumar.
+              </p>
             </div>
 
             {/* Right side Links */}
@@ -253,7 +275,20 @@ export default function App() {
                 <h4 className="text-[18px] font-medium tracking-[-0.5px] text-black mb-1 m-0">Product</h4>
                 <Link to="/jobs" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Job openings</Link>
                 <Link to="/pricing" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">Pricing</Link>
-                <a href="/#about" className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline">About</a>
+                <a
+                  href="/#about"
+                  onClick={(e) => {
+                    const el = document.getElementById('about');
+                    if (el) {
+                      e.preventDefault();
+                      el.scrollIntoView({ behavior: 'smooth' });
+                      window.history.pushState(null, '', '/#about');
+                    }
+                  }}
+                  className="text-[15px] tracking-[-0.5px] text-black/80 hover:text-black no-underline"
+                >
+                  About
+                </a>
               </div>
 
               {/* Account Column */}
@@ -274,9 +309,6 @@ export default function App() {
 
           </div>
         </div>
-
-        {/* Bottom Dark Bar */}
-        <div className="w-full h-12 bg-[#1a1a1a]"></div>
       </footer>
     </div>
   );

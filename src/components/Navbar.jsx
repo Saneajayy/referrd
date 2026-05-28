@@ -77,6 +77,15 @@ export default function Navbar() {
             <a
               key={label}
               href={href}
+              onClick={(e) => {
+                const targetId = href.replace('/#', '');
+                const elem = document.getElementById(targetId);
+                if (elem) {
+                  e.preventDefault();
+                  elem.scrollIntoView({ behavior: 'smooth' });
+                  window.history.pushState(null, '', href);
+                }
+              }}
               className="text-[18px] tracking-[-0.5px] no-underline text-black font-normal transition-opacity hover:opacity-50"
             >
               {label}

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
-
+import splitscreenImg from '../assets/splitscreen.jpg';
 // ── OTP Input sub-component ───────────────────────────────────────────────────
 function OTPInput({ value, onChange, disabled }) {
   const inputs = useRef([]);
@@ -265,16 +265,26 @@ export default function Signup() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
-
-      {/* Logo */}
-      <div className="fixed top-4 left-4 z-20 cursor-pointer">
-        <Link to="/">
-          <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
-        </Link>
+    <div className="flex min-h-screen bg-white">
+      {/* Left side: Split Screen Image */}
+      <div className="hidden lg:block lg:w-1/2 relative">
+        <img src={splitscreenImg} alt="Split screen" className="w-full h-full object-cover" />
+        <div className="absolute top-8 left-8 z-20 cursor-pointer">
+          <Link to="/">
+            <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
+          </Link>
+        </div>
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
+      {/* Right side: Form Content */}
+      <div className="w-full lg:w-1/2 relative flex flex-col items-center justify-center px-4 py-12">
+        {/* Logo for mobile */}
+        <div className="lg:hidden absolute top-4 left-4 z-20 cursor-pointer">
+          <Link to="/">
+            <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
+          </Link>
+        </div>
+
         {step === STEPS.FORM && renderForm()}
         {step === STEPS.OTP && renderOTP()}
         {step === STEPS.DONE && renderDone()}
