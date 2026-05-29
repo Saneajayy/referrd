@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import logoImg from '../assets/logo.png';
 
 /* ── tiny helpers ────────────────────────────────────────────────────────── */
@@ -45,20 +46,7 @@ function Loading() {
   );
 }
 
-function TopNav({ onLogout, title = "Dashboard" }) {
-  return (
-    <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', height: 64 }}>
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-        <img src={logoImg} alt="Referr'd" style={{ width: 44, height: 44, objectFit: 'contain' }} />
-      </Link>
-      <span style={{ fontSize: 15, color: '#9ca3af', letterSpacing: '-0.3px' }}>{title}</span>
-      <button onClick={onLogout} style={{ fontSize: 14, color: '#6b7280', background: 'none', border: '1px solid #e5e7eb', borderRadius: 20, padding: '6px 16px', cursor: 'pointer', transition: 'color .2s' }}
-        onMouseEnter={e => e.currentTarget.style.color = '#000'} onMouseLeave={e => e.currentTarget.style.color = '#6b7280'}>
-        Log out
-      </button>
-    </header>
-  );
-}
+
 
 /* ── Progress tracker ────────────────────────────────────────────────────── */
 function ProgressBar({ status }) {
@@ -329,7 +317,7 @@ function CandidateDashboard({ user, onLogout }) {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9f9f9' }}>
-      <TopNav onLogout={onLogout} />
+      <Navbar />
       <main style={{ paddingTop: 88, paddingBottom: 60, padding: '88px 24px 60px', maxWidth: 780, margin: '0 auto' }}>
         
         {/* Profile Card */}
@@ -441,7 +429,7 @@ function EmployeeDashboard({ user, onLogout }) {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9f9f9' }}>
-      <TopNav onLogout={onLogout} title="Employee Portal" />
+      <Navbar />
       <main style={{ paddingTop: 88, paddingBottom: 60, padding: '88px 24px 60px', maxWidth: 780, margin: '0 auto' }}>
         
         <div style={{ background: '#fff', border: '2px solid #000', borderRadius: 28, padding: '40px 32px', boxShadow: '6px 8px 0 #000', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 28 }}>

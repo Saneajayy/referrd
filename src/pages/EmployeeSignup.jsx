@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
+import loginSignupImg from '../assets/loginsignup.jpg';
 import { COMPANIES } from '../data/companies.js';
 
 // ── OTP Input sub-component ───────────────────────────────────────────────────
@@ -54,7 +55,7 @@ function OTPInput({ value, onChange, disabled }) {
           onChange={(e) => handleInput(e, idx)}
           onKeyDown={(e) => handleKey(e, idx)}
           disabled={disabled}
-          className="w-12 h-14 text-center text-[22px] font-medium rounded-xl border border-gray-300 bg-white text-black outline-none focus:border-black transition-colors disabled:opacity-40"
+          className="w-12 h-14 text-center text-[22px] font-medium rounded-lg border border-black bg-white text-black outline-none focus:ring-1 focus:ring-black transition-colors disabled:opacity-40"
         />
       ))}
     </div>
@@ -226,7 +227,7 @@ export default function EmployeeSignup() {
         <button
           type="button"
           onClick={() => setCompanyOpen((v) => !v)}
-          className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-left flex items-center justify-between outline-none focus:border-black transition-colors"
+          className="w-full px-5 py-3.5 rounded-lg border border-black bg-white text-[16px] text-left flex items-center justify-between outline-none focus:ring-1 focus:ring-black transition-colors"
         >
           <span className={form.company ? 'text-black' : 'text-gray-400'}>
             {form.company ? form.company.name : 'Choose your company'}
@@ -273,7 +274,7 @@ export default function EmployeeSignup() {
           onChange={handleChange}
           placeholder="Enter your work email"
           required
-          className="w-full px-5 py-3.5 pr-36 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
+          className="w-full px-5 py-3.5 pr-36 rounded-lg border border-black bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:ring-1 focus:ring-black transition-colors"
         />
         {form.company && (
           <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[13px] text-gray-400 pointer-events-none">
@@ -286,21 +287,21 @@ export default function EmployeeSignup() {
       <input
         type="text" name="name" value={form.name} onChange={handleChange}
         placeholder="Enter your full name" required
-        className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
+        className="w-full px-5 py-3.5 rounded-lg border border-black bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:ring-1 focus:ring-black transition-colors"
       />
 
       {/* Designation */}
       <input
         type="text" name="designation" value={form.designation} onChange={handleChange}
         placeholder="Enter your designation"
-        className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
+        className="w-full px-5 py-3.5 rounded-lg border border-black bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:ring-1 focus:ring-black transition-colors"
       />
 
       {/* LinkedIn */}
       <input
         type="url" name="linkedin" value={form.linkedin} onChange={handleChange}
         placeholder="Enter your LinkedIn URL"
-        className="w-full px-5 py-3.5 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
+        className="w-full px-5 py-3.5 rounded-lg border border-black bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:ring-1 focus:ring-black transition-colors"
       />
 
       {/* Password */}
@@ -308,15 +309,15 @@ export default function EmployeeSignup() {
         <input
           type={showPassword ? 'text' : 'password'} name="password" value={form.password}
           onChange={handleChange} placeholder="Enter your password" required
-          className="w-full px-5 py-3.5 pr-12 rounded-full border border-gray-300 bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:border-black transition-colors"
+          className="w-full px-5 py-3.5 pr-12 rounded-lg border border-black bg-white text-[16px] text-black placeholder-gray-400 outline-none focus:ring-1 focus:ring-black transition-colors"
         />
         <button type="button" onClick={() => setShowPassword((v) => !v)}
           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
           aria-label="Toggle password visibility">
           {showPassword ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
           )}
         </button>
       </div>
@@ -325,7 +326,7 @@ export default function EmployeeSignup() {
 
       <button
         type="submit" disabled={loading}
-        className="mt-4 w-full bg-white text-black border-2 border-black py-3 text-[22px] font-normal rounded-full cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="mt-4 w-full bg-black text-white py-3.5 text-[18px] font-medium rounded-lg cursor-pointer transition-all duration-200 hover:bg-black/90 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? 'Sending OTP…' : 'Signup'}
       </button>
@@ -367,7 +368,7 @@ export default function EmployeeSignup() {
 
       <button
         type="submit" disabled={loading || otp.length < 6}
-        className="w-full bg-white text-black border-2 border-black py-3 text-[22px] font-normal rounded-full cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-black text-white py-3.5 text-[18px] font-medium rounded-lg cursor-pointer transition-all duration-200 hover:bg-black/90 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? 'Verifying…' : 'Verify'}
       </button>
@@ -388,16 +389,32 @@ export default function EmployeeSignup() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
-
-      {/* Logo */}
-      <div className="fixed top-4 left-4 z-20 cursor-pointer">
-        <Link to="/">
-          <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
-        </Link>
+    <div className="flex min-h-screen bg-white">
+      {/* Left side: Split Screen Image */}
+      <div className="hidden lg:block lg:w-1/2 relative">
+        <img src={loginSignupImg} alt="Split screen" className="w-full h-full object-cover" />
+        <div className="absolute top-8 left-8 z-20 cursor-pointer">
+          <Link to="/">
+            <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
+          </Link>
+        </div>
+        {/* Bottom Right Text Overlay */}
+        <div className="absolute bottom-10 right-12 z-20 pointer-events-none select-none">
+          <h1 className="text-[80px] xl:text-[110px] font-medium text-white leading-[0.8] tracking-[-5px]">
+            Referrd.
+          </h1>
+        </div>
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
+      {/* Right side: Form Content */}
+      <div className="w-full lg:w-1/2 relative flex flex-col items-center justify-center px-4 py-12">
+        {/* Logo for mobile */}
+        <div className="lg:hidden absolute top-4 left-4 z-20 cursor-pointer">
+          <Link to="/">
+            <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
+          </Link>
+        </div>
+
         {step === STEPS.FORM && renderForm()}
         {step === STEPS.OTP && renderOTP()}
         {step === STEPS.DONE && renderDone()}

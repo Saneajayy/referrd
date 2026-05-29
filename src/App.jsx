@@ -228,29 +228,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── GET STARTED SECTION ── */}
-      <section className="w-full flex flex-col items-center justify-center py-28 px-6 bg-black/90">
-        <h2 className="text-[10vw] sm:text-[7vw] mb-5 max-w-none md:text-[5vw] xl:text-[64px] font-medium text-white leading-[1.1] tracking-[-2px] text-center mb-6 max-w-4xl">
-          Your referral is one click away.
-        </h2>
-        <p className="text-[17px] md:text-[19px] leading-[1.5] text-[#b3b3b3] text-center mb-10 max-w-[630px] tracking-[-0.3px]">
-          Join thousands of candidates and employees already using Referrd. Free to start, no credit card needed.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Link
-            to="/signup"
-            className="flex items-center gap-2 bg-[#f9f9f9] text-black px-8 py-3.5 rounded-full text-[16px] font-medium hover:scale-105 transition-all duration-300"
-          >
-            Get referred <span className="font-normal text-[18px] leading-none mb-[2px]">→</span>
-          </Link>
-          <Link
-            to="/employee-signup"
-            className="flex items-center gap-2 bg-transparent text-white px-8 py-3.5 rounded-full text-[16px] border border-[#444] font-medium hover:bg-[#333] transition-all duration-300"
-          >
-            Give referrals <span className="font-normal text-[18px] leading-none mb-[2px]">→</span>
-          </Link>
-        </div>
-      </section>
+
 
       <footer className="w-full flex flex-col pt-16 mt-20">
         <div className="w-full px-6 md:px-12 lg:px-16 mb-12">
