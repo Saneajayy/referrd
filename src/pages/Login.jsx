@@ -25,7 +25,7 @@ export default function Login() {
       if (!res.ok) throw new Error(data.message || 'Login failed');
       // TODO: store token & redirect to dashboard
       localStorage.setItem('token', data.token);
-      window.location.href = '/dashboard';
+      window.location.href = '/jobs';
     } catch (err) {
       setError(err.message);
     } finally {

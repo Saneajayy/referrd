@@ -3,9 +3,15 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import pool from '../db.js';
+import multer from 'multer';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse-new');
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET;
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 // In-memory OTP store for regular users
 const otpStore = new Map();
@@ -21,7 +27,7 @@ function makeToken(user) {
 }
 
 function sanitize(user) {
-  const { password, ...safe } = user;
+  const { password, resume_text, ...safe } = user;
   return safe;
 }
 
@@ -225,6 +231,37 @@ router.patch('/change-password', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('[change-password]', err);
     return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── POST /api/auth/resume ─────────────────────────────────────────────────────
+router.post('/resume', requireAuth, upload.single('resume'), async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ message: 'No resume file uploaded.' });
+
+    let resumeText = '';
+    try {
+      const parsed = await pdfParse(file.buffer);
+      resumeText = parsed.text?.trim();
+    } catch (err) {
+      console.error('[auth/resume] pdf-parse error:', err);
+      return res.status(422).json({ message: 'Could not parse the PDF. Please upload a valid resume.' });
+    }
+
+    if (!resumeText || resumeText.length < 50) {
+      return res.status(422).json({ message: 'Resume appears to be empty or unreadable. Please upload a text-based PDF.' });
+    }
+
+    await pool.query(
+      'UPDATE users SET resume_text = $1, resume_filename = $2 WHERE id = $3',
+      [resumeText, file.originalname, req.user.id]
+    );
+
+    res.json({ message: 'Resume uploaded successfully.', resume_filename: file.originalname });
+  } catch (err) {
+    console.error('[auth/resume] error:', err);
+    res.status(500).json({ message: 'Server error during resume upload.' });
   }
 });
 

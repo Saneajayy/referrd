@@ -61,12 +61,14 @@ export default function Navbar() {
 
       {/* Nav links — absolutely centered */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center gap-14 items-center max-md:hidden w-max">
-        <Link
-          to="/"
-          className="text-[18px] tracking-[-0.5px] no-underline text-black font-normal relative after:absolute after:bottom-[0px] after:left-0 after:h-[1.5px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
-        >
-          Home
-        </Link>
+        {!user && (
+          <Link
+            to="/"
+            className="text-[18px] tracking-[-0.5px] no-underline text-black font-normal relative after:absolute after:bottom-[0px] after:left-0 after:h-[1.5px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
+          >
+            Home
+          </Link>
+        )}
         <a
           href="#"
           onClick={handleDashboard}
@@ -77,7 +79,7 @@ export default function Navbar() {
         {[
           { label: 'Job openings', href: '/jobs' },
           { label: 'Pricing', href: '/pricing' },
-          { label: 'About', href: '/#about' },
+          ...(!user ? [{ label: 'About', href: '/#about' }] : []),
         ].map(({ label, href }) => (
           href.startsWith('/#') ? (
             <a

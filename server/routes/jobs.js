@@ -3,6 +3,10 @@ import multer from 'multer';
 import { createRequire } from 'module';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { JOBS } from '../../src/data/jobs.js';
+import jwt from 'jsonwebtoken';
+import pool from '../db.js';
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse-new');
@@ -21,20 +25,38 @@ router.post('/match-resume', upload.single('resume'), async (req, res) => {
     const { jobId } = req.body;
     const file = req.file;
 
-    if (!file) return res.status(400).json({ message: 'No resume file uploaded.' });
     if (!jobId)  return res.status(400).json({ message: 'jobId is required.' });
 
     const job = JOBS.find(j => j.id === jobId);
     if (!job) return res.status(404).json({ message: 'Job not found.' });
 
-    // ── Parse resume text from PDF ───────────────────────────────────────────
     let resumeText = '';
-    try {
-      const parsed = await pdfParse(file.buffer);
-      resumeText = parsed.text?.trim();
-    } catch (err) {
-      console.error('[jobs.js] pdf-parse error:', err);
-      return res.status(422).json({ message: 'Could not parse the PDF. Please upload a valid resume.' });
+
+    if (file) {
+      // ── Parse resume text from PDF ───────────────────────────────────────────
+      try {
+        const parsed = await pdfParse(file.buffer);
+        resumeText = parsed.text?.trim();
+      } catch (err) {
+        console.error('[jobs.js] pdf-parse error:', err);
+        return res.status(422).json({ message: 'Could not parse the PDF. Please upload a valid resume.' });
+      }
+    } else {
+      // Look up user from token
+      const authHeader = req.headers.authorization;
+      if (!authHeader?.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No resume file provided and no active session.' });
+      }
+      try {
+        const payload = jwt.verify(authHeader.slice(7), JWT_SECRET);
+        const result = await pool.query('SELECT resume_text FROM users WHERE id = $1', [payload.id]);
+        if (result.rows.length === 0 || !result.rows[0].resume_text) {
+          return res.status(404).json({ message: 'No saved resume found in your profile.' });
+        }
+        resumeText = result.rows[0].resume_text;
+      } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token.' });
+      }
     }
 
     if (!resumeText || resumeText.length < 50) {

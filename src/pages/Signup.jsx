@@ -158,7 +158,7 @@ export default function Signup() {
 
       localStorage.setItem('token', signupData.token);
       setStep(STEPS.DONE);
-      setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+      setTimeout(() => { window.location.href = '/jobs'; }, 1500);
     } catch (err) {
       setError(err.message);
     } finally {
