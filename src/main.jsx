@@ -13,6 +13,7 @@ import JobOpenings from './pages/JobOpenings.jsx'
 import JobDetail from './pages/JobDetail.jsx'
 import ResumeMatch from './pages/ResumeMatch.jsx'
 import ManageAccount from './pages/ManageAccount.jsx'
+import Profile from './pages/Profile.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/jobs/:id/apply" element={<ResumeMatch />} />
         <Route path="/manage-account" element={<ManageAccount />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

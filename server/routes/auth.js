@@ -234,6 +234,28 @@ router.patch('/change-password', requireAuth, async (req, res) => {
   }
 });
 
+// ── PUT /api/auth/profile ────────────────────────────────────────────────────
+router.put('/profile', requireAuth, async (req, res) => {
+  const { name, college, linkedin } = req.body;
+  if (!name) return res.status(400).json({ message: 'Name is required.' });
+
+  try {
+    const result = await pool.query(
+      'UPDATE users SET name = $1, college = $2, linkedin = $3 WHERE id = $4 RETURNING *',
+      [name.trim(), college?.trim() || null, linkedin?.trim() || null, req.user.id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found.' });
+
+    const user = result.rows[0];
+    const token = makeToken(user);
+
+    return res.json({ message: 'Profile updated successfully.', user: sanitize(user), token });
+  } catch (err) {
+    console.error('[update-profile]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
 // ── POST /api/auth/resume ─────────────────────────────────────────────────────
 router.post('/resume', requireAuth, upload.single('resume'), async (req, res) => {
   try {

@@ -222,11 +222,11 @@ export default function JobOpenings() {
   };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen overflow-hidden">
       <Navbar />
 
       {/* Two-panel layout below navbar */}
-      <div className="flex h-[calc(100vh-64px)] mt-16 w-full">
+      <div className="flex w-full fixed top-16 bottom-0 left-0 right-0 overflow-hidden">
 
         {/* ── LEFT PANEL: Job list ─────────────────────────────────────────── */}
         <div className="w-[360px] shrink-0 flex flex-col border-r border-black bg-white overflow-hidden max-md:w-full">
@@ -375,7 +375,10 @@ export default function JobOpenings() {
                   <h3 className="text-[28px] tracking-[-1px] font-medium text-black m-0 leading-none">Apply or Save</h3>
                   <div className="flex gap-4 mt-2 flex-wrap">
                     <button
-                      onClick={() => setIsApplying(true)}
+                      onClick={() => {
+                        if (!localStorage.getItem('token')) navigate('/login');
+                        else setIsApplying(true);
+                      }}
                       className="tracking-[-1px] text-white bg-[#113824] border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] cursor-pointer"
                     >
                       Apply with referral ✦
@@ -445,7 +448,7 @@ export default function JobOpenings() {
         </div>
 
         {/* ── RIGHT PANEL: Sticky Column (Referrers or Apply Flow) ───────────────── */}
-        <div className="w-[360px] shrink-0 flex flex-col border-l border-black bg-gray-50 overflow-y-auto max-lg:hidden">
+        <div className="w-[360px] shrink-0 flex flex-col border-l border-black bg-white overflow-y-auto max-lg:hidden">
           {job ? (
             <div className="p-8">
               {hasApplied ? (
@@ -509,7 +512,10 @@ export default function JobOpenings() {
                       <div className="bg-white border-2 border-black rounded-2xl p-6 shadow-[4px_5px_0px_0px_#000]">
                         <p className="text-[15px] font-medium tracking-[-0.5px] text-black mb-4 leading-tight">Apply with referral to view and request these referrers.</p>
                         <button
-                          onClick={() => setIsApplying(true)}
+                          onClick={() => {
+                            if (!localStorage.getItem('token')) navigate('/login');
+                            else setIsApplying(true);
+                          }}
                           className="w-full bg-[#113824] text-white text-[15px] py-2.5 rounded-lg border border-black shadow-[2px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer"
                         >
                           Unlock Referrers

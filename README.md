@@ -2,6 +2,8 @@
 
 > **referrd.in** — A structured, AI-filtered referral platform connecting job seekers with employees who actually want to refer them.
 
+![Referrd Screenshot](./src/assets/readmess.png)
+
 ---
 
 ## The Problem
