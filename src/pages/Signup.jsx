@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/newlogo.png';
 import loginSignupImg from '../assets/loginsignup.jpg';
 // ── OTP Input sub-component ───────────────────────────────────────────────────
 function OTPInput({ value, onChange, disabled }) {
@@ -225,7 +225,7 @@ export default function Signup() {
 
       <div className="flex items-center gap-3 text-[14px]">
         <button type="button" onClick={handleResendOTP} disabled={otpTimer > 0 || loading}
-          className={`transition-colors ${otpTimer > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-500 hover:underline cursor-pointer'}`}>
+          className={`transition-colors ${otpTimer > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-500 hover:underline cursor-pointer'} hover:bg-gray-50`}>
           {otpTimer > 0 ? `Resend in ${otpTimer}s` : 'Resend code ?'}
         </button>
         <span className="text-gray-300">·</span>
@@ -254,7 +254,7 @@ export default function Signup() {
   // ── DONE ─────────────────────────────────────────────────────────────────────
   const renderDone = () => (
     <div className="flex flex-col items-center gap-4 text-center">
-      <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center">
+      <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center hover:bg-gray-900">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
           <polyline points="20 6 9 17 4 12" />
         </svg>
@@ -269,7 +269,7 @@ export default function Signup() {
       {/* Left side: Split Screen Image */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <img src={loginSignupImg} alt="Split screen" className="w-full h-full object-cover" />
-        <div className="absolute top-8 left-8 z-20 cursor-pointer">
+        <div className="absolute top-8 left-8 z-20 cursor-pointer hover:bg-gray-50">
           <Link to="/">
             <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
           </Link>
@@ -285,7 +285,7 @@ export default function Signup() {
       {/* Right side: Form Content */}
       <div className="w-full lg:w-1/2 relative flex flex-col items-center justify-center px-4 py-12">
         {/* Logo for mobile */}
-        <div className="lg:hidden absolute top-4 left-4 z-20 cursor-pointer">
+        <div className="lg:hidden absolute top-4 left-4 z-20 cursor-pointer hover:bg-gray-50">
           <Link to="/">
             <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
           </Link>

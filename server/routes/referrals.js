@@ -188,7 +188,7 @@ router.patch('/:id/action', requireAuth, async (req, res) => {
 router.get('/referrer/:id', requireAuth, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT id, name, company, role, created_at FROM users WHERE id = $1`,
+      `SELECT id, name, company, role, linkedin, created_at FROM users WHERE id = $1`,
       [req.params.id]
     );
     if (!rows.length)

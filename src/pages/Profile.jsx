@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/newlogo.png';
 
 function authFetch(url, opts = {}) {
   const token = localStorage.getItem('token');
@@ -26,7 +26,7 @@ function Input({ label, value, onChange, placeholder, disabled, type = 'text' })
         onChange={onChange}
         disabled={disabled}
         placeholder={placeholder}
-        className={`w-full p-3 rounded-xl border-[1px] border-black text-[15px] outline-none font-sans transition-shadow ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white text-black focus:shadow-[2px_3px_0px_0px_#000]'}`}
+        className={`w-full p-3 rounded-xl border-[1px] border-black text-[15px] outline-none font-sans ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white text-black'}`}
       />
     </div>
   );
@@ -106,12 +106,12 @@ export default function Profile() {
   return (
     <div className="bg-white min-h-screen">
       {/* ── Top nav ── */}
-      <header className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md border-b border-black flex items-center justify-between px-6 h-16 shadow-[0_2px_0px_0px_#000]">
+      <header className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md border-b border-black flex items-center justify-between px-6 h-16">
         <Link to="/" className="flex items-center no-underline">
           <img src={logoImg} alt="Referr'd" className="w-[44px] h-[44px] object-contain" />
         </Link>
         <span className="text-[15px] text-black font-medium tracking-[-0.3px]">Edit Profile</span>
-        <Link to={user.role === 'referrer' ? '/employee-dashboard' : '/dashboard'} className="text-[14px] text-black font-medium no-underline border border-black rounded-full px-4 py-1.5 hover:bg-gray-100 shadow-[2px_2px_0px_0px_#000] hover:-translate-y-[1px] hover:shadow-[3px_3px_0px_0px_#000] transition-all">
+        <Link to={user.role === 'referrer' ? '/employee-dashboard' : '/dashboard'} className="text-[14px] text-black font-medium no-underline border border-black rounded-full px-4 py-1.5 hover:bg-gray-100 hover:-translate-y-[1px] transition-all">
           ← Back
         </Link>
       </header>
@@ -119,7 +119,7 @@ export default function Profile() {
       <main className="pt-28 pb-20 px-6 max-w-[500px] mx-auto">
         <h1 className="text-[32px] font-medium tracking-[-1px] text-black mb-6 leading-none">Your Profile</h1>
         
-        <div className="bg-white border-[1px] border-black rounded-2xl p-8 shadow-[4px_5px_0px_0px_#000]">
+        <div className="bg-white border-[1px] border-black rounded-2xl p-8">
           <form onSubmit={handleSave}>
             <Input 
               label="Full Name" 
@@ -157,7 +157,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={saving}
-              className={`mt-4 w-full bg-[#113824] text-white border-[1px] border-black rounded-xl py-3 px-4 text-[16px] font-medium shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer ${saving ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000]'}`}
+              className={`mt-4 w-full bg-[#113824] text-white border-[1px] border-black rounded-xl py-3 px-4 text-[16px] font-medium transition-all cursor-pointer ${saving ? 'opacity-70 cursor-not-allowed' : ''} hover:opacity-90`}
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>

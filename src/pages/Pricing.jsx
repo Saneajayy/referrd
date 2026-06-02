@@ -57,7 +57,7 @@ export default function Pricing() {
         <div className="grid grid-cols-2 gap-6 w-full max-md:grid-cols-1 max-w-[920px] mx-auto min-h-0">
 
           {/* Free card */}
-          <div className="bg-white border-[1px] border-black rounded-2xl p-8 shadow-[4px_5px_0px_0px_#000] flex flex-col max-md:p-6 min-h-0">
+          <div className="bg-white border-[1px] border-black rounded-2xl p-8 flex flex-col max-md:p-6 min-h-0">
             <div className="mb-6 shrink-0">
               {/* Price + badge row */}
               <div className="flex items-start justify-between mb-1">
@@ -84,7 +84,7 @@ export default function Pricing() {
             {!user ? (
               <Link
                 to="/signup"
-                className="w-full bg-white text-black border-[1px] border-black py-3 text-[16px] font-medium rounded-xl cursor-pointer shadow-[3px_4px_0px_0px_#000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000] no-underline tracking-[-0.5px]"
+                className="w-full bg-white text-black border-[1px] border-black py-3 text-[16px] font-medium rounded-xl cursor-pointer transition-all duration-200 inline-flex justify-center items-center no-underline tracking-[-0.5px] hover:bg-gray-50"
               >
                 Get started free
               </Link>
@@ -100,7 +100,7 @@ export default function Pricing() {
           </div>
 
           {/* Paid card */}
-          <div className="bg-white border-[1px] border-black rounded-2xl p-8 shadow-[4px_5px_0px_0px_#000] flex flex-col max-md:p-6 min-h-0">
+          <div className="bg-white border-[1px] border-black rounded-2xl p-8 flex flex-col max-md:p-6 min-h-0">
             <div className="mb-6 shrink-0">
               {/* Price + badge row */}
               <div className="flex items-start justify-between mb-1">
@@ -108,7 +108,7 @@ export default function Pricing() {
                   <span className="text-[52px] font-medium tracking-[-2px] leading-none text-black">$9</span>
                   <span className="text-[16px] text-gray-500 mb-2 font-medium tracking-[-0.3px]">/month</span>
                 </div>
-                <span className="inline-block text-[11px] font-bold tracking-[0.1em] uppercase text-white bg-black border border-black rounded-[6px] px-2 py-0.5 mt-1">
+                <span className="inline-block text-[11px] font-bold tracking-[0.1em] uppercase text-white bg-black border border-black rounded-[6px] px-2 py-0.5 mt-1 hover:bg-gray-900">
                   Pro
                 </span>
               </div>
@@ -127,7 +127,7 @@ export default function Pricing() {
             {!user ? (
               <Link
                 to="/signup"
-                className="w-full bg-white text-black border-[1px] border-black py-3 text-[16px] font-medium rounded-xl cursor-pointer shadow-[3px_4px_0px_0px_#000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000] no-underline tracking-[-0.5px]"
+                className="w-full bg-white text-black border-[1px] border-black py-3 text-[16px] font-medium rounded-xl cursor-pointer transition-all duration-200 inline-flex justify-center items-center no-underline tracking-[-0.5px] hover:bg-gray-50"
               >
                 Upgrade to Pro →
               </Link>
@@ -136,7 +136,7 @@ export default function Pricing() {
                 Currently Active
               </button>
             ) : (
-              <button onClick={() => alert('Billing portal not integrated yet.')} className="w-full bg-white text-black border-[1px] border-black py-3 text-[16px] font-medium rounded-xl cursor-pointer shadow-[3px_4px_0px_0px_#000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000] no-underline tracking-[-0.5px]">
+              <button onClick={() => alert('Billing portal not integrated yet.')} className="w-full bg-white text-black border-[1px] border-black py-3 text-[16px] font-medium rounded-xl cursor-pointer transition-all duration-200 inline-flex justify-center items-center no-underline tracking-[-0.5px] hover:bg-gray-50">
                 Upgrade to Pro →
               </button>
             )}

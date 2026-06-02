@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/newlogo.png';
 
 function authFetch(url, opts = {}) {
   const token = localStorage.getItem('token');

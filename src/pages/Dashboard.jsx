@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/newlogo.png';
 import googleImg from '../assets/GOOG.png';
 import microsoftImg from '../assets/Microsoft_logo.svg.png';
 import appleImg from '../assets/AAPL.png';
@@ -94,15 +94,15 @@ function ProgressBar({ status }) {
           return (
             <div key={s} className="flex-1 flex flex-col items-center">
               <div className="flex items-center w-full">
-                {i > 0 && <div className={`flex-1 h-[2px] transition-colors duration-300 ${done || active ? 'bg-black' : 'bg-gray-200'}`} />}
-                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300 ${done || active ? 'border-black' : 'border-gray-200'} ${done ? 'bg-black' : 'bg-white'}`}>
+                {i > 0 && <div className={`flex-1 h-[2px] transition-colors duration-300 ${done || active ? 'bg-black' : 'bg-gray-200'} hover:bg-gray-900`} />}
+                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300 ${done || active ? 'border-black' : 'border-gray-200'} ${done ? 'bg-black' : 'bg-white'} hover:bg-gray-50`}>
                   {done ? (
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M5 13l4 4L19 7" /></svg>
                   ) : (
-                    <div className={`w-2 h-2 rounded-full ${active ? 'bg-black' : 'bg-gray-200'}`} />
+                    <div className={`w-2 h-2 rounded-full ${active ? 'bg-black' : 'bg-gray-200'} hover:bg-gray-900`} />
                   )}
                 </div>
-                {i < steps.length - 1 && <div className={`flex-1 h-[2px] transition-colors duration-300 ${done && cfg.step > i ? 'bg-black' : 'bg-gray-200'}`} />}
+                {i < steps.length - 1 && <div className={`flex-1 h-[2px] transition-colors duration-300 ${done && cfg.step > i ? 'bg-black' : 'bg-gray-200'} hover:bg-gray-900`} />}
               </div>
               <span className={`text-[11px] mt-2 ${active || done ? 'text-black font-semibold' : 'text-gray-400 font-normal'}`}>{s}</span>
             </div>
@@ -134,7 +134,7 @@ function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing, onVerify,
 
   return (
     <div onClick={onClose} className="fixed inset-0 z-[200] bg-black/40 flex items-end sm:items-center justify-center sm:p-6">
-      <div onClick={e => e.stopPropagation()} className="w-full sm:max-w-[600px] bg-white sm:rounded-3xl sm:border-[1px] sm:border-black rounded-t-3xl px-8 pt-8 pb-10 sm:shadow-[6px_8px_0px_0px_#000] animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] max-h-[90vh] overflow-y-auto">
+      <div onClick={e => e.stopPropagation()} className="w-full sm:max-w-[600px] bg-white sm:rounded-3xl sm:border-[1px] sm:border-gray-200 rounded-t-3xl px-8 pt-8 pb-10 sm:shadow-2xl animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] max-h-[90vh] overflow-y-auto">
         <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
 
         {/* Header */}
@@ -143,7 +143,7 @@ function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing, onVerify,
             <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-400 mb-1">{req.company}</p>
             <h2 className="text-[28px] font-medium tracking-[-1px] text-black m-0">{req.job_title}</h2>
           </div>
-          <button onClick={onClose} className="text-[22px] text-gray-400 hover:text-black p-1 leading-none cursor-pointer">✕</button>
+          <button onClick={onClose} className="text-[22px] text-gray-400 hover:text-black p-1 leading-none cursor-pointer hover:bg-gray-50">✕</button>
         </div>
 
         <div className="flex items-center gap-2 mb-2">
@@ -155,26 +155,36 @@ function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing, onVerify,
         <ProgressBar status={req.status} />
 
         {req.note && (
-          <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 mb-6">
-            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-400 mb-2">Note from referrer</p>
-            <p className="text-[14px] text-gray-700 leading-relaxed m-0">{req.note}</p>
-          </div>
+          <>
+            <h3 className="text-[14px] font-medium tracking-[-0.5px] text-black mb-2 px-1">Note from referrer</h3>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 mb-6">
+              <p className="text-[14px] text-gray-700 leading-relaxed m-0">{req.note}</p>
+            </div>
+          </>
         )}
 
-        <div className="border-[1px] border-black rounded-2xl p-5 mb-6">
-          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-400 mb-3">
-            {req.status === 'declined' ? 'Declined by' : req.status === 'referred' ? 'Referred by' : 'Referrer'}
-          </p>
+        <h3 className="text-[14px] font-medium tracking-[-0.5px] text-black mb-2 px-1">
+          {req.status === 'declined' ? 'Declined by' : req.status === 'referred' ? 'Referred by' : 'Referrer'}
+        </h3>
+        <div className="border-[1px] border-gray-200 bg-gray-50/50 rounded-xl p-5 mb-6">
           {req.referrer_id ? (
             referrer ? (
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-white text-[18px] shrink-0">
-                  {referrer.name?.[0]?.toUpperCase() ?? '?'}
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-4">
+                  <div className="w-11 h-11 rounded-full bg-white border border-gray-200 flex items-center justify-center text-black font-medium text-[16px] shrink-0 shadow-sm">
+                    {referrer.name?.[0]?.toUpperCase() ?? '?'}
+                  </div>
+                  <div>
+                    <p className="text-[16px] font-medium tracking-[-0.5px] text-black m-0">{referrer.name}</p>
+                    <p className="text-[13px] text-gray-500 m-0 tracking-[-0.3px]">{referrer.company || 'Employee'}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[16px] font-medium tracking-[-0.5px] text-black m-0">{referrer.name}</p>
-                  <p className="text-[13px] text-gray-500 m-0 tracking-[-0.3px]">{referrer.company || 'Employee'}</p>
-                </div>
+                {referrer.linkedin && (
+                  <a href={referrer.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[#0a66c2] bg-[#f3f9ff] hover:bg-[#e1f0ff] border border-[#0a66c2]/20 px-3 py-1.5 rounded-full transition-colors font-medium text-[13px] tracking-[-0.2px] no-underline shrink-0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    Connect
+                  </a>
+                )}
               </div>
             ) : (
               <div className="flex items-center gap-2">
@@ -199,7 +209,7 @@ function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing, onVerify,
           <button
             onClick={() => onWithdraw(req.id)}
             disabled={withdrawing}
-            className={`w-full py-3 rounded-xl border-[1px] border-red-500 bg-white text-red-500 text-[16px] font-medium shadow-[3px_4px_0px_0px_#ef4444] tracking-[-0.5px] transition-all cursor-pointer ${withdrawing ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#ef4444]'}`}
+            className={`w-full py-3 rounded-xl border-[1px] border-red-500 bg-white text-red-500 text-[16px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${withdrawing ? 'opacity-60 cursor-not-allowed' : ''} hover:bg-gray-50`}
           >
             {withdrawing ? 'Withdrawing…' : 'Withdraw Request'}
           </button>
@@ -212,14 +222,14 @@ function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing, onVerify,
               <button
                 onClick={() => onVerify(req.id, 'deny')}
                 disabled={verifying}
-                className={`flex-1 py-3 rounded-xl border-[1px] border-gray-400 bg-white text-gray-600 text-[15px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#9ca3af] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#9ca3af]'}`}
+                className={`flex-1 py-3 rounded-xl border-[1px] border-gray-400 bg-white text-gray-600 text-[15px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : ''} hover:bg-gray-50`}
               >
                 No, I didn't
               </button>
               <button
                 onClick={() => onVerify(req.id, 'confirm')}
                 disabled={verifying}
-                className={`flex-1 py-3 rounded-xl border-[1px] border-black bg-black text-white text-[15px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000]'}`}
+                className={`flex-1 py-3 rounded-xl border-[1px] border-black bg-black text-white text-[15px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : ''} hover:bg-gray-900`}
               >
                 Yes, referred
               </button>
@@ -237,7 +247,7 @@ function EmployeeDetailPanel({ req, onClose, onAction, processing }) {
 
   return (
     <div onClick={onClose} className="fixed inset-0 z-[200] bg-black/40 flex items-end sm:items-center justify-center sm:p-6">
-      <div onClick={e => e.stopPropagation()} className="w-full sm:max-w-[600px] bg-white sm:rounded-3xl sm:border-[1px] sm:border-black rounded-t-3xl px-8 pt-8 pb-10 sm:shadow-[6px_8px_0px_0px_#000] animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] max-h-[90vh] overflow-y-auto">
+      <div onClick={e => e.stopPropagation()} className="w-full sm:max-w-[600px] bg-white sm:rounded-3xl sm:border-[1px] sm:border-gray-200 rounded-t-3xl px-8 pt-8 pb-10 sm:shadow-2xl animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] max-h-[90vh] overflow-y-auto">
         <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
 
         <div className="flex justify-between items-start mb-4">
@@ -253,13 +263,13 @@ function EmployeeDetailPanel({ req, onClose, onAction, processing }) {
               )}
             </div>
           </div>
-          <button onClick={onClose} className="text-[22px] text-gray-400 hover:text-black p-1 leading-none cursor-pointer">✕</button>
+          <button onClick={onClose} className="text-[22px] text-gray-400 hover:text-black p-1 leading-none cursor-pointer hover:bg-gray-50">✕</button>
         </div>
 
-        <div className="border-[1px] border-black rounded-2xl p-5 mb-5">
-          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-400 mb-3">Candidate Details</p>
+        <h3 className="text-[14px] font-medium tracking-[-0.5px] text-black mb-2 px-1">Candidate Details</h3>
+        <div className="border-[1px] border-gray-200 bg-gray-50/50 rounded-xl p-4 mb-5">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-white text-[18px] shrink-0">
+            <div className="w-11 h-11 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-black font-medium text-[16px] shrink-0">
               {req.seeker_name?.[0]?.toUpperCase() ?? '?'}
             </div>
             <div>
@@ -274,21 +284,21 @@ function EmployeeDetailPanel({ req, onClose, onAction, processing }) {
           placeholder="Add an optional note for the candidate..."
           value={note}
           onChange={e => setNote(e.target.value)}
-          className="w-full p-4 rounded-xl border-[1px] border-black text-[14px] min-h-[100px] mb-6 font-sans tracking-[-0.3px] resize-none focus:outline-none focus:shadow-[2px_3px_0px_0px_#000] transition-shadow bg-white"
+          className="w-full p-4 rounded-xl border-[1px] border-black text-[14px] min-h-[100px] mb-6 font-sans tracking-[-0.3px] resize-none focus:outline-none bg-white"
         />
 
         <div className="flex gap-4">
           <button
             onClick={() => onAction(req.id, 'declined', note)}
             disabled={processing}
-            className={`flex-1 py-3 rounded-xl border-[1px] border-red-500 bg-white text-red-500 text-[16px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#ef4444] transition-all cursor-pointer ${processing ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#ef4444]'}`}
+            className={`flex-1 py-3 rounded-xl border-[1px] border-red-500 bg-white text-red-500 text-[16px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${processing ? 'opacity-60 cursor-not-allowed' : ''} hover:bg-gray-50`}
           >
             Decline
           </button>
           <button
             onClick={() => onAction(req.id, 'pending_verification', note)}
             disabled={processing}
-            className={`flex-[2] py-3 rounded-xl border-[1px] border-black bg-[#113824] text-white text-[16px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer ${processing ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000]'}`}
+            className={`flex-[2] py-3 rounded-xl border-[1px] border-black bg-[#113824] text-white text-[16px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${processing ? 'opacity-60 cursor-not-allowed' : ''} hover:opacity-90`}
           >
             {processing ? 'Processing...' : 'Refer Candidate ✦'}
           </button>
@@ -349,6 +359,15 @@ function CandidateDashboard({ user, onLogout }) {
     } finally {
       setWithdrawing(false);
     }
+  };
+
+  const handleUnsaveJob = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newSaved = savedJobIds.filter(jobId => jobId !== id);
+    setSavedJobIds(newSaved);
+    localStorage.setItem('savedJobs', JSON.stringify(newSaved));
+    window.dispatchEvent(new Event('storage'));
   };
 
   const handleVerify = async (id, action) => {
@@ -426,15 +445,15 @@ function CandidateDashboard({ user, onLogout }) {
                 <div>
                   <p className="text-[11px] font-medium tracking-[0.4px] uppercase text-gray-500 mb-3">Overview</p>
                   <div className="flex flex-col gap-2.5">
-                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 shadow-[2px_3px_0px_0px_#000] cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all">
+                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:bg-gray-50">
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">Requests sent</span>
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">{requests.length}</span>
                     </button>
-                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 shadow-[2px_3px_0px_0px_#000] cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all">
+                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:bg-gray-50">
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">Referred</span>
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">{referred}</span>
                     </button>
-                    <button onClick={() => savedRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 shadow-[2px_3px_0px_0px_#000] cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all">
+                    <button onClick={() => savedRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:bg-gray-50">
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">Saved jobs</span>
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">{savedJobsList.length}</span>
                     </button>
@@ -460,8 +479,8 @@ function CandidateDashboard({ user, onLogout }) {
                     )}
 
                     <div className="relative">
-                      <input type="file" accept=".pdf" onChange={handleResumeUpload} disabled={uploadingResume} className={`absolute inset-0 opacity-0 z-10 ${uploadingResume ? 'cursor-not-allowed' : 'cursor-pointer'}`} />
-                      <button className={`w-full bg-white text-black border-[1px] border-black rounded-lg py-2 px-4 text-[13px] font-medium tracking-[-0.5px] shadow-[2px_3px_0px_0px_#000] transition-transform ${uploadingResume ? 'opacity-80' : 'hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000]'}`}>
+                      <input type="file" accept=".pdf" onChange={handleResumeUpload} disabled={uploadingResume} className={`absolute inset-0 opacity-0 z-10 ${uploadingResume ? 'cursor-not-allowed' : 'cursor-pointer'} hover:bg-gray-50`} />
+                      <button className={`w-full bg-white text-black border-[1px] border-black rounded-lg py-2 px-4 text-[13px] font-medium tracking-[-0.5px] transition-transform ${uploadingResume ? 'opacity-80' : ''}`}>
                         {uploadingResume ? 'Uploading...' : 'Update Resume'}
                       </button>
                     </div>
@@ -481,7 +500,7 @@ function CandidateDashboard({ user, onLogout }) {
                     <p className="text-[13px] text-[#a7f3d0] opacity-90 mb-4 leading-relaxed tracking-[-0.3px]">
                       Upgrade to unlock AI resume tailoring, priority placement, and skill gap analysis.
                     </p>
-                    <Link to="/pricing" className="block w-full bg-white text-black border-[1px] border-black rounded-lg py-2.5 text-center text-[14px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#000] transition-transform hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000] no-underline">
+                    <Link to="/pricing" className="block w-full bg-white text-black border-[1px] border-black rounded-lg py-2.5 text-center text-[14px] font-medium tracking-[-0.5px] transition-transform no-underline">
                       View Pricing
                     </Link>
                   </div>
@@ -501,7 +520,7 @@ function CandidateDashboard({ user, onLogout }) {
                       Referral Requests
                       {pending > 0 && <span className="text-[14px] bg-[#fffbeb] text-[#f59e0b] border border-[#f59e0b]/30 rounded-full px-3 py-1 tracking-normal font-medium">{pending} pending</span>}
                     </h2>
-                    <Link to="/jobs" className="text-[14px] text-black border border-black rounded-xl px-4 py-2 hover:bg-gray-100 shadow-[2px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all no-underline font-medium tracking-[-0.5px]">Browse jobs →</Link>
+                    <Link to="/jobs" className="text-[14px] text-black border border-black rounded-xl px-4 py-2 hover:bg-gray-100 transition-all no-underline font-medium tracking-[-0.5px]">Browse jobs →</Link>
                   </div>
 
                   {requests.length === 0 ? (
@@ -512,7 +531,7 @@ function CandidateDashboard({ user, onLogout }) {
                   ) : (
                     <div className="grid gap-4">
                       {requests.map(req => (
-                        <button key={req.id} onClick={() => setSelected(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 shadow-[4px_5px_0px_0px_#000] cursor-pointer hover:-translate-y-0.5 hover:shadow-[5px_6px_0px_0px_#000] transition-all flex items-center justify-between gap-4">
+                        <button key={req.id} onClick={() => setSelected(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:bg-gray-50">
                           <div className="flex items-center gap-5">
                             {getCompanyLogo(req.company) ? (
                               <img src={getCompanyLogo(req.company)} alt={req.company} className="w-8 h-8 object-contain shrink-0" />
@@ -527,7 +546,7 @@ function CandidateDashboard({ user, onLogout }) {
                                 {req.company} · {req.referrer_id ? `${req.status === 'declined' ? 'Declined by' : 'Referred by'} ${req.referrer_name || 'an employee'}` : 'Awaiting match'}
                               </p>
                               <div className="flex items-center gap-3">
-                                <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-[7px] border border-black shadow-[1px_1px_0px_0px_#000]" style={{ backgroundColor: STATUS_CFG[req.status].bg, color: '#000' }}>
+                                <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-[7px] border border-black" style={{ backgroundColor: STATUS_CFG[req.status].bg, color: '#000' }}>
                                   {STATUS_CFG[req.status].label}
                                 </span>
                                 <span className="text-[13px] tracking-[-0.3px] text-gray-500">Sent {daysAgo(req.created_at)} {req.status === 'pending' ? `· Expires in ${expiresIn(req.created_at)}` : ''}</span>
@@ -557,7 +576,7 @@ function CandidateDashboard({ user, onLogout }) {
                   ) : (
                     <div className="grid gap-4">
                       {savedJobsList.map(job => (
-                        <Link key={job.id} to="/jobs" state={{ selectedId: job.id }} className="bg-white border-[1px] border-black rounded-xl p-5 shadow-[4px_5px_0px_0px_#000] flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-[5px_6px_0px_0px_#000] transition-all no-underline">
+                        <Link key={job.id} to="/jobs" state={{ selectedId: job.id }} className="bg-white border-[1px] border-black rounded-xl p-5 flex items-center justify-between gap-4 transition-all no-underline hover:bg-gray-50">
                           <div className="flex items-center gap-5">
                             {getCompanyLogo(job.company) ? (
                               <img src={getCompanyLogo(job.company)} alt={job.company} className="w-8 h-8 object-contain shrink-0" />
@@ -573,7 +592,16 @@ function CandidateDashboard({ user, onLogout }) {
                               </p>
                             </div>
                           </div>
-                          <span className="text-[20px] text-gray-400">›</span>
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={(e) => handleUnsaveJob(e, job.id)}
+                              className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-500 hover:bg-red-50 transition-colors bg-white shadow-sm"
+                              title="Unsave job"
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                            <span className="text-[20px] text-gray-400">›</span>
+                          </div>
                         </Link>
                       ))}
                     </div>
@@ -660,11 +688,11 @@ function EmployeeDashboard({ user, onLogout }) {
                 <div>
                   <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-500 mb-3">Overview</p>
                   <div className="flex flex-col gap-2.5">
-                    <button onClick={() => setTab('pending')} className={`flex items-center justify-between border border-black rounded-xl py-2.5 px-4 cursor-pointer hover:-translate-y-0.5 transition-transform bg-white text-black ${tab === 'pending' ? 'shadow-[4px_5px_0px_0px_#000] font-medium border-2' : 'shadow-[2px_3px_0px_0px_#000] font-normal'}`}>
+                    <button onClick={() => setTab('pending')} className={`flex items-center justify-between border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-transform bg-white text-black ${tab === 'pending' ? ' font-medium border-2' : ' font-normal'} hover:bg-gray-50`}>
                       <span className="text-[15px] tracking-[-0.5px]">Pending Requests</span>
                       <span className="text-[15px] tracking-[-0.5px]">{pendingReqs.length}</span>
                     </button>
-                    <button onClick={() => setTab('history')} className={`flex items-center justify-between border border-black rounded-xl py-2.5 px-4 cursor-pointer hover:-translate-y-0.5 transition-transform bg-white text-black ${tab === 'history' ? 'shadow-[4px_5px_0px_0px_#000] font-medium border-2' : 'shadow-[2px_3px_0px_0px_#000] font-normal'}`}>
+                    <button onClick={() => setTab('history')} className={`flex items-center justify-between border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-transform bg-white text-black ${tab === 'history' ? ' font-medium border-2' : ' font-normal'} hover:bg-gray-50`}>
                       <span className="text-[15px] tracking-[-0.5px]">Reviewed History</span>
                       <span className="text-[15px] tracking-[-0.5px]">{historyReqs.length}</span>
                     </button>
@@ -691,9 +719,9 @@ function EmployeeDashboard({ user, onLogout }) {
                 ) : (
                   <div className="grid gap-4">
                     {displayReqs.map(req => (
-                      <button key={req.id} onClick={() => setSelected(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 shadow-[4px_5px_0px_0px_#000] cursor-pointer hover:-translate-y-0.5 hover:shadow-[5px_6px_0px_0px_#000] transition-all flex items-center justify-between gap-4">
+                      <button key={req.id} onClick={() => setSelected(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:bg-gray-50">
                         <div className="flex items-center gap-5">
-                          <div className="w-12 h-12 rounded-xl bg-[#113824] border border-black shadow-[2px_2px_0px_0px_#000] flex items-center justify-center text-[18px] font-medium text-white shrink-0">
+                          <div className="w-12 h-12 rounded-xl bg-[#113824] border border-black flex items-center justify-center text-[18px] font-medium text-white shrink-0 hover:opacity-90">
                             {req.seeker_name?.[0]?.toUpperCase()}
                           </div>
                           <div>
@@ -702,14 +730,14 @@ function EmployeeDashboard({ user, onLogout }) {
                               {req.seeker_name} · {req.company}
                             </p>
                             <div className="flex items-center gap-3">
-                              <span className="text-[13px] text-amber-700 font-medium tracking-[-0.3px] bg-amber-100 border border-black shadow-[1px_1px_0px_0px_#000] px-2.5 py-0.5 rounded-full">⏱ {expiresIn(req.created_at)}</span>
+                              <span className="text-[13px] text-amber-700 font-medium tracking-[-0.3px] bg-amber-100 border border-black px-2.5 py-0.5 rounded-full">⏱ {expiresIn(req.created_at)}</span>
                               {req.ai_score != null && (
-                                <span className={`text-[13px] px-2.5 py-0.5 rounded-full font-medium tracking-[-0.3px] border border-black shadow-[1px_1px_0px_0px_#000] flex items-center gap-1.5 ${req.ai_score >= 60 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                                <span className={`text-[13px] px-2.5 py-0.5 rounded-full font-medium tracking-[-0.3px] border border-black flex items-center gap-1.5 ${req.ai_score >= 60 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
                                   <span>AI Score:</span> <strong>{req.ai_score}</strong>
                                 </span>
                               )}
                               {tab === 'history' && STATUS_CFG[req.status] && (
-                                <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-full border border-black shadow-[1px_1px_0px_0px_#000]" style={{ backgroundColor: STATUS_CFG[req.status].bg, color: '#000' }}>
+                                <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-full border border-black" style={{ backgroundColor: STATUS_CFG[req.status].bg, color: '#000' }}>
                                   {STATUS_CFG[req.status].label}
                                 </span>
                               )}

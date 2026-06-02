@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 
 // Import assets
-import logoImg from './assets/logo.png';
+import logoImg from './assets/newlogo.png';
 import googleImg from './assets/GOOG.png';
 import microsoftImg from './assets/Microsoft_logo.svg.png';
 import appleImg from './assets/AAPL.png';
@@ -12,13 +12,11 @@ import netflixImg from './assets/NFLX.png';
 import spotifyImg from './assets/SPOT.png';
 import amazonImg from './assets/AMZN-e9f942e4.png';
 import heroImage from './assets/heroimage.png';
-
 import Lottie from 'lottie-react';
 import whyAnimation from './assets/why.json';
 import employeeAnimation from './assets/employe.json';
 import studentAnimation from './assets/student.json';
 import aiAnimation from './assets/ai.json';
-import heroAnimation from './assets/heroimage1.json';
 
 const LottieComponent = Lottie.default || Lottie;
 
@@ -81,24 +79,13 @@ export default function App() {
 
       {/* ── HERO ── */}
       <section
-        className="flex flex-col min-h-screen pt-16 "
-      >
+        className="flex flex-col min-h-screen pt-16 ">
         {/* Hero content */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
 
-          {/* Wrapper to sync image width with title width */}
-          <div className="flex flex-col w-max max-w-full items-center">
+          {/* Main Hero Wrapper */}
+          <div className="flex flex-col w-full max-w-[1200px] items-center">
 
-            <div
-              className="relative w-full h-[220px] bg-[#113824] mb-10 overflow-hidden flex items-center justify-center rounded-[20px]"
-            >
-              <LottieComponent
-                animationData={heroAnimation}
-                loop={true}
-                className="lottie w-full h-full"
-                style={{ transform: 'scale(5) translateX(9px) translateY(30px)' }}
-              />
-            </div>
 
             {/* Title Container */}
             <div className="relative w-full flex justify-center mb-4">
@@ -115,7 +102,7 @@ export default function App() {
               {/* Visible typewriter text */}
               <h1 className="absolute inset-0 flex items-center justify-center font-intern text-[92px] tracking-[-6px] font-normal leading-[1] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center m-0">
                 <span>{headline}</span>
-                <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite]" />
+                <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite] hover:bg-gray-900" />
               </h1>
             </div>
           </div>
@@ -129,10 +116,10 @@ export default function App() {
 
           {/* CTAs */}
           <div className="flex gap-11 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
-            <Link to="/employee-signup" className="tracking-[-2px] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline">
+            <Link to="/employee-signup" className="tracking-[-2px] text-black bg-white border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline hover:bg-gray-50">
               Give referral
             </Link>
-            <button onClick={handleGetReferred} className="tracking-[-2px] text-black border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000]">
+            <button onClick={handleGetReferred} className="tracking-[-2px] text-black bg-white border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] hover:bg-gray-50">
               Get referred
             </button>
           </div>

@@ -81,7 +81,7 @@ export default function JobDetail() {
           </div>
 
           {/* Referrer count badge */}
-          <div className="inline-flex items-center gap-2 bg-black text-white text-[13px] px-4 py-2 rounded-full font-medium">
+          <div className="inline-flex items-center gap-2 bg-black text-white text-[13px] px-4 py-2 rounded-full font-medium hover:bg-gray-900">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
               <circle cx="9" cy="7" r="4" />
@@ -93,7 +93,7 @@ export default function JobDetail() {
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-black opacity-10 mb-10" />
+        <div className="h-px bg-black opacity-10 mb-10 hover:bg-gray-900" />
 
         {/* Job description */}
         <div className="mb-14">
@@ -104,7 +104,7 @@ export default function JobDetail() {
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-black opacity-10 mb-10" />
+        <div className="h-px bg-black opacity-10 mb-10 hover:bg-gray-900" />
 
         {/* CTA Buttons */}
         <div className="flex flex-col gap-4">
@@ -115,7 +115,7 @@ export default function JobDetail() {
             {/* Apply WITH referral */}
             <Link
               to={`/jobs/${job.id}/apply`}
-              className="bg-black text-white border-2 border-black py-3 px-8 text-[18px] font-normal rounded-xl cursor-pointer shadow-[4px_5px_0px_0px_#555] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_7px_0px_0px_#555] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#555] no-underline tracking-[-0.5px]"
+              className="bg-black text-white border-2 border-black py-3 px-8 text-[18px] font-normal rounded-xl cursor-pointer transition-all duration-200 inline-flex justify-center items-center no-underline tracking-[-0.5px] hover:bg-gray-900"
             >
               Apply with referral ✦
             </Link>
@@ -124,7 +124,7 @@ export default function JobDetail() {
               href={job.externalLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white text-black border-2 border-black py-3 px-8 text-[18px] font-normal rounded-xl cursor-pointer shadow-[4px_5px_0px_0px_#000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_7px_0px_0px_#000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000] no-underline tracking-[-0.5px]"
+              className="bg-white text-black border-2 border-black py-3 px-8 text-[18px] font-normal rounded-xl cursor-pointer transition-all duration-200 inline-flex justify-center items-center no-underline tracking-[-0.5px] hover:bg-gray-50"
             >
               Apply without referral →
             </a>

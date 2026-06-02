@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/newlogo.png';
 import loginSignupImg from '../assets/loginsignup.jpg';
 export default function EmployeeLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +38,7 @@ export default function EmployeeLogin() {
       {/* Left side: Split Screen Image */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <img src={loginSignupImg} alt="Split screen" className="w-full h-full object-cover" />
-        <div className="absolute top-8 left-8 z-20 cursor-pointer">
+        <div className="absolute top-8 left-8 z-20 cursor-pointer hover:bg-gray-50">
           <Link to="/">
             <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
           </Link>
@@ -54,7 +54,7 @@ export default function EmployeeLogin() {
       {/* Right side: Form Content */}
       <div className="w-full lg:w-1/2 relative flex flex-col items-center justify-center px-4 py-12">
         {/* Logo for mobile */}
-        <div className="lg:hidden absolute top-4 left-4 z-20 cursor-pointer">
+        <div className="lg:hidden absolute top-4 left-4 z-20 cursor-pointer hover:bg-gray-50">
           <Link to="/">
             <img src={logoImg} alt="Referr'd Logo" className="w-12 h-12 object-contain" />
           </Link>

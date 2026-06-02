@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/newlogo.png';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -118,7 +118,7 @@ export default function Navbar() {
             <div
               className={`flex items-center overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                 open ? 'max-w-[300px] opacity-100 mr-4' : 'max-w-0 opacity-0 mr-0'
-              }`}
+              } hover:bg-gray-50`}
             >
               <div className="flex items-center gap-6 whitespace-nowrap">
                 <Link
@@ -130,7 +130,7 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="text-[15px] text-red-400 hover:text-red-500 transition-colors tracking-[-0.3px] bg-transparent border-none p-0 cursor-pointer"
+                  className="text-[15px] text-red-400 hover:text-red-500 transition-colors tracking-[-0.3px] bg-transparent border-none p-0 cursor-pointer hover:bg-gray-50"
                 >
                   Log out
                 </button>
@@ -140,7 +140,7 @@ export default function Navbar() {
             {/* Avatar button */}
             <button
               onClick={() => setOpen(v => !v)}
-              className="flex items-center justify-center cursor-pointer transition-all duration-200"
+              className="flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-gray-50"
               style={{
                 width: 38, height: 38, borderRadius: '50%',
                 background: '#000',

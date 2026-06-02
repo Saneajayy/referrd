@@ -176,7 +176,7 @@ export default function ResumeMatch() {
 
         {/* ── LOADING ─────────────────────────────────────────────────────── */}
         {state === STATE.LOADING && (
-          <div className="border-2 border-black rounded-2xl p-14 flex flex-col items-center gap-5 shadow-[4px_5px_0px_0px_#000]">
+          <div className="border-2 border-black rounded-2xl p-14 flex flex-col items-center gap-5">
             <div className="w-10 h-10 border-[3px] border-black border-t-transparent rounded-full animate-spin" />
             <div className="text-center">
               <p className="text-[17px] font-normal text-black tracking-[-0.5px]">Analysing your resume…</p>
@@ -187,7 +187,7 @@ export default function ResumeMatch() {
 
         {/* ── STRONG MATCH (≥ 60) ─────────────────────────────────────────── */}
         {state === STATE.STRONG && result && (
-          <div className="border-2 border-black rounded-2xl p-10 shadow-[4px_5px_0px_0px_#000]">
+          <div className="border-2 border-black rounded-2xl p-10">
             <ScoreMeter score={result.score} />
             <h2 className="text-[26px] font-normal tracking-[-1.5px] text-black text-center mb-2">
               Strong match ✦
@@ -223,7 +223,7 @@ export default function ResumeMatch() {
             <button
               onClick={handleRequestReferral}
               disabled={requesting}
-              className={`w-full bg-black text-white border-2 border-black py-3 text-[18px] font-normal rounded-xl cursor-pointer shadow-[4px_5px_0px_0px_#555] transition-all duration-200 inline-flex justify-center items-center ${requesting ? 'opacity-70' : 'hover:-translate-y-0.5 hover:shadow-[6px_7px_0px_0px_#555]'} no-underline tracking-[-0.5px] mb-3`}
+              className={`w-full bg-black text-white border-2 border-black py-3 text-[18px] font-normal rounded-xl cursor-pointer transition-all duration-200 inline-flex justify-center items-center ${requesting ? 'opacity-70' : ''} no-underline tracking-[-0.5px] mb-3 hover:bg-gray-900`}
             >
               {requesting ? 'Submitting request...' : 'Request Referral →'}
             </button>
@@ -236,7 +236,7 @@ export default function ResumeMatch() {
 
         {/* ── WEAK MATCH (< 60) ───────────────────────────────────────────── */}
         {state === STATE.WEAK && result && (
-          <div className="border-2 border-black rounded-2xl p-10 shadow-[4px_5px_0px_0px_#000]">
+          <div className="border-2 border-black rounded-2xl p-10">
             <ScoreMeter score={result.score} />
             <h2 className="text-[26px] font-normal tracking-[-1.5px] text-black text-center mb-2">
               Weak match
@@ -257,7 +257,7 @@ export default function ResumeMatch() {
             )}
 
             {/* Upgrade upsell */}
-            <div className="bg-black rounded-xl p-6 mb-6">
+            <div className="bg-black rounded-xl p-6 mb-6 hover:bg-gray-900">
               <p className="text-[13px] font-semibold tracking-[0.1em] uppercase text-white/50 mb-2">Pro feature</p>
               <p className="text-[17px] font-normal text-white tracking-[-0.5px] mb-1">AI Resume Tailoring</p>
               <p className="text-[14px] text-white/60 mb-4 leading-[1.5]">

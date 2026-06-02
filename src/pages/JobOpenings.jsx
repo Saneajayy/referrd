@@ -243,13 +243,13 @@ export default function JobOpenings() {
                 placeholder="Search jobs or companies..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border-2 border-black text-[15px] outline-none focus:shadow-[2px_3px_0px_0px_#000] transition-shadow bg-white"
+                className="w-full px-4 py-2.5 rounded-lg border-2 border-black text-[15px] outline-none bg-white"
               />
               <div className="relative">
                 <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border-2 border-black text-[15px] outline-none focus:shadow-[2px_3px_0px_0px_#000] transition-shadow appearance-none bg-white cursor-pointer"
+                  className="w-full px-4 py-2.5 rounded-lg border-2 border-black text-[15px] outline-none appearance-none bg-white cursor-pointer hover:bg-gray-50"
                 >
                   <option value="All">All Categories</option>
                   <option value="Internship">Internships</option>
@@ -274,12 +274,9 @@ export default function JobOpenings() {
                   onClick={() => handleJobSelect(j.id)}
                   style={{
                     borderColor: active ? (COMPANY_COLORS[j.company] || '#000') : '#000',
-                    boxShadow: active
-                      ? `4px 6px 0px 0px ${COMPANY_COLORS[j.company] || '#000'}`
-                      : '4px 6px 0px 0px #000000',
                     backgroundColor: active ? '#f0fdf4' : '#fff'
                   }}
-                  className="w-full text-left rounded-xl p-5 border-[1px] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000]"
+                  className="w-full text-left rounded-xl p-5 border-[1px] transition-all duration-200 hover:bg-gray-50"
                 >
                   {/* Company */}
                   <div className="flex items-center gap-2 mb-1.5">
@@ -306,7 +303,7 @@ export default function JobOpenings() {
                     <span className="text-[13px] text-gray-500 font-sans">{daysAgo(j.postedAt)}</span>
                   </div>
                   {/* Referrer pill */}
-                  <div className="inline-flex items-center gap-1.5 bg-[#113824] text-white text-[12px] font-sans px-3 py-1 rounded-md border border-black shadow-[2px_2px_0px_0px_#000000]">
+                  <div className="inline-flex items-center gap-1.5 bg-[#113824] text-white text-[12px] font-sans px-3 py-1 rounded-md border border-black hover:opacity-90">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                       <circle cx="9" cy="7" r="4" />
@@ -356,7 +353,7 @@ export default function JobOpenings() {
               </div>
 
               {/* Referrer badge */}
-              <div className="inline-flex items-center gap-2 bg-[#113824] text-white text-[15px] font-sans px-5 py-2.5 rounded-lg border border-black shadow-[3px_4px_0px_0px_#000000] mb-10">
+              <div className="inline-flex items-center gap-2 bg-[#113824] text-white text-[15px] font-sans px-5 py-2.5 rounded-lg border border-black mb-10 hover:opacity-90">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                   <circle cx="9" cy="7" r="4" />
@@ -367,7 +364,7 @@ export default function JobOpenings() {
               </div>
 
               {/* Divider */}
-              <div className="h-px bg-black mb-10" />
+              <div className="h-px bg-black mb-10 hover:bg-gray-900" />
 
               {/* CTAs Moved to Top */}
               {!hasApplied ? (
@@ -379,7 +376,7 @@ export default function JobOpenings() {
                         if (!localStorage.getItem('token')) navigate('/login');
                         else setIsApplying(true);
                       }}
-                      className="tracking-[-1px] text-white bg-[#113824] border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] cursor-pointer"
+                      className="tracking-[-1px] text-white bg-[#113824] border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl transition-all duration-200 inline-flex justify-center items-center cursor-pointer hover:opacity-90"
                     >
                       Apply with referral ✦
                     </button>
@@ -387,13 +384,13 @@ export default function JobOpenings() {
                       href={job.externalLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="tracking-[-1px] text-black bg-white border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline"
+                      className="tracking-[-1px] text-black bg-white border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl transition-all duration-200 inline-flex justify-center items-center no-underline hover:bg-gray-50"
                     >
                       Apply without referral →
                     </a>
                     <button
                       onClick={() => toggleSave(job.id)}
-                      className="tracking-[-1px] text-black bg-white border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] cursor-pointer"
+                      className="tracking-[-1px] text-black bg-white border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl transition-all duration-200 inline-flex justify-center items-center cursor-pointer hover:bg-gray-50"
                     >
                       {savedJobs.includes(job.id) ? 'Saved ♥' : 'Save Job ♡'}
                     </button>
@@ -413,7 +410,7 @@ export default function JobOpenings() {
                     </button>
                     <button
                       onClick={() => toggleSave(job.id)}
-                      className="tracking-[-1px] text-black bg-white border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] cursor-pointer"
+                      className="tracking-[-1px] text-black bg-white border-[1px] border-black py-2.5 px-6 font-sans text-[18px] font-normal rounded-xl transition-all duration-200 inline-flex justify-center items-center cursor-pointer hover:bg-gray-50"
                     >
                       {savedJobs.includes(job.id) ? 'Saved ♥' : 'Save Job ♡'}
                     </button>
@@ -422,7 +419,7 @@ export default function JobOpenings() {
               )}
 
               {/* Divider */}
-              <div className="h-px bg-black mb-10" />
+              <div className="h-px bg-black mb-10 hover:bg-gray-900" />
 
               {/* JD */}
               <div className="mb-12">
@@ -454,7 +451,7 @@ export default function JobOpenings() {
               {hasApplied ? (
                 // State C: Already Applied
                 <div>
-                  <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8 text-center shadow-[4px_5px_0px_0px_rgba(34,197,94,0.2)]">
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8 text-center">
                     <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M20 6L9 17l-5-5" />
@@ -473,7 +470,7 @@ export default function JobOpenings() {
                       <button
                         key={rec.id}
                         onClick={() => handleJobSelect(rec.id)}
-                        className="text-left bg-white border border-black p-4 rounded-xl shadow-[2px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer"
+                        className="text-left bg-white border border-black p-4 rounded-xl transition-all cursor-pointer hover:bg-gray-50"
                       >
                         <div className="flex items-center gap-2 mb-2">
                           {getCompanyLogo(rec.company) ? (
@@ -509,14 +506,14 @@ export default function JobOpenings() {
                     
                     {/* Below CTA */}
                     <div className="mt-2 text-center">
-                      <div className="bg-white border-2 border-black rounded-2xl p-6 shadow-[4px_5px_0px_0px_#000]">
+                      <div className="bg-white border-2 border-black rounded-2xl p-6">
                         <p className="text-[15px] font-medium tracking-[-0.5px] text-black mb-4 leading-tight">Apply with referral to view and request these referrers.</p>
                         <button
                           onClick={() => {
                             if (!localStorage.getItem('token')) navigate('/login');
                             else setIsApplying(true);
                           }}
-                          className="w-full bg-[#113824] text-white text-[15px] py-2.5 rounded-lg border border-black shadow-[2px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer"
+                          className="w-full bg-[#113824] text-white text-[15px] py-2.5 rounded-lg border border-black transition-all cursor-pointer hover:opacity-90"
                         >
                           Unlock Referrers
                         </button>
@@ -533,7 +530,7 @@ export default function JobOpenings() {
                   {/* Ported ResumeMatch UI */}
                   {matchState === STATE.IDLE && (
                     currentUser?.resume_filename ? (
-                      <div className="border-2 border-black bg-white rounded-xl p-8 flex flex-col items-center gap-4 text-center shadow-[4px_5px_0px_0px_#000]">
+                      <div className="border-2 border-black bg-white rounded-xl p-8 flex flex-col items-center gap-4 text-center">
                         <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-black"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>
                         </div>
@@ -541,16 +538,16 @@ export default function JobOpenings() {
                           <p className="text-[15px] font-medium text-black tracking-[-0.5px]">Use saved resume</p>
                           <p className="text-[13px] text-gray-500 mt-1 max-w-[200px] truncate" title={currentUser.resume_filename}>{currentUser.resume_filename}</p>
                         </div>
-                        <button onClick={() => handleFile(null)} className="w-full bg-[#113824] text-white py-2.5 rounded-lg border border-black shadow-[2px_3px_0px_0px_#000] hover:-translate-y-0.5 transition-transform cursor-pointer">
+                        <button onClick={() => handleFile(null)} className="w-full bg-[#113824] text-white py-2.5 rounded-lg border border-black transition-transform cursor-pointer hover:opacity-90">
                           Match Score
                         </button>
                         <Link to="/dashboard" className="text-[13px] text-gray-500 hover:text-black underline">Update resume in Dashboard</Link>
                       </div>
                     ) : (
-                      <div className="border-2 border-black bg-white rounded-xl p-8 flex flex-col items-center gap-4 text-center shadow-[4px_5px_0px_0px_#000]">
+                      <div className="border-2 border-black bg-white rounded-xl p-8 flex flex-col items-center gap-4 text-center">
                         <p className="text-[15px] font-medium text-black tracking-[-0.5px]">No resume found</p>
                         <p className="text-[13px] text-gray-500 leading-snug">Upload your resume to your profile once, and use it to match with any job.</p>
-                        <Link to="/dashboard" className="w-full inline-block bg-[#113824] text-white py-2.5 rounded-lg border border-black shadow-[2px_3px_0px_0px_#000] hover:-translate-y-0.5 transition-transform no-underline">
+                        <Link to="/dashboard" className="w-full inline-block bg-[#113824] text-white py-2.5 rounded-lg border border-black transition-transform no-underline hover:opacity-90">
                           Go to Dashboard
                         </Link>
                       </div>
@@ -558,7 +555,7 @@ export default function JobOpenings() {
                   )}
 
                   {matchState === STATE.LOADING && (
-                    <div className="border-2 border-black bg-white rounded-xl p-8 flex flex-col items-center gap-4 shadow-[4px_5px_0px_0px_#000]">
+                    <div className="border-2 border-black bg-white rounded-xl p-8 flex flex-col items-center gap-4">
                       <div className="w-8 h-8 border-[3px] border-black border-t-transparent rounded-full animate-spin" />
                       <div className="text-center">
                         <p className="text-[15px] font-medium text-black tracking-[-0.5px]">Analysing resume…</p>
@@ -568,7 +565,7 @@ export default function JobOpenings() {
                   )}
 
                   {matchState === STATE.STRONG && matchResult && (
-                    <div className="border-2 border-black bg-white rounded-xl p-6 shadow-[4px_5px_0px_0px_#000]">
+                    <div className="border-2 border-black bg-white rounded-xl p-6">
                       <ScoreMeter score={matchResult.score} />
                       <h2 className="text-[20px] font-medium tracking-[-1px] text-black text-center mb-2">Strong match ✦</h2>
                       
@@ -582,15 +579,15 @@ export default function JobOpenings() {
                         </ul>
                       )}
 
-                      <button onClick={handleRequestReferral} disabled={requesting} className="w-full bg-[#113824] border border-black text-white py-2.5 text-[15px] rounded-lg shadow-[2px_3px_0px_0px_#000] hover:-translate-y-0.5 hover:shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer mb-2">
+                      <button onClick={handleRequestReferral} disabled={requesting} className="w-full bg-[#113824] border border-black text-white py-2.5 text-[15px] rounded-lg transition-all cursor-pointer mb-2 hover:opacity-90">
                         {requesting ? 'Submitting...' : 'Request Referral →'}
                       </button>
-                      <button onClick={resetMatch} className="w-full text-[13px] text-gray-500 hover:text-black py-1 cursor-pointer">Try another resume</button>
+                      <button onClick={resetMatch} className="w-full text-[13px] text-gray-500 hover:text-black py-1 cursor-pointer hover:bg-gray-50">Try another resume</button>
                     </div>
                   )}
 
                   {matchState === STATE.WEAK && matchResult && (
-                    <div className="border-2 border-black bg-white rounded-xl p-6 shadow-[4px_5px_0px_0px_#000]">
+                    <div className="border-2 border-black bg-white rounded-xl p-6">
                       <ScoreMeter score={matchResult.score} />
                       <h2 className="text-[20px] font-medium tracking-[-1px] text-black text-center mb-2">Weak match</h2>
                       
@@ -609,12 +606,12 @@ export default function JobOpenings() {
                         <div className="absolute top-0 right-0 bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 tracking-wider uppercase rounded-bl-lg">Pro</div>
                         <h4 className="text-[15px] font-medium text-black tracking-[-0.5px] mb-1">AI Resume Tailoring</h4>
                         <p className="text-[13px] text-gray-500 mb-3 leading-snug">Let our AI rewrite your resume specifically for this job description to boost your score.</p>
-                        <Link to="/pricing" className="inline-flex w-full justify-center items-center gap-1.5 bg-black text-white text-[13px] py-2 rounded-lg hover:opacity-80 transition-opacity">
+                        <Link to="/pricing" className="inline-flex w-full justify-center items-center gap-1.5 bg-black text-white text-[13px] py-2 rounded-lg hover:opacity-80 transition-opacity hover:bg-gray-900">
                           Upgrade to Pro · $9/mo
                         </Link>
                       </div>
 
-                      <button onClick={resetMatch} className="w-full bg-white border-2 border-gray-200 text-[13px] text-gray-600 hover:border-black hover:text-black py-2 rounded-lg transition-colors cursor-pointer">
+                      <button onClick={resetMatch} className="w-full bg-white border-2 border-gray-200 text-[13px] text-gray-600 hover:border-black hover:text-black py-2 rounded-lg transition-colors cursor-pointer hover:bg-gray-50">
                         Try another resume
                       </button>
                     </div>
@@ -623,7 +620,7 @@ export default function JobOpenings() {
                   {matchState === STATE.ERROR && (
                     <div className="border-2 border-red-200 bg-red-50 rounded-xl p-6 flex flex-col items-center gap-3 text-center">
                       <p className="text-[14px] font-medium text-black">{errorMsg || 'Something went wrong.'}</p>
-                      <button onClick={resetMatch} className="text-[13px] text-gray-500 hover:text-black underline cursor-pointer">Try again</button>
+                      <button onClick={resetMatch} className="text-[13px] text-gray-500 hover:text-black underline cursor-pointer hover:bg-gray-50">Try again</button>
                     </div>
                   )}
                 </div>
