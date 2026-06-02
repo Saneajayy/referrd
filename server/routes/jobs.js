@@ -81,8 +81,8 @@ ${resumeText.slice(0, 6000)}
 Analyze the match and respond ONLY with valid JSON in this exact format (no markdown, no explanation outside the JSON):
 {
   "score": <integer 0-100>,
-  "strengths": [<up to 3 short strings of what matches well>],
-  "gaps": [<up to 3 short strings of what is missing or weak>],
+  "strengths": [<up to 3 single-word keywords of what matches well (e.g. "Python")>],
+  "gaps": [<up to 3 single-word keywords of what is missing or weak (e.g. "Go")>],
   "summary": "<one sentence overall assessment>"
 }`;
 

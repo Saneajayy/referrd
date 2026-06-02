@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar.jsx';
+import { Search, Brain, Send, ListChecks, Briefcase, Sparkles, Rocket, Star, Target, Infinity } from 'lucide-react';
 
 function authFetch(url, opts = {}) {
   const token = localStorage.getItem('token');
@@ -11,32 +12,20 @@ function authFetch(url, opts = {}) {
 }
 
 const FREE_FEATURES = [
-  'Browse all job openings',
-  'AI resume JD match scoring',
-  'Up to 3 referral requests per job',
-  'Track referral request status',
-  'Direct apply without referral',
+  { text: 'Browse all job openings', icon: Search },
+  { text: 'AI resume JD match scoring', icon: Brain },
+  { text: 'Up to 3 referral requests per job', icon: Send },
+  { text: 'Track referral request status', icon: ListChecks },
+  { text: 'Direct apply without referral', icon: Briefcase },
 ];
 
 const PAID_FEATURES = [
-  'AI resume tailoring based on JD',
-  'Up to 6 referral requests per job',
-  'Priority placement in employee inbox',
-  'Detailed skill gap breakdown',
-  'Unlimited job applications',
+  { text: 'AI resume tailoring based on JD', icon: Sparkles },
+  { text: 'Up to 6 referral requests per job', icon: Rocket },
+  { text: 'Priority placement in employee inbox', icon: Star },
+  { text: 'Detailed skill gap breakdown', icon: Target },
+  { text: 'Unlimited job applications', icon: Infinity },
 ];
-
-function CheckIcon({ color }) {
-  return (
-    <svg
-      width="18" height="18" viewBox="0 0 24 24" fill="none"
-      stroke={color} strokeWidth="2.5"
-      className="shrink-0 mt-0.5"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
 
 export default function Pricing() {
   const [user, setUser] = useState(null);
@@ -49,7 +38,7 @@ export default function Pricing() {
       .then(d => {
         if (d.user) setUser(d.user);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
@@ -76,7 +65,7 @@ export default function Pricing() {
                   <span className="text-[52px] font-medium tracking-[-2px] leading-none text-black">$0</span>
                   <span className="text-[16px] text-gray-500 mb-2 font-medium tracking-[-0.3px]">/month</span>
                 </div>
-                <span className="inline-block text-[11px] font-bold tracking-[0.1em] uppercase text-black bg-gray-100 border border-black rounded-[6px] px-2 py-0.5 mt-1 shadow-[1px_1px_0px_0px_#000]">
+                <span className="inline-block text-[11px] font-bold tracking-[0.1em] uppercase text-black bg-gray-100 border border-black rounded-[6px] px-2 py-0.5 mt-1">
                   Free
                 </span>
               </div>
@@ -84,10 +73,10 @@ export default function Pricing() {
             </div>
 
             <ul className="flex flex-col gap-2.5 mb-6 flex-1 min-h-0 justify-center">
-              {FREE_FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-3 bg-gray-50 border-[1px] border-black rounded-xl px-4 py-2.5">
-                  <CheckIcon color="#000" />
-                  <span className="text-[14px] text-black tracking-[-0.3px] leading-tight font-medium">{f}</span>
+              {FREE_FEATURES.map((f, i) => (
+                <li key={i} className="flex items-center gap-3 bg-gray-50 border-[1px] border-black rounded-xl px-4 py-2.5">
+                  <f.icon size={18} strokeWidth={2.5} color="#000" className="shrink-0 mt-0.5" />
+                  <span className="text-[14px] text-black tracking-[-0.3px] leading-tight font-medium">{f.text}</span>
                 </li>
               ))}
             </ul>
@@ -111,26 +100,26 @@ export default function Pricing() {
           </div>
 
           {/* Paid card */}
-          <div className="bg-[#113824] border-[1px] border-black rounded-2xl p-8 shadow-[4px_5px_0px_0px_#000] flex flex-col max-md:p-6 min-h-0">
+          <div className="bg-white border-[1px] border-black rounded-2xl p-8 shadow-[4px_5px_0px_0px_#000] flex flex-col max-md:p-6 min-h-0">
             <div className="mb-6 shrink-0">
               {/* Price + badge row */}
               <div className="flex items-start justify-between mb-1">
                 <div className="flex items-end gap-2">
-                  <span className="text-[52px] font-medium tracking-[-2px] leading-none text-white">$9</span>
-                  <span className="text-[16px] text-emerald-100/70 mb-2 font-medium tracking-[-0.3px]">/month</span>
+                  <span className="text-[52px] font-medium tracking-[-2px] leading-none text-black">$9</span>
+                  <span className="text-[16px] text-gray-500 mb-2 font-medium tracking-[-0.3px]">/month</span>
                 </div>
-                <span className="inline-block text-[11px] font-bold tracking-[0.1em] uppercase text-black bg-[#a7f3d0] border border-black rounded-[6px] px-2 py-0.5 mt-1 shadow-[1px_1px_0px_0px_#000]">
+                <span className="inline-block text-[11px] font-bold tracking-[0.1em] uppercase text-white bg-black border border-black rounded-[6px] px-2 py-0.5 mt-1">
                   Pro
                 </span>
               </div>
-              <p className="text-[14px] mt-4 text-[#a7f3d0] opacity-80 tracking-[-0.3px]">Cancel anytime. No hidden fees.</p>
+              <p className="text-[14px] mt-4 text-gray-500 tracking-[-0.3px]">Cancel anytime. No hidden fees.</p>
             </div>
 
             <ul className="flex flex-col gap-2.5 mb-6 flex-1 min-h-0 justify-center">
-              {PAID_FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-3 bg-[#0a2216] border-[1px] border-black rounded-xl px-4 py-2.5">
-                  <CheckIcon color="#a7f3d0" />
-                  <span className="text-[14px] text-white tracking-[-0.3px] leading-tight font-medium">{f}</span>
+              {PAID_FEATURES.map((f, i) => (
+                <li key={i} className="flex items-center gap-3 bg-gray-50 border-[1px] border-black rounded-xl px-4 py-2.5">
+                  <f.icon size={18} strokeWidth={2.5} color="#000" className="shrink-0 mt-0.5" />
+                  <span className="text-[14px] text-black tracking-[-0.3px] leading-tight font-medium">{f.text}</span>
                 </li>
               ))}
             </ul>
@@ -143,7 +132,7 @@ export default function Pricing() {
                 Upgrade to Pro →
               </Link>
             ) : user.is_pro ? (
-              <button disabled className="w-full bg-[#0a2216] text-[#a7f3d0] border-[1px] border-black py-3 text-[16px] font-medium rounded-xl cursor-not-allowed flex justify-center items-center tracking-[-0.5px] shadow-[inset_0px_2px_4px_rgba(0,0,0,0.3)]">
+              <button disabled className="w-full bg-gray-50 text-gray-500 border-[1px] border-gray-300 py-3 text-[16px] font-medium rounded-xl cursor-not-allowed flex justify-center items-center tracking-[-0.5px]">
                 Currently Active
               </button>
             ) : (
