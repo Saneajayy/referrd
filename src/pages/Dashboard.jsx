@@ -61,7 +61,9 @@ function expiresIn(dateStr) {
 /* ── status config ───────────────────────────────────────────────────────── */
 const STATUS_CFG = {
   pending: { label: 'Pending', color: '#f59e0b', bg: '#fffbeb', step: 1 },
-  referred: { label: 'Referred', color: '#10b981', bg: '#f0fdf4', step: 2 },
+  pending_verification: { label: 'Verifying', color: '#3b82f6', bg: '#eff6ff', step: 2 },
+  referred: { label: 'Referred', color: '#10b981', bg: '#f0fdf4', step: 3 },
+  disputed: { label: 'Disputed', color: '#ef4444', bg: '#fef2f2', step: -1 },
   declined: { label: 'Declined', color: '#ef4444', bg: '#fef2f2', step: -1 },
   expired: { label: 'Expired', color: '#9ca3af', bg: '#f9fafb', step: -1 },
   withdrawn: { label: 'Withdrawn', color: '#9ca3af', bg: '#f9fafb', step: -1 },
@@ -78,16 +80,16 @@ function Loading() {
 
 /* ── Progress tracker ────────────────────────────────────────────────────── */
 function ProgressBar({ status }) {
-  const steps = ['Requested', 'Pending', 'Referred'];
+  const steps = ['Requested', 'Pending', 'Verifying', 'Referred'];
   const cfg = STATUS_CFG[status] || STATUS_CFG.pending;
-  const isBad = ['declined', 'expired', 'withdrawn'].includes(status);
+  const isBad = ['declined', 'expired', 'withdrawn', 'disputed'].includes(status);
 
   return (
     <div className="my-6">
       <div className="flex items-center gap-0">
         {steps.map((s, i) => {
-          const done = !isBad && (cfg.step > i || (cfg.step === 2 && i === 2));
-          const active = !isBad && cfg.step === i && cfg.step !== 2;
+          const done = !isBad && (cfg.step > i || (cfg.step === 3 && i === 3));
+          const active = !isBad && cfg.step === i && cfg.step !== 3;
 
           return (
             <div key={s} className="flex-1 flex flex-col items-center">
@@ -109,7 +111,7 @@ function ProgressBar({ status }) {
       </div>
       {isBad && (
         <div className="text-center mt-4 px-4 py-2 rounded-lg border text-[13px] font-medium" style={{ backgroundColor: cfg.bg, borderColor: `${cfg.color}30`, color: cfg.color }}>
-          {cfg.label} — {status === 'declined' ? 'The referrer declined this request.' : status === 'expired' ? 'This request expired after 3 days.' : 'You withdrew this request.'}
+          {cfg.label} — {status === 'declined' ? 'The referrer declined this request.' : status === 'disputed' ? 'You reported this referral as not received.' : status === 'expired' ? 'This request expired after 3 days.' : 'You withdrew this request.'}
         </div>
       )}
     </div>
@@ -117,7 +119,7 @@ function ProgressBar({ status }) {
 }
 
 /* ── Candidate Detail Panel ──────────────────────────────────────────────── */
-function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing }) {
+function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing, onVerify, verifying }) {
   const [referrer, setReferrer] = useState(null);
   const cfg = STATUS_CFG[req.status] || STATUS_CFG.pending;
 
@@ -202,6 +204,28 @@ function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing }) {
             {withdrawing ? 'Withdrawing…' : 'Withdraw Request'}
           </button>
         )}
+
+        {req.status === 'pending_verification' && (
+          <div className="flex flex-col gap-3">
+            <p className="text-[14px] text-center text-gray-600 font-medium tracking-[-0.3px] mb-1">Did you receive the referral email?</p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => onVerify(req.id, 'deny')}
+                disabled={verifying}
+                className={`flex-1 py-3 rounded-xl border-[1px] border-gray-400 bg-white text-gray-600 text-[15px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#9ca3af] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#9ca3af]'}`}
+              >
+                No, I didn't
+              </button>
+              <button
+                onClick={() => onVerify(req.id, 'confirm')}
+                disabled={verifying}
+                className={`flex-1 py-3 rounded-xl border-[1px] border-black bg-black text-white text-[15px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000]'}`}
+              >
+                Yes, referred
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -262,7 +286,7 @@ function EmployeeDetailPanel({ req, onClose, onAction, processing }) {
             Decline
           </button>
           <button
-            onClick={() => onAction(req.id, 'referred', note)}
+            onClick={() => onAction(req.id, 'pending_verification', note)}
             disabled={processing}
             className={`flex-[2] py-3 rounded-xl border-[1px] border-black bg-[#113824] text-white text-[16px] font-medium tracking-[-0.5px] shadow-[3px_4px_0px_0px_#000] transition-all cursor-pointer ${processing ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-[4px_5px_0px_0px_#000]'}`}
           >
@@ -281,6 +305,7 @@ function CandidateDashboard({ user, onLogout }) {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [withdrawing, setWithdrawing] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
 
   const reqRef = useRef(null);
@@ -323,6 +348,25 @@ function CandidateDashboard({ user, onLogout }) {
       alert(err.message);
     } finally {
       setWithdrawing(false);
+    }
+  };
+
+  const handleVerify = async (id, action) => {
+    setVerifying(true);
+    try {
+      const r = await authFetch(`/api/referrals/${id}/verify`, {
+        method: 'PATCH',
+        body: JSON.stringify({ action })
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.message);
+      const newStatus = action === 'confirm' ? 'referred' : 'disputed';
+      setRequests(prev => prev.map(x => x.id === id ? { ...x, status: newStatus } : x));
+      setSelected(prev => prev?.id === id ? { ...prev, status: newStatus } : prev);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -551,7 +595,7 @@ function CandidateDashboard({ user, onLogout }) {
         </div>
       </div>
 
-      {selected && <CandidateDetailPanel req={selected} onClose={() => setSelected(null)} onWithdraw={handleWithdraw} withdrawing={withdrawing} />}
+      {selected && <CandidateDetailPanel req={selected} onClose={() => setSelected(null)} onWithdraw={handleWithdraw} withdrawing={withdrawing} onVerify={handleVerify} verifying={verifying} />}
     </div>
   );
 }

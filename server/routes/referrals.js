@@ -160,7 +160,7 @@ router.get('/company', requireAuth, async (req, res) => {
 router.patch('/:id/action', requireAuth, async (req, res) => {
   if (req.user.role !== 'referrer') return res.status(403).json({ message: 'Forbidden' });
   const { action, note } = req.body;
-  if (!['referred', 'declined'].includes(action)) return res.status(400).json({ message: 'Invalid action.' });
+  if (!['pending_verification', 'declined'].includes(action)) return res.status(400).json({ message: 'Invalid action.' });
 
   try {
     // Verify the request exists and is pending, and matches the employee's company
@@ -196,6 +196,30 @@ router.get('/referrer/:id', requireAuth, async (req, res) => {
     return res.json({ referrer: rows[0] });
   } catch (err) {
     console.error('[referrals/referrer]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── PATCH /api/referrals/:id/verify  ─────────────────────────────────────────
+// Confirm or deny a referral by candidate
+router.patch('/:id/verify', requireAuth, async (req, res) => {
+  const { action } = req.body; // 'confirm' or 'deny'
+  if (!['confirm', 'deny'].includes(action)) return res.status(400).json({ message: 'Invalid action.' });
+
+  try {
+    const newStatus = action === 'confirm' ? 'referred' : 'disputed';
+    const { rows } = await pool.query(
+      `UPDATE referral_requests
+       SET status = $1, updated_at = NOW()
+       WHERE id = $2 AND seeker_id = $3 AND status = 'pending_verification'
+       RETURNING *`,
+      [newStatus, req.params.id, req.user.id]
+    );
+
+    if (!rows.length) return res.status(404).json({ message: 'Request not found or not awaiting verification.' });
+    return res.json({ request: rows[0] });
+  } catch (err) {
+    console.error('[referrals/verify]', err);
     return res.status(500).json({ message: 'Server error.' });
   }
 });

@@ -113,75 +113,45 @@ export default function Navbar() {
       {/* Right side — profile avatar or login */}
       <div className="shrink-0 flex items-center relative z-10">
         {user ? (
-          <div ref={dropRef} style={{ position: 'relative' }}>
+          <div ref={dropRef} className="flex items-center">
+            {/* Horizontal slider for options */}
+            <div
+              className={`flex items-center overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                open ? 'max-w-[300px] opacity-100 mr-4' : 'max-w-0 opacity-0 mr-0'
+              }`}
+            >
+              <div className="flex items-center gap-6 whitespace-nowrap">
+                <Link
+                  to="/manage-account"
+                  onClick={() => setOpen(false)}
+                  className="text-[15px] text-gray-500 hover:text-black transition-colors no-underline tracking-[-0.3px]"
+                >
+                  Edit profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-[15px] text-red-400 hover:text-red-500 transition-colors tracking-[-0.3px] bg-transparent border-none p-0 cursor-pointer"
+                >
+                  Log out
+                </button>
+              </div>
+            </div>
+
             {/* Avatar button */}
             <button
               onClick={() => setOpen(v => !v)}
+              className="flex items-center justify-center cursor-pointer transition-all duration-200"
               style={{
                 width: 38, height: 38, borderRadius: '50%',
-                background: '#000', border: '2px solid #000',
-                color: '#fff', fontSize: 13, fontWeight: 500,
-                letterSpacing: '-0.5px', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'box-shadow .2s',
-                boxShadow: open ? '0 0 0 3px #00000020' : 'none',
+                background: '#000',
+                color: '#fff',
+                fontSize: 13, fontWeight: 500,
+                letterSpacing: '-0.5px', border: 'none'
               }}
               aria-label="Profile menu"
             >
               {initials}
             </button>
-
-            {/* Dropdown */}
-            {open && (
-              <div style={{
-                position: 'absolute', top: 'calc(100% + 10px)', right: 0,
-                background: '#fff', border: '2px solid #000', borderRadius: 16,
-                boxShadow: '4px 6px 0 #000', minWidth: 200,
-                overflow: 'hidden', zIndex: 200,
-                animation: 'ddFade .15s ease',
-              }}>
-                <style>{`@keyframes ddFade { from { opacity:0; transform:translateY(-6px);} to { opacity:1; transform:translateY(0); } }`}</style>
-
-
-
-                {/* Menu items */}
-                {[
-                  { label: 'My Profile', to: user?.role === 'referrer' ? '/employee-dashboard' : '/dashboard' },
-                  { label: 'Manage Account', to: '/manage-account' },
-                ].map(item => (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setOpen(false)}
-                    style={{
-                      display: 'block', padding: '11px 16px',
-                      fontSize: 14, color: '#111', textDecoration: 'none',
-                      transition: 'background .15s', letterSpacing: '-0.2px',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#f9f9f9'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-
-                <div style={{ borderTop: '1px solid #f0f0f0' }}>
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      width: '100%', textAlign: 'left', padding: '11px 16px',
-                      fontSize: 14, color: '#ef4444', background: 'none',
-                      border: 'none', cursor: 'pointer', letterSpacing: '-0.2px',
-                      transition: 'background .15s',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#fef2f2'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    Log out
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         ) : (
           <div className="flex items-center gap-3">
