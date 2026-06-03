@@ -21,19 +21,48 @@ function requireAuth(req, res, next) {
 // ── POST /api/referrals  ──────────────────────────────────────────────────────
 // Creates a new referral request (Candidate side)
 router.post('/', requireAuth, async (req, res) => {
-  const { job_title, company, ai_score } = req.body;
+  const { job_title, company, ai_score, referrer_ids } = req.body;
   if (!job_title || !company) return res.status(400).json({ message: 'job_title and company are required.' });
-
+  
   try {
-    const { rows } = await pool.query(
-      `INSERT INTO referral_requests (seeker_id, job_title, company, ai_score)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [req.user.id, job_title, company, ai_score || null]
+    if (!referrer_ids || !Array.isArray(referrer_ids) || referrer_ids.length === 0) {
+      // Fallback for broadcast request
+      const { rows } = await pool.query(
+        `INSERT INTO referral_requests (seeker_id, job_title, company, ai_score)
+         VALUES ($1, $2, $3, $4)
+         RETURNING *`,
+        [req.user.id, job_title, company, ai_score || null]
+      );
+      return res.status(201).json({ request: rows[0] });
+    }
+
+    // Insert for specific referrers
+    const promises = referrer_ids.map(rid => 
+      pool.query(
+        `INSERT INTO referral_requests (seeker_id, job_title, company, ai_score, referrer_id)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING *`,
+        [req.user.id, job_title, company, ai_score || null, rid]
+      )
     );
-    return res.status(201).json({ request: rows[0] });
+    const results = await Promise.all(promises);
+    return res.status(201).json({ requests: results.map(r => r.rows[0]) });
   } catch (err) {
     console.error('[referrals/create]', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── GET /api/referrals/employees/:company ─────────────────────────────────────
+router.get('/employees/:company', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, name, designation, linkedin FROM users WHERE role = 'referrer' AND company = $1`,
+      [req.params.company]
+    );
+    return res.json({ employees: rows });
+  } catch (err) {
+    console.error('[referrals/employees]', err);
     return res.status(500).json({ message: 'Server error.' });
   }
 });
@@ -55,7 +84,9 @@ router.get('/my', requireAuth, async (req, res) => {
          u.name      AS referrer_name,
          u.email     AS referrer_email,
          u.company   AS referrer_company,
-         u.role      AS referrer_role
+         u.role      AS referrer_role,
+         u.linkedin  AS referrer_linkedin,
+         u.designation AS referrer_designation
        FROM referral_requests rr
        LEFT JOIN users u ON rr.referrer_id = u.id
        WHERE rr.seeker_id = $1

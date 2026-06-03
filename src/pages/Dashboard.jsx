@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import logoImg from '../assets/newlogo.png';
@@ -119,123 +119,92 @@ function ProgressBar({ status }) {
 }
 
 /* ── Candidate Detail Panel ──────────────────────────────────────────────── */
-function CandidateDetailPanel({ req, onClose, onWithdraw, withdrawing, onVerify, verifying }) {
-  const [referrer, setReferrer] = useState(null);
-  const cfg = STATUS_CFG[req.status] || STATUS_CFG.pending;
-
-  useEffect(() => {
-    if (req.referrer_id) {
-      authFetch(`/api/referrals/referrer/${req.referrer_id}`)
-        .then(r => r.json())
-        .then(d => setReferrer(d.referrer))
-        .catch(() => { });
-    }
-  }, [req.referrer_id]);
+function CandidateDetailPanel({ group, onClose, onWithdraw, withdrawing, onVerify, verifying }) {
+  const cfg = STATUS_CFG[group.status] || STATUS_CFG.pending;
 
   return (
     <div onClick={onClose} className="fixed inset-0 z-[200] bg-black/40 flex items-end sm:items-center justify-center sm:p-6">
       <div onClick={e => e.stopPropagation()} className="w-full sm:max-w-[600px] bg-white sm:rounded-3xl sm:border-[1px] sm:border-gray-200 rounded-t-3xl px-8 pt-8 pb-10 sm:shadow-2xl animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] max-h-[90vh] overflow-y-auto">
         <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
-
-        {/* Header */}
+        
         <div className="flex justify-between items-start mb-2">
           <div>
-            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-400 mb-1">{req.company}</p>
-            <h2 className="text-[28px] font-medium tracking-[-1px] text-black m-0">{req.job_title}</h2>
+            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-400 mb-1">{group.company}</p>
+            <h2 className="text-[28px] font-medium tracking-[-1px] text-black m-0">{group.job_title}</h2>
           </div>
           <button onClick={onClose} className="text-[22px] text-gray-400 hover:text-black p-1 leading-none cursor-pointer hover:bg-gray-50">✕</button>
         </div>
 
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-6">
           <span className="text-[11px] px-2.5 py-0.5 rounded-[7px] font-semibold border" style={{ backgroundColor: cfg.bg, color: cfg.color, borderColor: `${cfg.color}40` }}>{cfg.label}</span>
-          <span className="text-[12px] text-gray-400">· {daysAgo(req.created_at)}</span>
-          {req.status === 'pending' && <span className="text-[12px] text-amber-500 font-medium">· {expiresIn(req.created_at)}</span>}
+          <span className="text-[12px] text-gray-400">· Requested from {group.items.length} employee{group.items.length !== 1 ? 's' : ''}</span>
         </div>
 
-        <ProgressBar status={req.status} />
+        <h3 className="text-[14px] font-medium tracking-[-0.5px] text-black mb-3 px-1">Requested Referrers</h3>
+        
+        <div className="flex flex-col gap-3 mb-6">
+          {group.items.map(req => {
+            const reqCfg = STATUS_CFG[req.status] || STATUS_CFG.pending;
+            return (
+              <div key={req.id} className="border-[1px] border-gray-200 bg-gray-50/50 rounded-xl p-4">
+                {req.referrer_id ? (
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-black font-medium text-[15px] shrink-0 shadow-sm">
+                          {req.referrer_name?.[0]?.toUpperCase() ?? '?'}
+                        </div>
+                        <div>
+                          <p className="text-[15px] font-medium tracking-[-0.5px] text-black m-0 leading-tight">{req.referrer_name}</p>
+                          <p className="text-[12px] text-gray-500 m-0 tracking-[-0.3px] mt-0.5">{req.referrer_designation || 'Employee'}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-[11px] px-2 py-0.5 rounded-md font-semibold border" style={{ backgroundColor: reqCfg.bg, color: reqCfg.color, borderColor: `${reqCfg.color}40` }}>{reqCfg.label}</span>
+                        {req.referrer_linkedin && (
+                          <a href={req.referrer_linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[#0a66c2] bg-[#f3f9ff] hover:bg-[#e1f0ff] border border-[#0a66c2]/20 px-2.5 py-1 rounded-full transition-colors font-medium text-[12px] tracking-[-0.2px] no-underline shrink-0">
+                            Connect
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {req.note && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-3 mt-1">
+                        <p className="text-[13px] text-gray-700 m-0 leading-snug"><span className="font-medium text-black">Note:</span> {req.note}</p>
+                      </div>
+                    )}
 
-        {req.note && (
-          <>
-            <h3 className="text-[14px] font-medium tracking-[-0.5px] text-black mb-2 px-1">Note from referrer</h3>
-            <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 mb-6">
-              <p className="text-[14px] text-gray-700 leading-relaxed m-0">{req.note}</p>
-            </div>
-          </>
-        )}
+                    {req.status === 'pending' && (
+                      <button
+                        onClick={() => onWithdraw(req.id)}
+                        disabled={withdrawing}
+                        className={`text-[12px] text-red-500 font-medium tracking-[-0.3px] self-start mt-1 hover:underline cursor-pointer ${withdrawing ? 'opacity-50' : ''}`}
+                      >
+                        {withdrawing ? 'Withdrawing...' : 'Withdraw specific request'}
+                      </button>
+                    )}
 
-        <h3 className="text-[14px] font-medium tracking-[-0.5px] text-black mb-2 px-1">
-          {req.status === 'declined' ? 'Declined by' : req.status === 'referred' ? 'Referred by' : 'Referrer'}
-        </h3>
-        <div className="border-[1px] border-gray-200 bg-gray-50/50 rounded-xl p-5 mb-6">
-          {req.referrer_id ? (
-            referrer ? (
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-full bg-white border border-gray-200 flex items-center justify-center text-black font-medium text-[16px] shrink-0 shadow-sm">
-                    {referrer.name?.[0]?.toUpperCase() ?? '?'}
+                    {req.status === 'pending_verification' && (
+                      <div className="flex flex-col gap-2 mt-2 border-t border-gray-200 pt-3">
+                        <span className="text-[12px] text-gray-600 font-medium">Did they refer you?</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => onVerify(req.id, 'confirm')} disabled={verifying} className="bg-black text-white px-3 py-1.5 text-[11px] rounded-md hover:opacity-90 transition-opacity">Yes</button>
+                          <button onClick={() => onVerify(req.id, 'deny')} disabled={verifying} className="bg-white border border-gray-300 text-gray-600 px-3 py-1.5 text-[11px] rounded-md hover:bg-gray-50 transition-colors">No</button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-[16px] font-medium tracking-[-0.5px] text-black m-0">{referrer.name}</p>
-                    <p className="text-[13px] text-gray-500 m-0 tracking-[-0.3px]">{referrer.company || 'Employee'}</p>
-                  </div>
-                </div>
-                {referrer.linkedin && (
-                  <a href={referrer.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[#0a66c2] bg-[#f3f9ff] hover:bg-[#e1f0ff] border border-[#0a66c2]/20 px-3 py-1.5 rounded-full transition-colors font-medium text-[13px] tracking-[-0.2px] no-underline shrink-0">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                    Connect
-                  </a>
+                ) : (
+                   <div className="flex items-center gap-3">
+                     <span className="text-[14px] text-gray-500">Awaiting match</span>
+                   </div>
                 )}
               </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full border-2 border-black border-t-transparent animate-spin" />
-                <span className="text-[13px] text-gray-400 tracking-[-0.3px]">Loading…</span>
-              </div>
-            )
-          ) : (
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
-              </div>
-              <div>
-                <p className="text-[15px] font-medium tracking-[-0.5px] text-black m-0">Awaiting match</p>
-                <p className="text-[13px] text-gray-500 m-0 tracking-[-0.3px]">We'll connect you with an employee soon</p>
-              </div>
-            </div>
-          )}
+            );
+          })}
         </div>
-
-        {req.status === 'pending' && (
-          <button
-            onClick={() => onWithdraw(req.id)}
-            disabled={withdrawing}
-            className={`w-full py-3 rounded-xl border-[1px] border-red-500 bg-white text-red-500 text-[16px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${withdrawing ? 'opacity-60 cursor-not-allowed' : ''} hover:bg-gray-50`}
-          >
-            {withdrawing ? 'Withdrawing…' : 'Withdraw Request'}
-          </button>
-        )}
-
-        {req.status === 'pending_verification' && (
-          <div className="flex flex-col gap-3">
-            <p className="text-[14px] text-center text-gray-600 font-medium tracking-[-0.3px] mb-1">Did you receive the referral email?</p>
-            <div className="flex gap-4">
-              <button
-                onClick={() => onVerify(req.id, 'deny')}
-                disabled={verifying}
-                className={`flex-1 py-3 rounded-xl border-[1px] border-gray-400 bg-white text-gray-600 text-[15px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : ''} hover:bg-gray-50`}
-              >
-                No, I didn't
-              </button>
-              <button
-                onClick={() => onVerify(req.id, 'confirm')}
-                disabled={verifying}
-                className={`flex-1 py-3 rounded-xl border-[1px] border-black bg-black text-white text-[15px] font-medium tracking-[-0.5px] transition-all cursor-pointer ${verifying ? 'opacity-60 cursor-not-allowed' : ''} hover:bg-gray-900`}
-              >
-                Yes, referred
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -314,6 +283,38 @@ function CandidateDashboard({ user, onLogout }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+
+  const groupedRequests = useMemo(() => {
+    const groups = {};
+    requests.forEach(r => {
+      const key = `${r.company}-${r.job_title}`;
+      if (!groups[key]) {
+        groups[key] = {
+          id: key,
+          company: r.company,
+          job_title: r.job_title,
+          items: [],
+          created_at: r.created_at,
+        };
+      }
+      groups[key].items.push(r);
+      if (new Date(r.created_at) > new Date(groups[key].created_at)) {
+        groups[key].created_at = r.created_at;
+      }
+    });
+
+    Object.values(groups).forEach(g => {
+      if (g.items.some(r => r.status === 'referred')) g.status = 'referred';
+      else if (g.items.some(r => r.status === 'pending_verification')) g.status = 'pending_verification';
+      else if (g.items.some(r => r.status === 'pending')) g.status = 'pending';
+      else if (g.items.every(r => r.status === 'declined')) g.status = 'declined';
+      else if (g.items.every(r => r.status === 'expired')) g.status = 'expired';
+      else if (g.items.every(r => r.status === 'withdrawn')) g.status = 'withdrawn';
+      else g.status = 'declined'; 
+    });
+
+    return Object.values(groups).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }, [requests]);
   const [withdrawing, setWithdrawing] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
@@ -353,7 +354,13 @@ function CandidateDashboard({ user, onLogout }) {
       const d = await r.json();
       if (!r.ok) throw new Error(d.message);
       setRequests(prev => prev.map(x => x.id === id ? { ...x, status: 'withdrawn' } : x));
-      setSelected(prev => prev?.id === id ? { ...prev, status: 'withdrawn' } : prev);
+      setSelected(prev => {
+        if (!prev || !prev.items) return prev;
+        return {
+          ...prev,
+          items: prev.items.map(i => i.id === id ? { ...i, status: 'withdrawn' } : i)
+        };
+      });
     } catch (err) {
       alert(err.message);
     } finally {
@@ -381,7 +388,13 @@ function CandidateDashboard({ user, onLogout }) {
       if (!r.ok) throw new Error(d.message);
       const newStatus = action === 'confirm' ? 'referred' : 'disputed';
       setRequests(prev => prev.map(x => x.id === id ? { ...x, status: newStatus } : x));
-      setSelected(prev => prev?.id === id ? { ...prev, status: newStatus } : prev);
+      setSelected(prev => {
+        if (!prev || !prev.items) return prev;
+        return {
+          ...prev,
+          items: prev.items.map(i => i.id === id ? { ...i, status: newStatus } : i)
+        };
+      });
     } catch (err) {
       alert(err.message);
     } finally {
@@ -530,26 +543,26 @@ function CandidateDashboard({ user, onLogout }) {
                     </div>
                   ) : (
                     <div className="grid gap-4">
-                      {requests.map(req => (
-                        <button key={req.id} onClick={() => setSelected(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:bg-gray-50">
+                      {groupedRequests.map(group => (
+                        <button key={group.id} onClick={() => setSelected(group)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:bg-gray-50">
                           <div className="flex items-center gap-5">
-                            {getCompanyLogo(req.company) ? (
-                              <img src={getCompanyLogo(req.company)} alt={req.company} className="w-8 h-8 object-contain shrink-0" />
+                            {getCompanyLogo(group.company) ? (
+                              <img src={getCompanyLogo(group.company)} alt={group.company} className="w-8 h-8 object-contain shrink-0" />
                             ) : (
                               <div className="w-8 h-8 flex items-center justify-center text-[18px] font-medium text-black border border-black rounded-[7px] shrink-0">
-                                {req.company?.[0]?.toUpperCase()}
+                                {group.company?.[0]?.toUpperCase()}
                               </div>
                             )}
                             <div>
-                              <p className="text-[17px] font-medium tracking-[-0.5px] text-black mb-1">{req.job_title}</p>
+                              <p className="text-[17px] font-medium tracking-[-0.5px] text-black mb-1">{group.job_title}</p>
                               <p className="text-[14px] text-gray-500 tracking-[-0.3px] mb-2">
-                                {req.company} · {req.referrer_id ? `${req.status === 'declined' ? 'Declined by' : 'Referred by'} ${req.referrer_name || 'an employee'}` : 'Awaiting match'}
+                                {group.company} · {group.items.length} employee request{group.items.length !== 1 ? 's' : ''}
                               </p>
                               <div className="flex items-center gap-3">
-                                <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-[7px] border border-black" style={{ backgroundColor: STATUS_CFG[req.status].bg, color: '#000' }}>
-                                  {STATUS_CFG[req.status].label}
+                                <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-[7px] border border-black" style={{ backgroundColor: STATUS_CFG[group.status].bg, color: '#000' }}>
+                                  {STATUS_CFG[group.status].label}
                                 </span>
-                                <span className="text-[13px] tracking-[-0.3px] text-gray-500">Sent {daysAgo(req.created_at)} {req.status === 'pending' ? `· Expires in ${expiresIn(req.created_at)}` : ''}</span>
+                                <span className="text-[13px] tracking-[-0.3px] text-gray-500">Sent {daysAgo(group.created_at)}</span>
                               </div>
                             </div>
                           </div>
@@ -623,7 +636,7 @@ function CandidateDashboard({ user, onLogout }) {
         </div>
       </div>
 
-      {selected && <CandidateDetailPanel req={selected} onClose={() => setSelected(null)} onWithdraw={handleWithdraw} withdrawing={withdrawing} onVerify={handleVerify} verifying={verifying} />}
+      {selected && <CandidateDetailPanel group={selected} onClose={() => setSelected(null)} onWithdraw={handleWithdraw} withdrawing={withdrawing} onVerify={handleVerify} verifying={verifying} />}
     </div>
   );
 }
@@ -633,6 +646,38 @@ function EmployeeDashboard({ user, onLogout }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+
+  const groupedRequests = useMemo(() => {
+    const groups = {};
+    requests.forEach(r => {
+      const key = `${r.company}-${r.job_title}`;
+      if (!groups[key]) {
+        groups[key] = {
+          id: key,
+          company: r.company,
+          job_title: r.job_title,
+          items: [],
+          created_at: r.created_at,
+        };
+      }
+      groups[key].items.push(r);
+      if (new Date(r.created_at) > new Date(groups[key].created_at)) {
+        groups[key].created_at = r.created_at;
+      }
+    });
+
+    Object.values(groups).forEach(g => {
+      if (g.items.some(r => r.status === 'referred')) g.status = 'referred';
+      else if (g.items.some(r => r.status === 'pending_verification')) g.status = 'pending_verification';
+      else if (g.items.some(r => r.status === 'pending')) g.status = 'pending';
+      else if (g.items.every(r => r.status === 'declined')) g.status = 'declined';
+      else if (g.items.every(r => r.status === 'expired')) g.status = 'expired';
+      else if (g.items.every(r => r.status === 'withdrawn')) g.status = 'withdrawn';
+      else g.status = 'declined'; 
+    });
+
+    return Object.values(groups).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }, [requests]);
   const [processing, setProcessing] = useState(false);
   const [tab, setTab] = useState('pending'); // 'pending' | 'history'
 

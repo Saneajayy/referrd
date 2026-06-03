@@ -83,7 +83,7 @@ export default function JobOpenings() {
     
     fetch('/api/referrals/my', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
-      .then(d => { if (d?.requests) setAppliedTitles(d.requests.map(req => req.job_title)); })
+      .then(d => { if (d?.requests) setAppliedTitles(d.requests.map(req => `${req.company}-${req.job_title}`)); })
       .catch(() => {});
 
     fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
@@ -108,7 +108,7 @@ export default function JobOpenings() {
 
   const [selectedId, setSelectedId] = useState(location.state?.selectedId ?? (JOBS[0]?.id ?? null));
   const job = filteredJobs.find(j => j.id === selectedId) || filteredJobs[0];
-  const hasApplied = job ? appliedTitles.includes(job.title) : false;
+  const hasApplied = job ? appliedTitles.includes(`${job.company}-${job.title}`) : false;
 
   const navigate = useNavigate();
   const [isApplying, setIsApplying] = useState(false);
@@ -123,6 +123,10 @@ export default function JobOpenings() {
   const [dragOver, setDragOver] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const fileRef = useRef(null);
+  const [availableReferrers, setAvailableReferrers] = useState([]);
+  const [selectedReferrers, setSelectedReferrers] = useState([]);
+  const [isSelectingReferrers, setIsSelectingReferrers] = useState(false);
+  const [fetchingReferrers, setFetchingReferrers] = useState(false);
 
   const currentHistory = job ? matchHistory[job.id] : null;
   const matchState = (activeUploadJobId === job?.id && (uploadState === STATE.LOADING || uploadState === STATE.ERROR))
@@ -143,6 +147,8 @@ export default function JobOpenings() {
     setActiveUploadJobId(null);
     setUploadState(STATE.IDLE);
     setErrorMsg('');
+    setIsSelectingReferrers(false);
+    setSelectedReferrers([]);
   };
 
   const handleJobSelect = (id) => {
@@ -199,10 +205,33 @@ export default function JobOpenings() {
     if (file) handleFile(file);
   };
 
+  const handleStartReferrerSelection = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return navigate('/login');
+    
+    setIsSelectingReferrers(true);
+    setFetchingReferrers(true);
+    try {
+      const res = await fetch(`/api/referrals/employees/${job.company}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) setAvailableReferrers(data.employees || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setFetchingReferrers(false);
+    }
+  };
+
   const handleRequestReferral = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
+      return;
+    }
+    if (selectedReferrers.length === 0) {
+      alert("Please select at least one referrer.");
       return;
     }
     setRequesting(true);
@@ -210,7 +239,12 @@ export default function JobOpenings() {
       const res = await fetch('/api/referrals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ job_title: job.title, company: job.company, ai_score: matchResult.score })
+        body: JSON.stringify({ 
+          job_title: job.title, 
+          company: job.company, 
+          ai_score: matchResult.score,
+          referrer_ids: selectedReferrers 
+        })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to submit request.');
@@ -466,7 +500,7 @@ export default function JobOpenings() {
 
                   <h3 className="text-[20px] tracking-[-1px] font-medium text-black mb-4">Recommended Jobs</h3>
                   <div className="flex flex-col gap-3">
-                    {JOBS.filter(j => j.id !== job.id && !appliedTitles.includes(j.title)).slice(0, 3).map(rec => (
+                    {JOBS.filter(j => j.id !== job.id && !appliedTitles.includes(`${j.company}-${j.title}`)).slice(0, 3).map(rec => (
                       <button
                         key={rec.id}
                         onClick={() => handleJobSelect(rec.id)}
@@ -579,10 +613,71 @@ export default function JobOpenings() {
                         </ul>
                       )}
 
-                      <button onClick={handleRequestReferral} disabled={requesting} className="w-full bg-[#113824] border border-black text-white py-2.5 text-[15px] rounded-lg transition-all cursor-pointer mb-2 hover:opacity-90">
-                        {requesting ? 'Submitting...' : 'Request Referral →'}
-                      </button>
-                      <button onClick={resetMatch} className="w-full text-[13px] text-gray-500 hover:text-black py-1 cursor-pointer hover:bg-gray-50">Try another resume</button>
+                      {!isSelectingReferrers ? (
+                        <>
+                          <button onClick={handleStartReferrerSelection} disabled={requesting} className="w-full bg-[#113824] border border-black text-white py-2.5 text-[15px] rounded-lg transition-all cursor-pointer mb-2 hover:opacity-90">
+                            Select Referrers →
+                          </button>
+                          <button onClick={resetMatch} className="w-full text-[13px] text-gray-500 hover:text-black py-1 cursor-pointer hover:bg-gray-50">Try another resume</button>
+                        </>
+                      ) : (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <h3 className="text-[16px] font-medium tracking-[-0.5px] text-black mb-1">Select Referrers</h3>
+                          <p className="text-[13px] text-gray-500 mb-4">
+                            Choose up to {currentUser?.isPro ? 6 : 3} employees to send your request to.
+                          </p>
+                          
+                          {fetchingReferrers ? (
+                            <p className="text-[13px] text-gray-400">Loading employees...</p>
+                          ) : availableReferrers.length === 0 ? (
+                            <p className="text-[13px] text-gray-400 mb-4">No employees found for this company.</p>
+                          ) : (
+                            <div className="flex flex-col gap-2 mb-4 max-h-[200px] overflow-y-auto pr-1">
+                              {availableReferrers.map(emp => {
+                                const isSelected = selectedReferrers.includes(emp.id);
+                                const maxAllowed = currentUser?.isPro ? 6 : 3;
+                                const isDisabled = !isSelected && selectedReferrers.length >= maxAllowed;
+                                
+                                return (
+                                  <label key={emp.id} className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${isSelected ? 'border-black bg-gray-50' : 'border-gray-200 hover:bg-gray-50'} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                    <input 
+                                      type="checkbox" 
+                                      className="accent-black w-4 h-4"
+                                      disabled={isDisabled}
+                                      checked={isSelected}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          if (selectedReferrers.length < maxAllowed) setSelectedReferrers([...selectedReferrers, emp.id]);
+                                        } else {
+                                          setSelectedReferrers(selectedReferrers.filter(id => id !== emp.id));
+                                        }
+                                      }}
+                                    />
+                                    <div className="w-8 h-8 bg-gray-100 border border-gray-200 rounded-full flex items-center justify-center text-black text-[14px] shrink-0">
+                                      {emp.name?.[0]?.toUpperCase()}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-[14px] font-medium tracking-[-0.5px] text-black truncate m-0 leading-tight">{emp.name}</p>
+                                      <p className="text-[12px] text-gray-500 truncate m-0 mt-0.5">{emp.designation || 'Employee'}</p>
+                                    </div>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          <div className="flex gap-2">
+                            <button onClick={() => setIsSelectingReferrers(false)} className="flex-1 py-2.5 rounded-lg border border-gray-300 bg-white text-[14px] text-gray-600 hover:bg-gray-50 cursor-pointer">Back</button>
+                            <button 
+                              onClick={handleRequestReferral} 
+                              disabled={requesting || selectedReferrers.length === 0} 
+                              className="flex-[2] bg-[#113824] border border-black text-white py-2.5 text-[14px] rounded-lg disabled:opacity-50 hover:opacity-90 transition-all cursor-pointer"
+                            >
+                              {requesting ? 'Sending...' : `Send Request (${selectedReferrers.length})`}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 

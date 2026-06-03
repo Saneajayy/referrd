@@ -218,4 +218,160 @@ Nice to have:
 - Knowledge of streaming data (Kafka, Pub/Sub)
 - Experience with dbt or Airflow`,
     },
+    {
+        id: 'microsoft-swe-intern-2026',
+        title: 'Software Engineering Intern',
+        company: 'Microsoft',
+        location: 'Hyderabad, India',
+        type: 'Internship',
+        postedAt: '2026-06-03',
+        availableReferrers: 5,
+        externalLink: 'https://careers.microsoft.com',
+        jd: `About the role:
+We are looking for a highly motivated Software Engineering Intern to join our team. You will have the opportunity to work on real-world projects, build scalable APIs, and integrate cutting-edge AI technologies into our products.
+
+Responsibilities:
+- Collaborate with engineers to design and develop full-stack web applications and RESTful APIs.
+- Write clean, maintainable code in JavaScript, C++, Java, or Python.
+- Participate in code reviews and utilize version control (Git/GitHub) effectively.
+- Help integrate Large Language Models (LLMs) and build RAG pipelines for AI-driven features.
+- Troubleshoot and debug issues, ensuring high performance and reliability using tools like Sentry.
+
+Requirements:
+- Currently pursuing a B.Tech in Computer Science, Electronics, or a related technical field.
+- Strong foundation in Data Structures, Algorithms (DSA), and Object-Oriented Programming (OOP).
+- Demonstrated strong problem-solving skills (e.g., active participation in competitive programming like LeetCode or hackathons).
+- Proficiency in web technologies including React.js, Node.js, and Express.js.
+- Experience with databases such as PostgreSQL, MongoDB, or MySQL.
+
+Nice to have:
+- Previous experience or projects involving AI APIs (like Google Gemini) and frameworks like LangChain.
+- Experience with full SDLC and secure authentication systems.
+- Proven ability to take initiative, such as co-founding projects or building end-to-end platforms.`,
+    },
+    {
+        id: 'nvidia-swe-intern-2026',
+        title: 'Software Engineering Intern',
+        company: 'Nvidia',
+        location: 'Pune, India',
+        type: 'Internship',
+        postedAt: '2026-06-03',
+        availableReferrers: 5,
+        externalLink: 'https://careers.nvidia.com',
+        jd: `About the role:
+We are looking for a highly motivated Software Engineering Intern to join our team. You will have the opportunity to work on real-world projects, build scalable APIs, and integrate cutting-edge AI technologies into our products.
+
+Responsibilities:
+- Collaborate with engineers to design and develop full-stack web applications and RESTful APIs.
+- Write clean, maintainable code in JavaScript, C++, Java, or Python.
+- Participate in code reviews and utilize version control (Git/GitHub) effectively.
+- Help integrate Large Language Models (LLMs) and build RAG pipelines for AI-driven features.
+- Troubleshoot and debug issues, ensuring high performance and reliability using tools like Sentry.
+
+Requirements:
+- Currently pursuing a B.Tech in Computer Science, Electronics, or a related technical field.
+- Strong foundation in Data Structures, Algorithms (DSA), and Object-Oriented Programming (OOP).
+- Demonstrated strong problem-solving skills (e.g., active participation in competitive programming like LeetCode or hackathons).
+- Proficiency in web technologies including React.js, Node.js, and Express.js.
+- Experience with databases such as PostgreSQL, MongoDB, or MySQL.
+
+Nice to have:
+- Previous experience or projects involving AI APIs (like Google Gemini) and frameworks like LangChain.
+- Experience with full SDLC and secure authentication systems.
+- Proven ability to take initiative, such as co-founding projects or building end-to-end platforms.`,
+    },
+    {
+        id: 'amazon-swe-intern-2026',
+        title: 'Software Engineering Intern',
+        company: 'Amazon',
+        location: 'Bangalore, India',
+        type: 'Internship',
+        postedAt: '2026-06-03',
+        availableReferrers: 5,
+        externalLink: 'https://careers.amazon.com',
+        jd: `About the role:
+We are looking for a highly motivated Software Engineering Intern to join our team. You will have the opportunity to work on real-world projects, build scalable APIs, and integrate cutting-edge AI technologies into our products.
+
+Responsibilities:
+- Collaborate with engineers to design and develop full-stack web applications and RESTful APIs.
+- Write clean, maintainable code in JavaScript, C++, Java, or Python.
+- Participate in code reviews and utilize version control (Git/GitHub) effectively.
+- Help integrate Large Language Models (LLMs) and build RAG pipelines for AI-driven features.
+- Troubleshoot and debug issues, ensuring high performance and reliability using tools like Sentry.
+
+Requirements:
+- Currently pursuing a B.Tech in Computer Science, Electronics, or a related technical field.
+- Strong foundation in Data Structures, Algorithms (DSA), and Object-Oriented Programming (OOP).
+- Demonstrated strong problem-solving skills (e.g., active participation in competitive programming like LeetCode or hackathons).
+- Proficiency in web technologies including React.js, Node.js, and Express.js.
+- Experience with databases such as PostgreSQL, MongoDB, or MySQL.
+
+Nice to have:
+- Previous experience or projects involving AI APIs (like Google Gemini) and frameworks like LangChain.
+- Experience with full SDLC and secure authentication systems.
+- Proven ability to take initiative, such as co-founding projects or building end-to-end platforms.`,
+    },
+    {
+        id: 'netflix-swe-intern-2026',
+        title: 'Software Engineering Intern',
+        company: 'Netflix',
+        location: 'Remote, India',
+        type: 'Internship',
+        postedAt: '2026-06-03',
+        availableReferrers: 5,
+        externalLink: 'https://careers.netflix.com',
+        jd: `About the role:
+We are looking for a highly motivated Software Engineering Intern to join our team. You will have the opportunity to work on real-world projects, build scalable APIs, and integrate cutting-edge AI technologies into our products.
+
+Responsibilities:
+- Collaborate with engineers to design and develop full-stack web applications and RESTful APIs.
+- Write clean, maintainable code in JavaScript, C++, Java, or Python.
+- Participate in code reviews and utilize version control (Git/GitHub) effectively.
+- Help integrate Large Language Models (LLMs) and build RAG pipelines for AI-driven features.
+- Troubleshoot and debug issues, ensuring high performance and reliability using tools like Sentry.
+
+Requirements:
+- Currently pursuing a B.Tech in Computer Science, Electronics, or a related technical field.
+- Strong foundation in Data Structures, Algorithms (DSA), and Object-Oriented Programming (OOP).
+- Demonstrated strong problem-solving skills (e.g., active participation in competitive programming like LeetCode or hackathons).
+- Proficiency in web technologies including React.js, Node.js, and Express.js.
+- Experience with databases such as PostgreSQL, MongoDB, or MySQL.
+
+Nice to have:
+- Previous experience or projects involving AI APIs (like Google Gemini) and frameworks like LangChain.
+- Experience with full SDLC and secure authentication systems.
+- Proven ability to take initiative, such as co-founding projects or building end-to-end platforms.`,
+    },
+    {
+        id: 'apple-swe-intern-2026',
+        title: 'Software Engineering Intern',
+        company: 'Apple',
+        location: 'Hyderabad, India',
+        type: 'Internship',
+        postedAt: '2026-06-03',
+        availableReferrers: 5,
+        externalLink: 'https://careers.apple.com',
+        jd: `About the role:
+We are looking for a highly motivated Software Engineering Intern to join our team. You will have the opportunity to work on real-world projects, build scalable APIs, and integrate cutting-edge AI technologies into our products.
+
+Responsibilities:
+- Collaborate with engineers to design and develop full-stack web applications and RESTful APIs.
+- Write clean, maintainable code in JavaScript, C++, Java, or Python.
+- Participate in code reviews and utilize version control (Git/GitHub) effectively.
+- Help integrate Large Language Models (LLMs) and build RAG pipelines for AI-driven features.
+- Troubleshoot and debug issues, ensuring high performance and reliability using tools like Sentry.
+
+Requirements:
+- Currently pursuing a B.Tech in Computer Science, Electronics, or a related technical field.
+- Strong foundation in Data Structures, Algorithms (DSA), and Object-Oriented Programming (OOP).
+- Demonstrated strong problem-solving skills (e.g., active participation in competitive programming like LeetCode or hackathons).
+- Proficiency in web technologies including React.js, Node.js, and Express.js.
+- Experience with databases such as PostgreSQL, MongoDB, or MySQL.
+
+Nice to have:
+- Previous experience or projects involving AI APIs (like Google Gemini) and frameworks like LangChain.
+- Experience with full SDLC and secure authentication systems.
+- Proven ability to take initiative, such as co-founding projects or building end-to-end platforms.`,
+    }
 ];
+
