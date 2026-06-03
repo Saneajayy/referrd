@@ -248,6 +248,15 @@ router.patch('/:id/verify', requireAuth, async (req, res) => {
     );
 
     if (!rows.length) return res.status(404).json({ message: 'Request not found or not awaiting verification.' });
+    
+    // Add points to referrer if confirmed
+    if (newStatus === 'referred' && rows[0].referrer_id) {
+      await pool.query(
+        `UPDATE users SET points = COALESCE(points, 0) + 10 WHERE id = $1`,
+        [rows[0].referrer_id]
+      );
+    }
+    
     return res.json({ request: rows[0] });
   } catch (err) {
     console.error('[referrals/verify]', err);

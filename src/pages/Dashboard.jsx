@@ -126,7 +126,7 @@ function CandidateDetailPanel({ group, onClose, onWithdraw, withdrawing, onVerif
     <div onClick={onClose} className="fixed inset-0 z-[200] bg-black/40 flex items-end sm:items-center justify-center sm:p-6">
       <div onClick={e => e.stopPropagation()} className="w-full sm:max-w-[600px] bg-white sm:rounded-3xl sm:border-[1px] sm:border-gray-200 rounded-t-3xl px-8 pt-8 pb-10 sm:shadow-2xl animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] max-h-[90vh] overflow-y-auto">
         <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
-        
+
         <div className="flex justify-between items-start mb-2">
           <div>
             <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-400 mb-1">{group.company}</p>
@@ -141,7 +141,7 @@ function CandidateDetailPanel({ group, onClose, onWithdraw, withdrawing, onVerif
         </div>
 
         <h3 className="text-[14px] font-medium tracking-[-0.5px] text-black mb-3 px-1">Requested Referrers</h3>
-        
+
         <div className="flex flex-col gap-3 mb-6">
           {group.items.map(req => {
             const reqCfg = STATUS_CFG[req.status] || STATUS_CFG.pending;
@@ -159,7 +159,7 @@ function CandidateDetailPanel({ group, onClose, onWithdraw, withdrawing, onVerif
                           <p className="text-[12px] text-gray-500 m-0 tracking-[-0.3px] mt-0.5">{req.referrer_designation || 'Employee'}</p>
                         </div>
                       </div>
-                      
+
                       <div className="flex flex-col items-end gap-1">
                         <span className="text-[11px] px-2 py-0.5 rounded-md font-semibold border" style={{ backgroundColor: reqCfg.bg, color: reqCfg.color, borderColor: `${reqCfg.color}40` }}>{reqCfg.label}</span>
                         {req.referrer_linkedin && (
@@ -169,7 +169,7 @@ function CandidateDetailPanel({ group, onClose, onWithdraw, withdrawing, onVerif
                         )}
                       </div>
                     </div>
-                    
+
                     {req.note && (
                       <div className="bg-white border border-gray-200 rounded-lg p-3 mt-1">
                         <p className="text-[13px] text-gray-700 m-0 leading-snug"><span className="font-medium text-black">Note:</span> {req.note}</p>
@@ -197,9 +197,9 @@ function CandidateDetailPanel({ group, onClose, onWithdraw, withdrawing, onVerif
                     )}
                   </div>
                 ) : (
-                   <div className="flex items-center gap-3">
-                     <span className="text-[14px] text-gray-500">Awaiting match</span>
-                   </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[14px] text-gray-500">Awaiting match</span>
+                  </div>
                 )}
               </div>
             );
@@ -310,11 +310,44 @@ function CandidateDashboard({ user, onLogout }) {
       else if (g.items.every(r => r.status === 'declined')) g.status = 'declined';
       else if (g.items.every(r => r.status === 'expired')) g.status = 'expired';
       else if (g.items.every(r => r.status === 'withdrawn')) g.status = 'withdrawn';
-      else g.status = 'declined'; 
+      else g.status = 'declined';
     });
 
     return Object.values(groups).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }, [requests]);
+
+  const activities = useMemo(() => {
+    let events = [];
+    requests.forEach(r => {
+      events.push({
+        id: `created-${r.id}`,
+        time: new Date(r.created_at),
+        type: 'created',
+        message: `You requested a referral to ${r.company} for ${r.job_title}.`
+      });
+
+      if (r.status !== 'pending' && r.updated_at) {
+        let msg = '';
+        if (r.status === 'referred') msg = `${r.referrer_name || 'An employee'} referred you for ${r.job_title} at ${r.company}!`;
+        else if (r.status === 'pending_verification') msg = `${r.referrer_name || 'An employee'} indicated they referred you to ${r.company}. Please verify!`;
+        else if (r.status === 'declined') msg = `Your request to ${r.company} was declined.`;
+        else if (r.status === 'withdrawn') msg = `You withdrew your request to ${r.company}.`;
+        else if (r.status === 'expired') msg = `Your request to ${r.company} expired.`;
+        else if (r.status === 'disputed') msg = `You disputed a referral from ${r.referrer_name || 'an employee'} at ${r.company}.`;
+
+        if (msg) {
+          events.push({
+            id: `updated-${r.id}`,
+            time: new Date(r.updated_at),
+            type: r.status,
+            message: msg
+          });
+        }
+      }
+    });
+    return events.sort((a, b) => b.time - a.time);
+  }, [requests]);
+
   const [withdrawing, setWithdrawing] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
@@ -458,15 +491,15 @@ function CandidateDashboard({ user, onLogout }) {
                 <div>
                   <p className="text-[11px] font-medium tracking-[0.4px] uppercase text-gray-500 mb-3">Overview</p>
                   <div className="flex flex-col gap-2.5">
-                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:bg-gray-50">
+                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">Requests sent</span>
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">{requests.length}</span>
                     </button>
-                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:bg-gray-50">
+                    <button onClick={() => reqRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">Referred</span>
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">{referred}</span>
                     </button>
-                    <button onClick={() => savedRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:bg-gray-50">
+                    <button onClick={() => savedRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-between bg-white border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">Saved jobs</span>
                       <span className="text-[15px] text-black font-medium tracking-[-0.5px]">{savedJobsList.length}</span>
                     </button>
@@ -544,7 +577,7 @@ function CandidateDashboard({ user, onLogout }) {
                   ) : (
                     <div className="grid gap-4">
                       {groupedRequests.map(group => (
-                        <button key={group.id} onClick={() => setSelected(group)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:bg-gray-50">
+                        <button key={group.id} onClick={() => setSelected(group)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
                           <div className="flex items-center gap-5">
                             {getCompanyLogo(group.company) ? (
                               <img src={getCompanyLogo(group.company)} alt={group.company} className="w-8 h-8 object-contain shrink-0" />
@@ -589,7 +622,7 @@ function CandidateDashboard({ user, onLogout }) {
                   ) : (
                     <div className="grid gap-4">
                       {savedJobsList.map(job => (
-                        <Link key={job.id} to="/jobs" state={{ selectedId: job.id }} className="bg-white border-[1px] border-black rounded-xl p-5 flex items-center justify-between gap-4 transition-all no-underline hover:bg-gray-50">
+                        <Link key={job.id} to="/jobs" state={{ selectedId: job.id }} className="bg-white border-[1px] border-black rounded-xl p-5 flex items-center justify-between gap-4 transition-all no-underline hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
                           <div className="flex items-center gap-5">
                             {getCompanyLogo(job.company) ? (
                               <img src={getCompanyLogo(job.company)} alt={job.company} className="w-8 h-8 object-contain shrink-0" />
@@ -626,13 +659,29 @@ function CandidateDashboard({ user, onLogout }) {
           </div>
         </div>
 
-        {/* RIGHT POSTER PANEL (Static) */}
-        <div className="w-[360px] shrink-0 border-l border-black bg-white p-8 hidden xl:flex flex-col items-center overflow-y-auto">
-          <div className="w-full aspect-[3/4] border-2 border-dashed border-gray-400 rounded-xl flex flex-col items-center justify-center text-gray-500 bg-white">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
-            <p className="text-[13px] font-medium tracking-[-0.3px] text-black">Poster Placeholder</p>
-            <p className="text-[11px] text-gray-400 tracking-[-0.3px] text-center px-4 mt-1">Upload your marketing poster here later.</p>
-          </div>
+        {/* RIGHT NOTIFICATION PANEL */}
+        <div className="w-[360px] shrink-0 border-l border-black bg-gray-50 p-6 hidden xl:flex flex-col overflow-y-auto">
+          <h3 className="text-[18px] font-medium tracking-[-0.5px] text-black mb-5">Recent Activity</h3>
+          {activities.length === 0 ? (
+            <div className="bg-white border-[1px] border-dashed border-gray-300 rounded-xl p-8 text-center">
+              <p className="text-[13px] text-gray-500 tracking-[-0.3px]">No activity yet.</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-5 relative">
+              <div className="absolute left-[11px] top-2 bottom-2 w-[2px] bg-gray-200 z-0"></div>
+              {activities.map((act) => (
+                <div key={act.id} className="flex gap-4 relative z-10">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border-[2px] border-gray-50 mt-0.5 ${act.type === 'referred' ? 'bg-emerald-500' : act.type === 'pending_verification' ? 'bg-amber-500' : act.type === 'declined' || act.type === 'withdrawn' ? 'bg-red-500' : 'bg-black'}`}>
+                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[14px] text-black tracking-[-0.3px] leading-snug m-0">{act.message}</p>
+                    <p className="text-[12px] text-gray-400 tracking-[-0.3px] mt-1 m-0">{daysAgo(act.time.toISOString())}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -643,13 +692,49 @@ function CandidateDashboard({ user, onLogout }) {
 
 /* ── Employee Dashboard ──────────────────────────────────────────────────── */
 function EmployeeDashboard({ user, onLogout }) {
-  const [requests, setRequests] = useState([]);
+  const [incomingRequests, setIncomingRequests] = useState([]);
+  const [myRequests, setMyRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(null);
 
-  const groupedRequests = useMemo(() => {
+  const [selectedMyRequest, setSelectedMyRequest] = useState(null);
+  const [selectedIncoming, setSelectedIncoming] = useState(null);
+
+  const [processing, setProcessing] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+
+  const [savedJobIds, setSavedJobIds] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('savedJobs')) || []; }
+    catch { return []; }
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try { setSavedJobIds(JSON.parse(localStorage.getItem('savedJobs')) || []); }
+      catch { setSavedJobIds([]); }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    handleStorageChange();
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const savedJobsList = JOBS.filter(j => savedJobIds.includes(j.id));
+
+  useEffect(() => {
+    Promise.all([
+      authFetch('/api/referrals/company').then(r => r.json()),
+      authFetch('/api/referrals/my').then(r => r.json())
+    ])
+      .then(([companyData, myData]) => {
+        if (companyData?.requests) setIncomingRequests(companyData.requests);
+        if (myData?.requests) setMyRequests(myData.requests);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const groupedMyRequests = useMemo(() => {
     const groups = {};
-    requests.forEach(r => {
+    myRequests.forEach(r => {
       const key = `${r.company}-${r.job_title}`;
       if (!groups[key]) {
         groups[key] = {
@@ -673,20 +758,11 @@ function EmployeeDashboard({ user, onLogout }) {
       else if (g.items.every(r => r.status === 'declined')) g.status = 'declined';
       else if (g.items.every(r => r.status === 'expired')) g.status = 'expired';
       else if (g.items.every(r => r.status === 'withdrawn')) g.status = 'withdrawn';
-      else g.status = 'declined'; 
+      else g.status = 'declined';
     });
 
     return Object.values(groups).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  }, [requests]);
-  const [processing, setProcessing] = useState(false);
-  const [tab, setTab] = useState('pending'); // 'pending' | 'history'
-
-  useEffect(() => {
-    authFetch('/api/referrals/company')
-      .then(r => r.json())
-      .then(d => { if (d?.requests) setRequests(d.requests); })
-      .finally(() => setLoading(false));
-  }, []);
+  }, [myRequests]);
 
   const handleAction = async (id, action, note) => {
     setProcessing(true);
@@ -697,8 +773,8 @@ function EmployeeDashboard({ user, onLogout }) {
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.message);
-      setRequests(prev => prev.map(x => x.id === id ? { ...x, status: action, referrer_id: user.id } : x));
-      setSelected(null);
+      setIncomingRequests(prev => prev.map(x => x.id === id ? { ...x, status: action, referrer_id: user.id } : x));
+      setSelectedIncoming(null);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -706,111 +782,194 @@ function EmployeeDashboard({ user, onLogout }) {
     }
   };
 
+  const handleWithdraw = async (id) => {
+    if (!window.confirm('Withdraw this referral request?')) return;
+    setWithdrawing(true);
+    try {
+      const r = await authFetch(`/api/referrals/${id}/withdraw`, { method: 'PATCH' });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.message);
+      setMyRequests(prev => prev.map(x => x.id === id ? { ...x, status: 'withdrawn' } : x));
+      setSelectedMyRequest(prev => {
+        if (!prev || !prev.items) return prev;
+        return { ...prev, items: prev.items.map(i => i.id === id ? { ...i, status: 'withdrawn' } : i) };
+      });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
+  const handleVerify = async (id, action) => {
+    setVerifying(true);
+    try {
+      const r = await authFetch(`/api/referrals/${id}/verify`, {
+        method: 'PATCH',
+        body: JSON.stringify({ action })
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.message);
+      const newStatus = action === 'confirm' ? 'referred' : 'disputed';
+      setMyRequests(prev => prev.map(x => x.id === id ? { ...x, status: newStatus } : x));
+      setSelectedMyRequest(prev => {
+        if (!prev || !prev.items) return prev;
+        return { ...prev, items: prev.items.map(i => i.id === id ? { ...i, status: newStatus } : i) };
+      });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   if (loading) return <Loading />;
 
-  const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?';
-
-  const pendingReqs = requests.filter(r => r.status === 'pending');
-  const historyReqs = requests.filter(r => r.status !== 'pending' && r.referrer_id === user.id);
-  const displayReqs = tab === 'pending' ? pendingReqs : historyReqs;
+  const referralsGivenCount = incomingRequests.filter(r => (r.status === 'referred' || r.status === 'pending_verification') && r.referrer_id === user.id).length;
+  const pendingIncomingCount = incomingRequests.filter(r => r.status === 'pending').length;
+  const pendingIncomingList = incomingRequests.filter(r => r.status === 'pending');
 
   return (
     <div className="bg-white min-h-screen overflow-hidden">
       <Navbar />
 
       <div className="flex w-full fixed top-16 bottom-0 left-0 right-0 overflow-hidden bg-white">
+        <div className="flex-1 flex overflow-hidden">
 
-        {/* LEFT + CENTER WRAPPER */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-
-
-
-          <div className="flex-1 flex overflow-hidden">
-            {/* LEFT PANEL */}
-            <div className="w-[360px] shrink-0 flex flex-col border-r border-black bg-white max-md:w-full overflow-y-auto xl:overflow-hidden xl:hover:overflow-y-auto">
-
-              <div className="p-6 flex flex-col gap-6 flex-1 bg-white">
-                <div>
-                  <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-500 mb-3">Overview</p>
-                  <div className="flex flex-col gap-2.5">
-                    <button onClick={() => setTab('pending')} className={`flex items-center justify-between border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-transform bg-white text-black ${tab === 'pending' ? ' font-medium border-2' : ' font-normal'} hover:bg-gray-50`}>
-                      <span className="text-[15px] tracking-[-0.5px]">Pending Requests</span>
-                      <span className="text-[15px] tracking-[-0.5px]">{pendingReqs.length}</span>
-                    </button>
-                    <button onClick={() => setTab('history')} className={`flex items-center justify-between border border-black rounded-xl py-2.5 px-4 cursor-pointer transition-transform bg-white text-black ${tab === 'history' ? ' font-medium border-2' : ' font-normal'} hover:bg-gray-50`}>
-                      <span className="text-[15px] tracking-[-0.5px]">Reviewed History</span>
-                      <span className="text-[15px] tracking-[-0.5px]">{historyReqs.length}</span>
-                    </button>
+          {/* COLUMN 1: LEFT PANEL (Stats) */}
+          <div className="w-[320px] shrink-0 flex flex-col border-r border-black bg-white max-md:w-full overflow-y-auto">
+            <div className="p-6 flex flex-col gap-6 flex-1 bg-white">
+              <div>
+                <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-500 mb-3">Overview</p>
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between border border-black rounded-xl py-2.5 px-4 bg-gray-50 text-black">
+                    <span className="text-[15px] font-medium tracking-[-0.5px]">Points</span>
+                    <span className="text-[15px] font-bold text-emerald-600 tracking-[-0.5px] flex items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                      {user.points || 0}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between border border-gray-200 rounded-xl py-2.5 px-4 bg-white text-black">
+                    <span className="text-[15px] font-medium tracking-[-0.5px]">Referrals Given</span>
+                    <span className="text-[15px] tracking-[-0.5px]">{referralsGivenCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between border border-gray-200 rounded-xl py-2.5 px-4 bg-white text-black">
+                    <span className="text-[15px] font-medium tracking-[-0.5px]">My Requests</span>
+                    <span className="text-[15px] tracking-[-0.5px]">{myRequests.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between border border-gray-200 rounded-xl py-2.5 px-4 bg-white text-black">
+                    <span className="text-[15px] font-medium tracking-[-0.5px]">Pending Incoming</span>
+                    <span className="text-[15px] tracking-[-0.5px]">{pendingIncomingCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between border border-gray-200 rounded-xl py-2.5 px-4 bg-white text-black">
+                    <span className="text-[15px] font-medium tracking-[-0.5px]">Saved Jobs</span>
+                    <span className="text-[15px] tracking-[-0.5px]">{savedJobsList.length}</span>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* CENTER PANEL */}
-            <div className="flex-1 overflow-y-auto p-12 max-md:hidden bg-white">
-              <div className="max-w-[800px] mx-auto w-full">
+          {/* COLUMN 2: CENTER PANEL (My Requests) */}
+          <div className="flex-1 border-r border-black overflow-y-auto p-10 max-md:hidden bg-white">
+            <div className="w-full">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-[24px] font-medium tracking-[-1px] text-black m-0 leading-none">
+                  My Requests
+                </h2>
+                <Link to="/jobs" className="text-[13px] text-black border border-black rounded-xl px-4 py-1.5 hover:bg-gray-100 transition-all no-underline font-medium tracking-[-0.5px]">Browse jobs →</Link>
+              </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8">
-                  <h2 className="text-[28px] font-medium tracking-[-1px] text-black m-0 leading-none">
-                    {tab === 'pending' ? 'Pending Requests' : 'Reviewed History'}
-                  </h2>
+              {groupedMyRequests.length === 0 ? (
+                <div className="bg-white border-[1px] border-black rounded-2xl p-10 text-center">
+                  <p className="text-[16px] font-medium text-black tracking-[-0.5px] mb-2">No referral requests yet</p>
+                  <p className="text-[14px] text-gray-500 tracking-[-0.3px]">You can also request referrals from other companies.</p>
                 </div>
-
-                {displayReqs.length === 0 ? (
-                  <div className="bg-white border-[1px] border-black rounded-2xl p-12 text-center">
-                    <p className="text-[18px] font-medium text-black tracking-[-0.5px] mb-2">{tab === 'pending' ? 'No pending requests' : 'No history yet'}</p>
-                    <p className="text-[15px] text-gray-500 tracking-[-0.3px]">{tab === 'pending' ? "You're all caught up! Check back later for new candidates." : "Candidates you refer or decline will appear here."}</p>
-                  </div>
-                ) : (
-                  <div className="grid gap-4">
-                    {displayReqs.map(req => (
-                      <button key={req.id} onClick={() => setSelected(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:bg-gray-50">
-                        <div className="flex items-center gap-5">
-                          <div className="w-12 h-12 rounded-xl bg-[#113824] border border-black flex items-center justify-center text-[18px] font-medium text-white shrink-0 hover:opacity-90">
-                            {req.seeker_name?.[0]?.toUpperCase()}
+              ) : (
+                <div className="grid gap-4">
+                  {groupedMyRequests.map(group => (
+                    <button key={group.id} onClick={() => setSelectedMyRequest(group)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
+                      <div className="flex items-center gap-5">
+                        {getCompanyLogo(group.company) ? (
+                          <img src={getCompanyLogo(group.company)} alt={group.company} className="w-8 h-8 object-contain shrink-0" />
+                        ) : (
+                          <div className="w-8 h-8 flex items-center justify-center text-[18px] font-medium text-black border border-black rounded-[7px] shrink-0">
+                            {group.company?.[0]?.toUpperCase()}
                           </div>
-                          <div>
-                            <p className="text-[17px] font-medium tracking-[-0.5px] text-black mb-1">{req.job_title}</p>
-                            <p className="text-[14px] text-gray-500 tracking-[-0.3px] mb-2">
-                              {req.seeker_name} · {req.company}
-                            </p>
-                            <div className="flex items-center gap-3">
-                              <span className="text-[13px] text-amber-700 font-medium tracking-[-0.3px] bg-amber-100 border border-black px-2.5 py-0.5 rounded-full">⏱ {expiresIn(req.created_at)}</span>
-                              {req.ai_score != null && (
-                                <span className={`text-[13px] px-2.5 py-0.5 rounded-full font-medium tracking-[-0.3px] border border-black flex items-center gap-1.5 ${req.ai_score >= 60 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
-                                  <span>AI Score:</span> <strong>{req.ai_score}</strong>
-                                </span>
-                              )}
-                              {tab === 'history' && STATUS_CFG[req.status] && (
-                                <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-full border border-black" style={{ backgroundColor: STATUS_CFG[req.status].bg, color: '#000' }}>
-                                  {STATUS_CFG[req.status].label}
-                                </span>
-                              )}
-                            </div>
+                        )}
+                        <div>
+                          <p className="text-[16px] font-medium tracking-[-0.5px] text-black mb-1">{group.job_title}</p>
+                          <div className="flex items-center gap-3">
+                            <span className="text-[12px] font-medium tracking-[-0.3px] px-2.5 py-0.5 rounded-[7px] border border-black" style={{ backgroundColor: STATUS_CFG[group.status].bg, color: '#000' }}>
+                              {STATUS_CFG[group.status].label}
+                            </span>
+                            <span className="text-[13px] tracking-[-0.3px] text-gray-500">Sent {daysAgo(group.created_at)}</span>
                           </div>
                         </div>
-                        <div className="text-[20px] text-gray-400">›</div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-              </div>
+                      </div>
+                      <div className="text-[20px] text-gray-400">›</div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
 
-        {/* RIGHT POSTER PANEL */}
-        <div className="w-[360px] shrink-0 border-l border-black bg-white p-8 hidden xl:flex flex-col items-center overflow-y-auto">
-          <div className="w-full aspect-[3/4] border-2 border-dashed border-gray-400 rounded-xl flex flex-col items-center justify-center text-gray-500 bg-white">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
-            <p className="text-[13px] font-medium tracking-[-0.3px] text-black">Poster Placeholder</p>
-            <p className="text-[11px] text-gray-400 tracking-[-0.3px] text-center px-4 mt-1">Upload your marketing poster here later.</p>
+          {/* COLUMN 3: RIGHT PANEL (Incoming Requests) */}
+          <div className="flex-1 overflow-y-auto p-10 bg-gray-50">
+            <div className="w-full">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-[24px] font-medium tracking-[-1px] text-black m-0 leading-none">
+                  Incoming Requests
+                </h2>
+              </div>
+
+              {pendingIncomingList.length === 0 ? (
+                <div className="bg-white border-[1px] border-dashed border-gray-300 rounded-2xl p-10 text-center">
+                  <p className="text-[16px] font-medium text-black tracking-[-0.5px] mb-2">No pending requests</p>
+                  <p className="text-[14px] text-gray-500 tracking-[-0.3px]">You're all caught up!</p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {pendingIncomingList.map(req => (
+                    <button key={req.id} onClick={() => setSelectedIncoming(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
+                      <div className="flex flex-col gap-3 w-full">
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-[#113824] border border-black flex items-center justify-center text-[16px] font-medium text-white shrink-0">
+                              {req.seeker_name?.[0]?.toUpperCase() ?? '?'}
+                            </div>
+                            <div>
+                              <p className="text-[15px] font-medium tracking-[-0.5px] text-black mb-0.5">{req.seeker_name}</p>
+                              <p className="text-[12px] text-gray-500 tracking-[-0.3px] truncate max-w-[150px]">{req.seeker_email}</p>
+                            </div>
+                          </div>
+                          <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-600">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                          </div>
+                        </div>
+                        <div className="w-full h-px bg-gray-100"></div>
+                        <div className="flex justify-between items-center">
+                          <p className="text-[14px] font-medium tracking-[-0.3px] text-black m-0">{req.job_title}</p>
+                          {req.ai_score != null && (
+                            <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium tracking-[-0.3px] border ${req.ai_score >= 60 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                              Score: {req.ai_score}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
         </div>
       </div>
 
-      {selected && <EmployeeDetailPanel req={selected} onClose={() => setSelected(null)} onAction={handleAction} processing={processing} />}
+      {selectedMyRequest && <CandidateDetailPanel group={selectedMyRequest} onClose={() => setSelectedMyRequest(null)} onWithdraw={handleWithdraw} withdrawing={withdrawing} onVerify={handleVerify} verifying={verifying} />}
+      {selectedIncoming && <EmployeeDetailPanel req={selectedIncoming} onClose={() => setSelectedIncoming(null)} onAction={handleAction} processing={processing} />}
     </div>
   );
 }
