@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import pool from '../db.js';
+import { sendEmail } from '../utils/email.js';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -46,6 +47,21 @@ router.post('/', requireAuth, async (req, res) => {
       )
     );
     const results = await Promise.all(promises);
+    
+    // Send email to referrers
+    try {
+      const emailsRes = await pool.query(`SELECT email, name FROM users WHERE id = ANY($1)`, [referrer_ids]);
+      for (const row of emailsRes.rows) {
+        await sendEmail({
+          to: row.email,
+          subject: "New Referral Request on Referr'd",
+          html: `<p>Hi ${row.name},</p><p>You have a new referral request for ${job_title} at ${company}. Log in to view it.</p>`
+        });
+      }
+    } catch (e) {
+      console.error('[sendEmail] Failed to send to referrers', e);
+    }
+    
     return res.status(201).json({ requests: results.map(r => r.rows[0]) });
   } catch (err) {
     console.error('[referrals/create]', err);
@@ -207,6 +223,33 @@ router.patch('/:id/action', requireAuth, async (req, res) => {
     );
 
     if (!rows.length) return res.status(404).json({ message: 'Request not found, already processed, or not for your company.' });
+    
+    // Cancel other pending requests for the same candidate, job, and company if accepted
+    if (action === 'pending_verification') {
+      const { seeker_id, job_title } = rows[0];
+      await pool.query(
+        `UPDATE referral_requests
+         SET status = 'cancelled', updated_at = NOW()
+         WHERE seeker_id = $1 AND job_title = $2 AND company = $3 AND status = 'pending' AND id != $4`,
+        [seeker_id, job_title, company, req.params.id]
+      );
+    }
+
+    try {
+      const seekerRes = await pool.query('SELECT email, name FROM users WHERE id = $1', [rows[0].seeker_id]);
+      if (seekerRes.rows.length) {
+        const seeker = seekerRes.rows[0];
+        const statusText = action === 'pending_verification' ? 'accepted and is pending your verification' : 'declined';
+        await sendEmail({
+          to: seeker.email,
+          subject: `Update on your Referr'd request for ${rows[0].job_title}`,
+          html: `<p>Hi ${seeker.name},</p><p>Your referral request for ${rows[0].job_title} at ${rows[0].company} has been ${statusText}. Log in to view the details.</p>`
+        });
+      }
+    } catch (e) {
+      console.error('[sendEmail] Failed to send to seeker', e);
+    }
+
     return res.json({ request: rows[0] });
   } catch (err) {
     console.error('[referrals/action]', err);
@@ -255,6 +298,23 @@ router.patch('/:id/verify', requireAuth, async (req, res) => {
         `UPDATE users SET points = COALESCE(points, 0) + 10 WHERE id = $1`,
         [rows[0].referrer_id]
       );
+    }
+    
+    try {
+      if (rows[0].referrer_id) {
+        const empRes = await pool.query('SELECT email, name FROM users WHERE id = $1', [rows[0].referrer_id]);
+        if (empRes.rows.length) {
+          const emp = empRes.rows[0];
+          const statusText = action === 'confirm' ? 'confirmed' : 'disputed';
+          await sendEmail({
+            to: emp.email,
+            subject: `Referral Verification Update`,
+            html: `<p>Hi ${emp.name},</p><p>The candidate has ${statusText} your referral for ${rows[0].job_title} at ${rows[0].company}.</p>`
+          });
+        }
+      }
+    } catch (e) {
+      console.error('[sendEmail] Failed to send to employee', e);
     }
     
     return res.json({ request: rows[0] });

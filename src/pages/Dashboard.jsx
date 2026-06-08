@@ -67,6 +67,7 @@ const STATUS_CFG = {
   declined: { label: 'Declined', color: '#ef4444', bg: '#fef2f2', step: -1 },
   expired: { label: 'Expired', color: '#9ca3af', bg: '#f9fafb', step: -1 },
   withdrawn: { label: 'Withdrawn', color: '#9ca3af', bg: '#f9fafb', step: -1 },
+  cancelled: { label: 'Already Referred', color: '#9ca3af', bg: '#f9fafb', step: -1 },
 };
 
 /* ── Shared UI ───────────────────────────────────────────────────────────── */
@@ -82,7 +83,7 @@ function Loading() {
 function ProgressBar({ status }) {
   const steps = ['Requested', 'Pending', 'Verifying', 'Referred'];
   const cfg = STATUS_CFG[status] || STATUS_CFG.pending;
-  const isBad = ['declined', 'expired', 'withdrawn', 'disputed'].includes(status);
+  const isBad = ['declined', 'expired', 'withdrawn', 'disputed', 'cancelled'].includes(status);
 
   return (
     <div className="my-6">
@@ -111,7 +112,7 @@ function ProgressBar({ status }) {
       </div>
       {isBad && (
         <div className="text-center mt-4 px-4 py-2 rounded-lg border text-[13px] font-medium" style={{ backgroundColor: cfg.bg, borderColor: `${cfg.color}30`, color: cfg.color }}>
-          {cfg.label} — {status === 'declined' ? 'The referrer declined this request.' : status === 'disputed' ? 'You reported this referral as not received.' : status === 'expired' ? 'This request expired after 3 days.' : 'You withdrew this request.'}
+          {cfg.label} — {status === 'declined' ? 'The referrer declined this request.' : status === 'disputed' ? 'You reported this referral as not received.' : status === 'expired' ? 'This request expired after 3 days.' : status === 'cancelled' ? 'Another employee already referred you for this job.' : 'You withdrew this request.'}
         </div>
       )}
     </div>
@@ -310,6 +311,7 @@ function CandidateDashboard({ user, onLogout }) {
       else if (g.items.every(r => r.status === 'declined')) g.status = 'declined';
       else if (g.items.every(r => r.status === 'expired')) g.status = 'expired';
       else if (g.items.every(r => r.status === 'withdrawn')) g.status = 'withdrawn';
+      else if (g.items.every(r => r.status === 'cancelled')) g.status = 'cancelled';
       else g.status = 'declined';
     });
 
@@ -328,12 +330,13 @@ function CandidateDashboard({ user, onLogout }) {
 
       if (r.status !== 'pending' && r.updated_at) {
         let msg = '';
-        if (r.status === 'referred') msg = `${r.referrer_name || 'An employee'} referred you for ${r.job_title} at ${r.company}!`;
-        else if (r.status === 'pending_verification') msg = `${r.referrer_name || 'An employee'} indicated they referred you to ${r.company}. Please verify!`;
+        if (r.status === 'referred') msg = `${r.referrer_name || 'An employee'} referred you for ${r.job_title} at ${r.company}.`;
+        else if (r.status === 'pending_verification') msg = `${r.referrer_name || 'An employee'} indicated they referred you to ${r.company}. Please verify.`;
         else if (r.status === 'declined') msg = `Your request to ${r.company} was declined.`;
         else if (r.status === 'withdrawn') msg = `You withdrew your request to ${r.company}.`;
         else if (r.status === 'expired') msg = `Your request to ${r.company} expired.`;
         else if (r.status === 'disputed') msg = `You disputed a referral from ${r.referrer_name || 'an employee'} at ${r.company}.`;
+        else if (r.status === 'cancelled') msg = `Your request to ${r.company} for ${r.job_title} was cancelled because another employee referred you.`;
 
         if (msg) {
           events.push({
@@ -347,6 +350,15 @@ function CandidateDashboard({ user, onLogout }) {
     });
     return events.sort((a, b) => b.time - a.time);
   }, [requests]);
+
+  const [lastSeen, setLastSeen] = useState(() => parseInt(localStorage.getItem('lastSeenNotifications') || '0', 10));
+  const hasUnread = activities.length > 0 && activities[0].time.getTime() > lastSeen;
+
+  const markAsRead = () => {
+    const now = Date.now();
+    setLastSeen(now);
+    localStorage.setItem('lastSeenNotifications', now.toString());
+  };
 
   const [withdrawing, setWithdrawing] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -660,26 +672,50 @@ function CandidateDashboard({ user, onLogout }) {
         </div>
 
         {/* RIGHT NOTIFICATION PANEL */}
-        <div className="w-[360px] shrink-0 border-l border-black bg-gray-50 p-6 hidden xl:flex flex-col overflow-y-auto">
-          <h3 className="text-[18px] font-medium tracking-[-0.5px] text-black mb-5">Recent Activity</h3>
+        <div className="w-[450px] shrink-0 border-l border-black bg-white p-6 hidden xl:flex flex-col overflow-y-auto">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-[18px] font-medium tracking-[-0.5px] text-black m-0 flex items-center gap-2">
+              Recent Activity
+              {hasUnread && (
+                <div className="relative flex items-center justify-center" title="You have new notifications">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                  <div className="absolute top-0 right-0.5 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse"></div>
+                </div>
+              )}
+            </h3>
+            {hasUnread && (
+              <button onClick={markAsRead} className="text-[12px] text-gray-500 hover:text-black hover:underline cursor-pointer border-none bg-transparent p-0">
+                Mark as read
+              </button>
+            )}
+          </div>
           {activities.length === 0 ? (
             <div className="bg-white border-[1px] border-dashed border-gray-300 rounded-xl p-8 text-center">
               <p className="text-[13px] text-gray-500 tracking-[-0.3px]">No activity yet.</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-5 relative">
-              <div className="absolute left-[11px] top-2 bottom-2 w-[2px] bg-gray-200 z-0"></div>
-              {activities.map((act) => (
-                <div key={act.id} className="flex gap-4 relative z-10">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border-[2px] border-gray-50 mt-0.5 ${act.type === 'referred' ? 'bg-emerald-500' : act.type === 'pending_verification' ? 'bg-amber-500' : act.type === 'declined' || act.type === 'withdrawn' ? 'bg-red-500' : 'bg-black'}`}>
-                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+            <div className="flex flex-col gap-3">
+              {activities.map((act) => {
+                const isUnread = act.time.getTime() > lastSeen;
+                return (
+                  <div key={act.id} className={`p-4 rounded-xl border transition-colors ${isUnread ? 'bg-[#f4fbff] border-[#cae8ff]' : 'bg-white border-gray-200'}`}>
+                    <div className="flex items-start gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${act.type === 'referred' ? 'bg-emerald-100 text-emerald-600' : act.type === 'pending_verification' ? 'bg-amber-100 text-amber-600' : act.type === 'declined' || act.type === 'withdrawn' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'}`}>
+                        {act.type === 'referred' ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                          : act.type === 'pending_verification' ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            : act.type === 'declined' || act.type === 'withdrawn' || act.type === 'cancelled' ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                              : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        }
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] text-black tracking-[-0.3px] leading-snug m-0">{act.message}</p>
+                        <p className="text-[11px] text-gray-400 tracking-[-0.2px] mt-1.5 m-0">{daysAgo(act.time.toISOString())}</p>
+                      </div>
+                      {isUnread && <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>}
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-[14px] text-black tracking-[-0.3px] leading-snug m-0">{act.message}</p>
-                    <p className="text-[12px] text-gray-400 tracking-[-0.3px] mt-1 m-0">{daysAgo(act.time.toISOString())}</p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -758,6 +794,7 @@ function EmployeeDashboard({ user, onLogout }) {
       else if (g.items.every(r => r.status === 'declined')) g.status = 'declined';
       else if (g.items.every(r => r.status === 'expired')) g.status = 'expired';
       else if (g.items.every(r => r.status === 'withdrawn')) g.status = 'withdrawn';
+      else if (g.items.every(r => r.status === 'cancelled')) g.status = 'cancelled';
       else g.status = 'declined';
     });
 
@@ -827,7 +864,7 @@ function EmployeeDashboard({ user, onLogout }) {
 
   const referralsGivenCount = incomingRequests.filter(r => (r.status === 'referred' || r.status === 'pending_verification') && r.referrer_id === user.id).length;
   const pendingIncomingCount = incomingRequests.filter(r => r.status === 'pending').length;
-  const pendingIncomingList = incomingRequests.filter(r => r.status === 'pending');
+  const pendingIncomingList = incomingRequests.filter(r => r.status === 'pending' || r.status === 'cancelled');
 
   return (
     <div className="bg-white min-h-screen overflow-hidden">
@@ -932,7 +969,7 @@ function EmployeeDashboard({ user, onLogout }) {
               ) : (
                 <div className="grid gap-4">
                   {pendingIncomingList.map(req => (
-                    <button key={req.id} onClick={() => setSelectedIncoming(req)} className="w-full text-left bg-white border-[1px] border-black rounded-xl p-5 cursor-pointer transition-all flex items-center justify-between gap-4 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]">
+                    <button key={req.id} onClick={() => req.status !== 'cancelled' && setSelectedIncoming(req)} className={`w-full text-left bg-white border-[1px] border-black rounded-xl p-5 flex items-center justify-between gap-4 transition-all ${req.status === 'cancelled' ? 'opacity-60 cursor-not-allowed bg-gray-50' : 'cursor-pointer hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000000]'}`}>
                       <div className="flex flex-col gap-3 w-full">
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center gap-3">
@@ -951,11 +988,18 @@ function EmployeeDashboard({ user, onLogout }) {
                         <div className="w-full h-px bg-gray-100"></div>
                         <div className="flex justify-between items-center">
                           <p className="text-[14px] font-medium tracking-[-0.3px] text-black m-0">{req.job_title}</p>
-                          {req.ai_score != null && (
-                            <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium tracking-[-0.3px] border ${req.ai_score >= 60 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
-                              Score: {req.ai_score}
-                            </span>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {req.status === 'cancelled' && (
+                              <span className="text-[11px] px-2 py-0.5 rounded-full font-medium tracking-[-0.3px] border bg-gray-100 text-gray-500 border-gray-200">
+                                Already Referred
+                              </span>
+                            )}
+                            {req.ai_score != null && (
+                              <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium tracking-[-0.3px] border ${req.ai_score >= 60 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                                Score: {req.ai_score}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </button>

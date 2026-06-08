@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+import { sendEmail } from '../utils/email.js';
 import pool from '../db.js';
 import multer from 'multer';
 import { createRequire } from 'module';
@@ -35,10 +35,7 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-const isDevMode = () =>
-  !process.env.SMTP_USER ||
-  process.env.SMTP_USER === 'your-email@gmail.com' ||
-  process.env.SMTP_USER.trim() === '';
+// Removed isDevMode as it's now handled by the email utility
 
 // ── POST /api/auth/send-otp ───────────────────────────────────────────────────
 
@@ -50,23 +47,12 @@ router.post('/send-otp', async (req, res) => {
   const expiresAt = Date.now() + 10 * 60 * 1000; // 10 min
   otpStore.set(email.toLowerCase(), { otp, expiresAt, verified: false });
 
-  if (isDevMode()) {
+  if (process.env.SMTP_USER === 'your-email@gmail.com' || !process.env.SMTP_USER || process.env.SMTP_USER.trim() === '') {
     console.log(`\n✉️  [DEV MODE] OTP for ${email}: ${otp}\n`);
-    return res.json({ message: 'OTP sent (dev mode — check server console).', devOtp: otp });
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false,
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-    });
-    await transporter.sendMail({
-      from: `"Referr'd" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: "Your Referr'd Verification Code",
-      html: `
+    const html = `
         <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px;border:1px solid #e5e7eb;border-radius:12px;">
           <h2 style="font-size:24px;font-weight:600;margin-bottom:8px;">Verify your email</h2>
           <p style="color:#6b7280;margin-bottom:24px;">Enter this code to complete your Referr'd signup.</p>
@@ -74,7 +60,12 @@ router.post('/send-otp', async (req, res) => {
             ${otp}
           </div>
           <p style="color:#9ca3af;font-size:13px;margin-top:20px;">Expires in 10 minutes. Do not share this code.</p>
-        </div>`,
+        </div>`;
+    
+    await sendEmail({
+      to: email,
+      subject: "Your Referr'd Verification Code",
+      html
     });
     return res.json({ message: 'OTP sent successfully.' });
   } catch (err) {
