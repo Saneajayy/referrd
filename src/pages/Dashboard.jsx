@@ -672,7 +672,7 @@ function CandidateDashboard({ user, onLogout }) {
         </div>
 
         {/* RIGHT NOTIFICATION PANEL */}
-        <div className="w-[452px] shrink-0 border-l border-black bg-white p-6 hidden xl:flex flex-col overflow-y-auto">
+        <div className="w-[451px] shrink-0 border-l border-black bg-white p-6 hidden xl:flex flex-col overflow-y-auto">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-[18px] font-medium tracking-[-0.5px] text-black m-0 flex items-center gap-2">
               Recent Activity
