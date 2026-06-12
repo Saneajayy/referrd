@@ -1,0 +1,9 @@
+/* Webfont: Merca-Bold */@font-face {
+    font-family: 'Merca';
+    src: url('Merca-Bold.woff2') format('woff2'), /* Modern Browsers */
+         url('Merca-Bold.otf') format('opentype'); /* Safari, Android, iOS */
+             font-style: normal;
+    font-weight: bold;
+    text-rendering: optimizeLegibility;
+}
+

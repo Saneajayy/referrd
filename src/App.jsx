@@ -17,53 +17,13 @@ import whyAnimation from './assets/why.json';
 import employeeAnimation from './assets/employe.json';
 import studentAnimation from './assets/student.json';
 import aiAnimation from './assets/ai.json';
+import hero0Animation from './assets/hero0.json';
 
 const LottieComponent = Lottie.default || Lottie;
 
-// ── Typewriter hook ───────────────────────────────────────────────────────────
-function useTypewriter(phrases, typingSpeed = 45, deletingSpeed = 25, pauseMs = 1600) {
-  const [displayed, setDisplayed] = useState('');
-  const state = useRef({ phraseIdx: 0, charIdx: 0, deleting: false, pausing: false, lastTime: null, pauseStart: null });
-  const rafId = useRef(null);
-
-  useEffect(() => {
-    function tick(now) {
-      const s = state.current;
-      if (s.lastTime === null) s.lastTime = now;
-      const elapsed = now - s.lastTime;
-      if (s.pausing) {
-        if (now - s.pauseStart >= pauseMs) { s.pausing = false; s.deleting = true; s.lastTime = now; }
-        rafId.current = requestAnimationFrame(tick);
-        return;
-      }
-      const delay = s.deleting ? deletingSpeed : typingSpeed;
-      if (elapsed < delay) { rafId.current = requestAnimationFrame(tick); return; }
-      s.lastTime = now;
-      const current = phrases[s.phraseIdx];
-      if (!s.deleting) {
-        if (s.charIdx < current.length) { s.charIdx++; setDisplayed(current.slice(0, s.charIdx)); }
-        else { s.pausing = true; s.pauseStart = now; }
-      } else {
-        if (s.charIdx > 0) { s.charIdx--; setDisplayed(current.slice(0, s.charIdx)); }
-        else { s.deleting = false; s.phraseIdx = (s.phraseIdx + 1) % phrases.length; }
-      }
-      rafId.current = requestAnimationFrame(tick);
-    }
-    rafId.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId.current);
-  }, [phrases, typingSpeed, deletingSpeed, pauseMs]);
-
-  return displayed;
-}
-
-const TYPEWRITER_PHRASES = [
-  'Get Referred. Not Ignored.',
-  'Your Network. Your Edge.',
-  'Less Noise. More Referrals.',
-];
+// ScrambleText removed
 
 export default function App() {
-  const headline = useTypewriter(TYPEWRITER_PHRASES);
   const navigate = useNavigate();
 
   const handleGetReferred = () => {
@@ -78,74 +38,53 @@ export default function App() {
       <Navbar />
 
       {/* ── HERO ── */}
-      <section
-        className="flex flex-col min-h-screen pt-16 ">
-        {/* Hero content */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
-
-          {/* Main Hero Wrapper */}
-          <div className="flex flex-col w-full max-w-[1200px] items-center">
+      <section className="relative flex flex-col min-h-screen pt-20 px-6 md:px-12 lg:px-16 pb-8 overflow-hidden">
 
 
-            {/* Title Container */}
-            <div className="relative w-full flex justify-center mb-4">
+        <div className="flex flex-col lg:flex-row items-center justify-between max-w-[1300px] mx-auto w-full gap-8 lg:gap-40 flex-1 relative z-10">
 
-              {/* Invisible grid anchor to determine the exact max width and height of all phrases */}
-              <div className="invisible pointer-events-none grid font-snippet text-[96px] tracking-[-4px] font-normal leading-[1] max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center" aria-hidden="true">
-                {TYPEWRITER_PHRASES.map(phrase => (
-                  <h1 key={phrase} className="col-start-1 row-start-1 m-0">
-                    {phrase}
-                  </h1>
-                ))}
-              </div>
+          {/* Left content */}
+          <div className="flex-1 flex flex-col items-start text-left w-full max-w-[650px]">
+            {/* Title */}
+            <h1 className="font-intern font-bold leading-[0.9] text-black m-0 mb-4">
+              <span className="block text-[90px] lg:text-[140px] tracking-[-4px] lg:tracking-[-5px]">
+                <span className="mb-8 italic pr-2">Referrals</span>
+              </span>
+              <span className="block leading-[0.3] text-[60px] font-light lg:text-[95px] tracking-[-2px] lg:tracking-[-3px] whitespace-nowrap lg:mt-4">
+                Made Simple.
+                <span className="inline-block w-[4px] h-[0.8em] bg-[#113824] ml-3 lg:ml-4 align-middle animate-[blink_0.75s_step-end_infinite]" />
+              </span>
+            </h1>
 
-              {/* Visible typewriter text */}
-              <h1 className="absolute inset-0 flex items-center justify-center font-intern text-[92px] tracking-[-6px] font-normal leading-[1] text-black max-lg:text-[64px] max-md:text-[44px] max-md:tracking-[-2px] text-center m-0">
-                <span>{headline}</span>
-                <span className="inline-block w-[4px] h-[0.85em] bg-black ml-2 align-middle animate-[blink_0.75s_step-end_infinite] hover:bg-gray-900" />
-              </h1>
+            {/* Tagline */}
+            <p className="text-[20px] lg:text-[23px] tracking-[-0.5px] text-gray-600 mt-5 mb-6 max-w-[700px] leading-[1.3] font-sans font-light">
+              Candidates waste weeks chasing the wrong people.
+              Employees get spammed by people they can't help.
+              Referrd connects the ones who should've met sooner.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex gap-6 max-md:flex-col mt-6 w-full max-w-[450px]">
+              <Link to="/employee-signup" className="flex-1 tracking-[-0.9px] text-black bg-white border-[1px] border-black py-3.5 px-6 font-sans text-[23px] font-light rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline hover:bg-gray-50">
+                Give referral &rarr;
+              </Link>
+              <button onClick={handleGetReferred} className="flex-1 tracking-[-0.9px] text-black bg-white border-[1px] border-black py-3.5 px-6 font-sans text-[23px] font-light rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] hover:bg-gray-50">
+                Get referred &rarr;
+              </button>
             </div>
           </div>
 
-          {/* Tagline */}
-          <p
-            className="text-[28px] tracking-[-1px] text-black mb-8 max-w-[800px] leading-[1.1] text-center font-sans font-light"
-          >
-            Candidates hate being ignored. Employees hate being spammed. Referrd makes referrals easier for both.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex gap-11 mb-10 max-md:flex-col max-md:w-full max-md:max-w-[500px]">
-            <Link to="/employee-signup" className="tracking-[-2px] text-black bg-white border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline hover:bg-gray-50">
-              Give referral
-            </Link>
-            <button onClick={handleGetReferred} className="tracking-[-2px] text-black bg-white border-[1px] border-black py-1 px-10 font-sans text-[30px] font-normal rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] hover:bg-gray-50">
-              Get referred
-            </button>
-          </div>
-
-          {/* Brand logos */}
-          <div className="w-full mb-12">
-            <div className="flex items-center gap-5 max-w-[900px] mx-auto mb-10">
-              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '10px 1px', backgroundRepeat: 'repeat-x' }} />
-              <p className="text-center text-[20px] font-normal text-black tracking-[-0.5px] whitespace-nowrap opacity-100">
-                Trusted by people from leading companies
-              </p>
-              <div className="flex-1 h-[2px]" style={{ backgroundImage: 'linear-gradient(to right, black 50%, transparent 50%)', backgroundSize: '10px 1px', backgroundRepeat: 'repeat-x' }} />
-            </div>
-            <div className="flex items-center justify-center gap-12 max-w-[1000px] mx-auto flex-wrap">
-              <img src={googleImg} alt="Google" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
-              <img src={microsoftImg} alt="Microsoft" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
-              <img src={appleImg} alt="Apple" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
-              <img src={nvidiaImg} alt="Nvidia" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
-              <img src={netflixImg} alt="Netflix" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
-              <img src={spotifyImg} alt="Spotify" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
-              <img src={amazonImg} alt="Amazon" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
-            </div>
+          {/* Right Image/Animation */}
+          <div className="flex-1 w-full max-w-[650px] flex justify-center items-center relative transform scale-[1.1] lg:scale-[1.3] origin-center">
+            <LottieComponent animationData={hero0Animation} loop={true} />
           </div>
         </div>
 
+        {/* Feature List Bottom Bar */}
+
       </section>
+
+
 
       {/* ── ABOUT SECTION ── */}
       <section id="about" className="w-full flex justify-center mb-24 px-6 md:px-12 lg:px-16 pt-20">

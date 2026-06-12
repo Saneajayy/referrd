@@ -8,9 +8,44 @@
   font-weight: normal;
 }
 
+/* Merca Fonts */
+@font-face {
+  font-family: 'Merca';
+  src: url('/fonts/Merca/Merca-Bold.woff2') format('woff2'),
+       url('/fonts/Merca/Merca-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Merca';
+  src: url('/fonts/Merca/Merca-Regular.woff2') format('woff2'),
+       url('/fonts/Merca/Merca-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Squarva Font */
+@font-face {
+  font-family: 'Squarva';
+  src: url('/fonts/Squarva/Squarva.woff2') format('woff2'),
+       url('/fonts/Squarva/Squarva.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .font-merca {
+    font-family: 'Merca', sans-serif;
+  }
+  .font-squarva {
+    font-family: 'Squarva', sans-serif;
+  }
+}
 
 @layer base {
   body {
@@ -21,6 +56,22 @@
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+
+
+.text-shine {
+  background: linear-gradient(
+    to right,
+    #113824 20%,
+    #4ade80 40%,
+    #4ade80 60%,
+    #113824 80%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 /* Infinite logo marquee */
