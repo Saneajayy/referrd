@@ -57,7 +57,7 @@ export default function App() {
             </h1>
 
             {/* Tagline */}
-            <p className="text-[20px] lg:text-[23px] tracking-[-0.5px] text-gray-600 mt-5 mb-6 max-w-[700px] leading-[1.3] font-sans font-light">
+            <p className="text-[20px] lg:text-[23px] tracking-[-0.5px] text-black mt-5 mb-6 max-w-[700px] leading-[1.3] font-sans font-light">
               Candidates waste weeks chasing the wrong people.
               Employees get spammed by people they can't help.
               Referrd connects the ones who should've met sooner.
