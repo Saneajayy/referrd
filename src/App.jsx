@@ -38,50 +38,98 @@ export default function App() {
       <Navbar />
 
       {/* ── HERO ── */}
-      <section className="relative flex flex-col min-h-screen pt-20 px-6 md:px-12 lg:px-16 pb-8 overflow-hidden">
+      <section className="relative flex flex-col min-h-screen overflow-hidden bg-white">
+
+        {/* Background blobs */}
+        <div className="absolute top-[-80px] left-[-120px] w-[420px] h-[420px] rounded-full bg-[#d6eeff] opacity-60 blur-3xl pointer-events-none" />
+        <div className="absolute top-[-80px] left-[-120px] w-[420px] h-[420px] rounded-full backdrop-blur-md pointer-events-none" />
+
+        <div className="absolute top-[20px] right-[-80px] w-[340px] h-[340px] rounded-full bg-[#d6eeff] opacity-50 blur-3xl pointer-events-none" />
+        <div className="absolute top-[20px] right-[-80px] w-[340px] h-[340px] rounded-full backdrop-blur-md pointer-events-none" />
 
 
-        <div className="flex flex-col lg:flex-row items-center justify-between max-w-[1300px] mx-auto w-full gap-8 lg:gap-40 flex-1 relative z-10">
 
-          {/* Left content */}
-          <div className="flex-1 flex flex-col items-start text-left w-full max-w-[650px]">
-            {/* Title */}
-            <h1 className="font-intern font-bold leading-[0.9] text-black m-0 mb-4">
-              <span className="block text-[90px] lg:text-[140px] tracking-[-4px] lg:tracking-[-5px]">
-                <span className="mb-8 italic pr-2">Referrals</span>
+        {/* Top-left cross */}
+        <div className="absolute top-[20%] left-[8%] right-[25%] h-[1px] bg-black/20 pointer-events-none" />
+        <div className="absolute top-[16%] left-[12%] w-[1px] h-[12%] bg-black/20 pointer-events-none" />
+
+        {/* Bottom-right cross */}
+        <div className="absolute bottom-[31%] left-[20%] right-[6%] h-[1px] bg-black/20 pointer-events-none" />
+        <div className="absolute bottom-[27%] right-[21%] w-[1px] h-[12%] bg-black/20 pointer-events-none" />
+
+        {/* Main content */}
+        <div className="relative z-10 flex flex-col justify-center flex-1 px-8 md:px-14 lg:px-20 pt-28 pb-16">
+
+          {/* Heading block */}
+          <div className="relative max-w-[1200px] w-full mx-auto">
+
+            {/* Line 1 — YOUR NEXT */}
+            <h1 className="font-inter font-bold uppercase leading-[0.88] tracking-[-1px] text-[clamp(64px,11vw,130px)] text-black m-0">
+              <span
+                style={{ filter: "blur(3px)", opacity: 1 }}
+              >
+                YO
               </span>
-              <span className="block leading-[0.3] text-[60px] font-light lg:text-[95px] tracking-[-2px] lg:tracking-[-3px] whitespace-nowrap lg:mt-4">
-                Made Simple.
-                <span className="inline-block w-[4px] h-[0.8em] bg-[#113824] ml-3 lg:ml-4 align-middle animate-[blink_0.75s_step-end_infinite]" />
-              </span>
+              <span style={{ filter: "blur(2px)", opacity: 1 }}>UR </span>
+              <span>NEXT</span>
             </h1>
 
-            {/* Tagline */}
-            <p className="text-[20px] lg:text-[23px] tracking-[-0.5px] text-black mt-5 mb-6 max-w-[700px] leading-[1.3] font-sans font-light">
-              Candidates waste weeks chasing the wrong people.
-              Employees get spammed by people they can't help.
-              Referrd connects the ones who should've met sooner.
-            </p>
+            {/* Line 2 — JOB STARTS WITH A + tagline floated right */}
+            <div className="relative">
+              <h2 className="font-inter font-bold whitespace-nowrap uppercase leading-[0.88] tracking-[-3px] text-[clamp(64px,11vw,130px)] text-black m-0">
+                JOB STARTS WITH A
+              </h2>
 
-            {/* CTAs */}
-            <div className="flex gap-6 max-md:flex-col mt-6 w-full max-w-[450px]">
-              <Link to="/employee-signup" className="flex-1 tracking-[-0.9px] text-black bg-white border-[1px] border-black py-3.5 px-6 font-sans text-[23px] font-light rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] no-underline hover:bg-gray-50">
-                Give referral &rarr;
-              </Link>
-              <button onClick={handleGetReferred} className="flex-1 tracking-[-0.9px] text-black bg-white border-[1px] border-black py-3.5 px-6 font-sans text-[23px] font-light rounded-xl cursor-pointer shadow-[4px_6px_0px_0px_#000000] transition-all duration-200 inline-flex justify-center items-center hover:-translate-y-0.5 hover:shadow-[6px_8px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[3px_4px_0px_0px_#000000] hover:bg-gray-50">
-                Get referred &rarr;
-              </button>
+              {/* Tagline — sits to the right, vertically centered on this line */}
+              <p className="absolute right-[-80px] text-[13px] top-[-110px] lg:text-[28px]  text-black/70 leading-[1.2] font-light text-left max-w-[700px] hidden lg:block">
+                Candidates hate being ignored.<br />
+                Employees hate being spammed.<br />
+                Referrd makes referrals easier for both.
+              </p>
             </div>
+
+            {/* Line 3 — RIGHT REFERRAL (outline style) */}
+            <h3
+              className="font-inter font-thin uppercase text-center leading-[0.88] tracking-[-3px] text-[clamp(64px,8.5vw,130px)] m-0"
+              style={{ WebkitTextStroke: "2px black" }}
+            >
+              RIGHT{" "}
+              <span className="relative inline-block border border-[#0018F9] px-3">
+                REFERRAL
+                {/* Corner dots */}
+                <span className="absolute top-0 left-0 w-2 h-2 bg-[#0018F9] rounded-full -translate-x-1/2 -translate-y-1/2" />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-[#0018F9] rounded-full translate-x-1/2 -translate-y-1/2" />
+                <span className="absolute bottom-0 left-0 w-2 h-2 bg-[#0018F9] rounded-full -translate-x-1/2 translate-y-1/2" />
+                <span className="absolute bottom-0 right-0 w-2 h-2 bg-[#0018F9] rounded-full translate-x-1/2 translate-y-1/2" />
+              </span>
+            </h3>
+
+            {/* Tagline for mobile (below heading) */}
+            <p className="lg:hidden text-[16px] text-black/70 leading-[1.6] font-light mt-6">
+              Candidates hate being ignored.<br />
+              Employees hate being spammed.<br />
+              Referrd makes referrals easier for both.
+            </p>
           </div>
 
-          {/* Right Image/Animation */}
-          <div className="flex-1 w-full max-w-[650px] flex justify-center items-center relative transform scale-[1.1] lg:scale-[1.3] origin-center">
-            <LottieComponent animationData={hero0Animation} loop={true} />
+          {/* Buttons */}
+          <div className="flex gap-14 mt-[130px] mb-1 justify-center max-w-[1200px] mx-auto w-full">
+            <button
+              onClick={handleGetReferred}
+              className="px-6 py-2 text-[30px] font-light text-white bg-[#113824] border border-black shadow-[2px_3px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-[1px] hover:shadow-[4px_6px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] cursor-pointer"
+            >
+              Get referred
+            </button>
+
+            <Link
+              to="/employee-signup"
+              className="px-6 py-2 text-[30px] font-light text-white bg-[#113824] border border-black shadow-[2px_3px_0px_0px_#000000] transition-all duration-200 hover:-translate-y-[1px] hover:shadow-[4px_6px_0px_0px_#000000] active:translate-y-0.5 active:shadow-[2px_3px_0px_0px_#000000] no-underline inline-flex items-center cursor-pointer"
+            >
+              Give referral
+            </Link>
           </div>
+
         </div>
-
-        {/* Feature List Bottom Bar */}
-
       </section>
 
 
